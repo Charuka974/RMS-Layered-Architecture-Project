@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="ordersAnchorPane" prefHeight="700" prefWidth="1320" style="-fx-background-color: #d8cec0; -fx-background-radius: 25; -fx-border-radius: 25;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.gourmetDelight.controller.orders.OrdersController">
+   <children>
+      <Pane fx:id="ordersPane" prefHeight="700.0" prefWidth="1320.0" style="-fx-background-color: #e0e0de; -fx-background-radius: 25; -fx-border-radius: 25; -fx-border-color: #1e3c72; -fx-border-width: 2;">
+         <children>
+            <TableView fx:id="ordersTable" layoutX="10.0" layoutY="399.0" onMouseClicked="#selectFromOrdersTable" prefHeight="231.0" prefWidth="1303.0">
+              <columns>
+                <TableColumn fx:id="menuItemIdCol" prefWidth="108.00006103515625" text="Menu Item ID" />
+                <TableColumn fx:id="menuItemCol" prefWidth="546.4000091552734" text="Menu Item" />
+                  <TableColumn fx:id="unitPriceCol" prefWidth="181.60003662109375" text="Unit Price" />
+                  <TableColumn fx:id="qtyCol" prefWidth="132.80010986328125" text="Quantity" />
+                  <TableColumn fx:id="priceCol" minWidth="0.0" prefWidth="323.20001220703125" text="Price" />
+                  <TableColumn fx:id="extraCol" minWidth="5.333251953125" prefWidth="6.4000244140625" text="Extra" />
+              </columns>
+            </TableView>
+            <VBox alignment="CENTER" layoutX="967.0" layoutY="54.0" prefHeight="243.0" prefWidth="343.0" style="-fx-border-color: linear-gradient(to bottom, #00c6ff, #0072ff); -fx-border-width: 2; -fx-border-radius: 25;">
+               <children>
+                  <HBox alignment="CENTER_LEFT" prefHeight="47.0" prefWidth="385.0">
+                     <children>
+                        <Label prefHeight="40.0" prefWidth="150.0" text="  Date">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        <JFXTextField fx:id="orderDateTxt" prefHeight="40.0" prefWidth="174.0" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="47.0" prefWidth="385.0">
+                     <children>
+                        <Label prefHeight="40.0" prefWidth="138.0" text="User ID">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        <JFXTextField fx:id="orderUserIdTxt" prefHeight="40.0" prefWidth="178.0" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="47.0" prefWidth="431.0">
+                     <children>
+                        <Label prefHeight="40.0" prefWidth="140.0" text="Payment ID">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        <JFXTextField fx:id="orderPaymentId" prefHeight="40.0" prefWidth="178.0" />
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="22.0" prefWidth="344.0" />
+                  <HBox alignment="CENTER" prefHeight="43.0" prefWidth="338.0" style="-fx-border-color: linear-gradient(to bottom, #00c6ff, #0072ff); -fx-border-radius: 25;">
+                     <children>
+                        <Label prefHeight="29.0" prefWidth="140.0" text="Payment Method">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        <ChoiceBox fx:id="paymentMethodChoiceBox" prefWidth="150.0">
+                           <items>
+                              <FXCollections fx:factory="observableArrayList">
+                                 <String fx:value="Card" />
+                                 <String fx:value="Cash" />
+                                 <String fx:value="Mobile" />
+                                 <String fx:value="" />
+                              </FXCollections>
+                           </items>
+                           <effect>
+                              <DropShadow>
+                                 <color>
+                                    <Color opacity="0.8996960520744324" />
+                                 </color>
+                              </DropShadow>
+                           </effect>
+                        </ChoiceBox>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+            <HBox layoutX="476.0" layoutY="642.0" prefHeight="47.0" prefWidth="836.0" spacing="20.0">
+               <children>
+                  <JFXButton fx:id="orderDeleteBtn" onAction="#deleteOrder" prefHeight="40.0" prefWidth="105.0" style="-fx-background-color: linear-gradient(to bottom, #00c6ff, #0072ff); -fx-background-radius: 25;" text="Delete" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </JFXButton>
+                  <JFXButton fx:id="orderUpdateBtn" onAction="#updateOrder" prefHeight="40.0" prefWidth="105.0" style="-fx-background-color: linear-gradient(to bottom, #00c6ff, #0072ff); -fx-background-radius: 25;" text="Update" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </JFXButton>
+                  <Label alignment="CENTER_RIGHT" prefHeight="40.0" prefWidth="146.0" text="Total Amount">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="totalAmountLabel" prefHeight="40.0" prefWidth="278.0" text="0000.00">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </Label>
+                  <JFXButton fx:id="placeOrderBtn" onAction="#placeOrder" prefHeight="40.0" prefWidth="105.0" style="-fx-background-color: linear-gradient(to bottom, #00c6ff, #0072ff); -fx-background-radius: 25;" text="Place Order" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </JFXButton>
+               </children>
+            </HBox>
+            <HBox layoutX="1018.0" layoutY="346.0" prefHeight="46.0" prefWidth="294.0" spacing="10.0">
+               <children>
+                  <JFXButton fx:id="newOrderBtn" onAction="#loadNewOrder" prefHeight="40.0" prefWidth="140.0" style="-fx-background-color: linear-gradient(to bottom, #00c6ff, #0072ff); -fx-background-radius: 25;" text="Add New Order" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </JFXButton>
+                  <JFXButton fx:id="clearTXT" onAction="#clearTextfileds" prefHeight="40.0" prefWidth="140.0" style="-fx-background-color: linear-gradient(to bottom, #00c6ff, #0072ff); -fx-background-radius: 25;" text="Clear Textfields" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </JFXButton>
+               </children>
+            </HBox>
+            <JFXButton fx:id="orderCompleteBtn" layoutX="54.0" layoutY="642.0" onAction="#completeTheOrder" prefHeight="40.0" prefWidth="105.0" style="-fx-background-color: linear-gradient(to bottom, #00c6ff, #0072ff); -fx-background-radius: 25;" text="Completed" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </JFXButton>
+         </children></Pane>
+      <Label alignment="CENTER" layoutX="210.0" layoutY="2.0" prefHeight="63.0" prefWidth="703.0" text="Orders">
+         <font>
+            <Font name="System Bold" size="24.0" />
+         </font>
+      </Label>
+      <VBox layoutX="9.0" layoutY="73.0" prefHeight="319.0" prefWidth="951.0" spacing="10.0">
+         <children>
+            <HBox prefHeight="47.0" prefWidth="385.0">
+               <children>
+                  <Label prefHeight="40.0" prefWidth="140.0" text="Order ID">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </Label>
+                  <JFXTextField fx:id="orderIdTxt" prefHeight="40.0" prefWidth="102.0" />
+                  <JFXButton fx:id="orderIdSearchBtn" onAction="#searchOrderId" prefHeight="40.0" prefWidth="105.0" style="-fx-background-color: linear-gradient(to bottom, #00c6ff, #0072ff); -fx-background-radius: 25;" text="Search" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </JFXButton>
+                  <Pane fx:id="reservationDetailPane" prefHeight="47.0" prefWidth="595.0">
+                     <children>
+                        <Label layoutX="318.0" layoutY="6.0" prefHeight="29.0" prefWidth="66.0" text=" Location">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="184.0" layoutY="6.0" prefHeight="29.0" prefWidth="66.0" text=" Capacity">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="71.0" layoutY="6.0" prefHeight="29.0" prefWidth="54.0" text="  Table">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="tableNumberLbl" layoutX="131.0" layoutY="6.0" prefHeight="29.0" prefWidth="54.0" text="No.">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="locationLbl" layoutX="392.0" layoutY="6.0" prefHeight="29.0" prefWidth="196.0" text="location">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                        <JFXTextField fx:id="numberOfPeopleLbl" layoutX="257.0" layoutY="4.0" prefHeight="30.0" prefWidth="58.0" />
+                        <JFXTextField fx:id="tableIdLbl" labelFloat="true" layoutX="4.0" layoutY="5.0" prefHeight="30.0" prefWidth="74.0" promptText="Table ID" />
+                     </children>
+                  </Pane>
+               </children>
+            </HBox>
+            <HBox prefHeight="47.0" prefWidth="385.0">
+               <children>
+                  <Label prefHeight="40.0" prefWidth="140.0" text="Customer Name">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </Label>
+                  <JFXTextField fx:id="orderCusNameTxt" prefHeight="40.0" prefWidth="270.0" />
+                  <JFXButton fx:id="cusNameSearchBtn" onAction="#searchCustomerName" prefHeight="40.0" prefWidth="105.0" style="-fx-background-color: linear-gradient(to bottom, #00c6ff, #0072ff); -fx-background-radius: 25;" text="Search" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </JFXButton>
+                  <HBox prefHeight="47.0" prefWidth="240.0">
+                     <children>
+                        <Label prefHeight="40.0" prefWidth="90.0" text="Customer ID">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        <JFXTextField fx:id="orderCusIdTxt" prefHeight="40.0" prefWidth="91.0" />
+                        <Label alignment="CENTER" prefHeight="42.0" prefWidth="58.0" text="Optional" textFill="RED" />
+                     </children>
+                  </HBox>
+                  <JFXButton fx:id="addNewCustomerBtn" onAction="#addNewCustomer" prefHeight="42.0" prefWidth="43.0" style="-fx-background-color: linear-gradient(to bottom, #00c6ff, #0072ff); -fx-background-radius: 25;" text="+" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </JFXButton>
+               </children>
+            </HBox>
+            <HBox prefHeight="47.0" prefWidth="385.0">
+               <children>
+                  <Label prefHeight="26.0" prefWidth="54.0" text="Status">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </Label>
+                  <ChoiceBox fx:id="orderStatusChoiceBox" prefWidth="150.0">
+                     <items>
+                        <FXCollections fx:factory="observableArrayList">
+                           <String fx:value="Completed" />
+                           <String fx:value="Pending" />
+                           <String fx:value="" />
+                        </FXCollections>
+                     </items>
+                     <effect>
+                        <DropShadow>
+                           <color>
+                              <Color opacity="0.8996960520744324" />
+                           </color>
+                        </DropShadow>
+                     </effect>
+                  </ChoiceBox>
+               </children>
+            </HBox>
+            <HBox prefHeight="28.0" prefWidth="715.0">
+               <children>
+                  <Label prefHeight="26.0" prefWidth="140.0" text="Dine in / Take away">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </Label>
+                  <ChoiceBox fx:id="orderTypechoiceBox" prefWidth="150.0">
+                     <items>
+                        <FXCollections fx:factory="observableArrayList">
+                           <String fx:value="Dine in" />
+                           <String fx:value="Take away" />
+                           <String fx:value="Delivery" />
+                        </FXCollections>
+                     </items>
+                     <effect>
+                        <DropShadow>
+                           <color>
+                              <Color opacity="0.9027355313301086" />
+                           </color>
+                        </DropShadow>
+                     </effect>
+                  </ChoiceBox>
+                  <HBox fx:id="reservationIdHBox" prefHeight="30.0" prefWidth="485.0">
+                     <children>
+                        <Label alignment="CENTER" prefHeight="40.0" prefWidth="140.0" text="Reservation ID">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        <JFXTextField fx:id="reservationIdTxt" prefHeight="30.0" prefWidth="119.0" />
+                        <JFXButton fx:id="reservationSearchBtn" onAction="#searchReservationId" prefHeight="40.0" prefWidth="105.0" style="-fx-background-color: linear-gradient(to bottom, #00c6ff, #0072ff); -fx-background-radius: 25;" text="Search" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </JFXButton>
+                        <Label alignment="CENTER" prefHeight="42.0" prefWidth="58.0" text="Optional" textFill="RED" />
+                     </children>
+                  </HBox>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" prefHeight="103.0" prefWidth="951.0" style="-fx-border-color: linear-gradient(to bottom, #00c6ff, #0072ff); -fx-border-radius: 25; -fx-border-width: 2;">
+               <children>
+                  <VBox prefHeight="95.0" prefWidth="310.0">
+                     <children>
+                        <HBox prefHeight="57.0" prefWidth="310.0">
+                           <children>
+                              <Label prefHeight="40.0" prefWidth="90.0" text="Menu Item">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                              </Label>
+                              <JFXTextField fx:id="menuItemNameTxt" prefHeight="51.0" prefWidth="214.0" />
+                           </children>
+                        </HBox>
+                        <HBox prefHeight="49.0" prefWidth="310.0">
+                           <children>
+                              <Label prefHeight="40.0" prefWidth="90.0" text="Unit Price">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="unitPriceLabel" prefHeight="40.0" prefWidth="207.0" text="Unit Price">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+                  <JFXButton fx:id="menuItemSearchBtn" onAction="#searchForMenuItemId" prefHeight="40.0" prefWidth="105.0" style="-fx-background-color: linear-gradient(to bottom, #00c6ff, #0072ff); -fx-background-radius: 25;" text="Search" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </JFXButton>
+                  <Label alignment="CENTER" prefHeight="40.0" prefWidth="73.0" text="Item ID">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </Label>
+                  <JFXTextField fx:id="menuItemIdTxt" prefHeight="40.0" prefWidth="96.0" />
+                  <Label alignment="CENTER" prefHeight="40.0" prefWidth="86.0" text="Quantity">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </Label>
+                  <JFXTextField fx:id="menuItemQtyTxt" prefHeight="40.0" prefWidth="73.0" />
+                  <Label prefHeight="94.0" prefWidth="28.0" />
+                  <VBox alignment="CENTER" prefHeight="95.0" prefWidth="122.0" spacing="10.0">
+                     <children>
+                        <JFXButton fx:id="itemAddBtn" onAction="#addItemToOrder" prefHeight="40.0" prefWidth="120.0" style="-fx-background-color: linear-gradient(to bottom, #00c6ff, #0072ff); -fx-background-radius: 25;" text="Add Item" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </JFXButton>
+                        <JFXButton fx:id="itemRemoveBtn" onAction="#removeItemFromOrder" prefHeight="40.0" prefWidth="120.0" style="-fx-background-color: linear-gradient(to bottom, #00c6ff, #0072ff); -fx-background-radius: 25;" text="Remove Item" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </JFXButton>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

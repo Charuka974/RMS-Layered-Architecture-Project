@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="signUpAnchorPane" prefHeight="658.0" prefWidth="800.0" style="-fx-background-color: white; -fx-background-radius: 20; -fx-border-radius: 20; -fx-border-color: #1e3c72; -fx-border-width: 2;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.gourmetDelight.controller.login.SignUpController">
+   <children>
+      <Label alignment="CENTER" layoutX="209.0" layoutY="4.0" prefHeight="62.0" prefWidth="381.0" text="Sign Up" textFill="#1e3c72">
+         <font>
+            <Font name="Georgia Bold Italic" size="36.0" />
+         </font>
+      </Label>
+      <JFXButton fx:id="logInPanelButton" layoutX="656.0" layoutY="606.0" onAction="#getLogInUpPanel" prefHeight="15.0" prefWidth="111.0" style="-fx-background-color: transparent; -fx-text-fill: #0072ff;" text="LogIn">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </JFXButton>
+      <Label layoutX="469.0" layoutY="613.0" prefHeight="30.0" prefWidth="184.0" text="Already have an account ?">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <JFXButton fx:id="signUpBtn" layoutX="569.0" layoutY="536.0" onAction="#signUp" prefHeight="50.0" prefWidth="200.0" style="-fx-background-color: linear-gradient(to bottom, #00c6ff, #0072ff); -fx-text-fill: white; -fx-background-radius: 25;" text="Sign Up">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </JFXButton>
+      <Pane layoutX="562.0" layoutY="93.0" prefHeight="90.0" prefWidth="200.0" style="-fx-border-color: linear-gradient(to bottom, #00c6ff, #0072ff); -fx-border-radius: 25; -fx-background-radius: 25; -fx-border-width: 2;">
+         <children>
+            <JFXTextField fx:id="passkeyTxt" labelFloat="true" layoutX="20.0" layoutY="14.0" prefHeight="26.0" prefWidth="154.0" promptText="PassKey" />
+            <JFXButton fx:id="confirmBtn" layoutX="48.0" layoutY="51.0" onAction="#passkeyConfirmBtn" prefHeight="30.0" prefWidth="100.0" style="-fx-background-color: linear-gradient(to bottom, #00c6ff, #0072ff); -fx-text-fill: white; -fx-background-radius: 25;" text="Confirm ">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </JFXButton>
+         </children>
+      </Pane>
+      <VBox fx:id="detailPane" alignment="CENTER" layoutX="20.0" layoutY="67.0" prefHeight="539.0" prefWidth="454.0" spacing="5.0" style="-fx-border-color: linear-gradient(to bottom, #00c6ff, #0072ff); -fx-background-radius: 25; -fx-border-radius: 25; -fx-border-width: 2;">
+         <children>
+            <HBox prefHeight="47.0" prefWidth="200.0">
+               <children>
+                  <VBox alignment="CENTER" prefHeight="42.0" prefWidth="80.0">
+                     <children>
+                        <ImageView fitHeight="26.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../icons/username-1.png" />
+                           </image>
+                        </ImageView>
+                        <Label text="Employee ID" textFill="#34495e">
+                           <font>
+                              <Font name="System Bold" size="10.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <JFXTextField fx:id="signEmpIdTxt" prefHeight="26.0" prefWidth="128.0" />
+               </children>
+            </HBox>
+            <HBox prefHeight="50.0" prefWidth="154.0">
+               <children>
+                  <VBox alignment="CENTER" prefHeight="42.0" prefWidth="80.0">
+                     <children>
+                        <ImageView fitHeight="26.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../icons/username-1.png" />
+                           </image>
+                        </ImageView>
+                        <Label text="Name" textFill="#34495e">
+                           <font>
+                              <Font name="System Bold" size="10.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <JFXTextField fx:id="signEmpNameTxt" prefHeight="26.0" prefWidth="295.0" />
+               </children>
+            </HBox>
+            <HBox prefHeight="40.0" prefWidth="295.0">
+               <children>
+                  <VBox alignment="CENTER" prefHeight="52.0" prefWidth="80.0">
+                     <children>
+                        <ImageView fitHeight="26.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../icons/username-1.png" />
+                           </image>
+                        </ImageView>
+                        <Label prefHeight="15.0" prefWidth="42.0" text="Position" textFill="#34495e">
+                           <font>
+                              <Font name="System Bold" size="10.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <JFXTextField fx:id="signEmpPositionTxt" prefHeight="26.0" prefWidth="184.0" />
+               </children>
+            </HBox>
+            <HBox prefHeight="42.0" prefWidth="266.0">
+               <children>
+                  <VBox alignment="CENTER" prefHeight="42.0" prefWidth="80.0">
+                     <children>
+                        <ImageView fitHeight="26.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../icons/phone-80.png" />
+                           </image>
+                        </ImageView>
+                        <Label text="Phone Number" textFill="#34495e">
+                           <font>
+                              <Font name="System Bold" size="10.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <JFXTextField fx:id="signEmpPhoneTxt" prefHeight="26.0" prefWidth="184.0" />
+               </children>
+            </HBox>
+            <HBox prefHeight="42.0" prefWidth="200.0">
+               <children>
+                  <VBox alignment="CENTER" prefHeight="42.0" prefWidth="80.0">
+                     <children>
+                        <ImageView fitHeight="49.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../icons/email-icon--endless-icons-20.png" />
+                           </image>
+                        </ImageView>
+                        <Label text="Email" textFill="#34495e">
+                           <font>
+                              <Font name="System Bold" size="10.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <JFXTextField fx:id="signEmpEmailTxt" prefHeight="26.0" prefWidth="328.0" />
+               </children>
+            </HBox>
+            <HBox prefHeight="42.0" prefWidth="274.0">
+               <children>
+                  <VBox alignment="CENTER" prefHeight="42.0" prefWidth="80.0">
+                     <children>
+                        <ImageView fitHeight="26.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../icons/date-71.png" />
+                           </image>
+                        </ImageView>
+                        <Label text="Date" textFill="#34495e">
+                           <font>
+                              <Font name="System Bold" size="10.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <JFXTextField fx:id="signDateTxt" prefHeight="26.0" prefWidth="184.0" />
+               </children>
+            </HBox>
+            <HBox prefHeight="42.0" prefWidth="177.0">
+               <children>
+                  <VBox alignment="CENTER" prefHeight="42.0" prefWidth="80.0">
+                     <children>
+                        <ImageView fitHeight="26.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../icons/username-1.png" />
+                           </image>
+                        </ImageView>
+                        <Label text="User ID" textFill="#34495e">
+                           <font>
+                              <Font name="System Bold" size="10.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <JFXTextField fx:id="signUserIdTxt" prefHeight="26.0" prefWidth="128.0" />
+               </children>
+            </HBox>
+            <HBox prefHeight="24.0" prefWidth="434.0" />
+            <HBox prefHeight="47.0" prefWidth="266.0">
+               <children>
+                  <VBox alignment="CENTER" prefHeight="42.0" prefWidth="80.0">
+                     <children>
+                        <ImageView fitHeight="26.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../icons/username-1.png" />
+                           </image>
+                        </ImageView>
+                        <Label text="Username" textFill="#34495e">
+                           <font>
+                              <Font name="System Bold" size="10.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <JFXTextField fx:id="signUsernameTxt" labelFloat="true" onKeyTyped="#validateUsername" prefHeight="26.0" prefWidth="184.0" promptText="Enter your Username" />
+               </children>
+            </HBox>
+            <HBox prefHeight="47.0" prefWidth="274.0">
+               <children>
+                  <VBox alignment="CENTER" prefHeight="42.0" prefWidth="80.0">
+                     <children>
+                        <ImageView fitHeight="26.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../icons/password-76.png" />
+                           </image>
+                        </ImageView>
+                        <Label text="Password" textFill="#34495e">
+                           <font>
+                              <Font name="System Bold" size="10.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <JFXTextField fx:id="signPasswordTxt" labelFloat="true" onKeyTyped="#validatePassword" prefHeight="26.0" prefWidth="184.0" promptText="Enter your Password" />
+               </children>
+            </HBox>
+            <HBox prefHeight="47.0" prefWidth="274.0">
+               <children>
+                  <VBox alignment="CENTER" prefHeight="42.0" prefWidth="80.0">
+                     <children>
+                        <ImageView fitHeight="26.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../icons/password-76.png" />
+                           </image>
+                        </ImageView>
+                        <Label text="Password" textFill="#34495e">
+                           <font>
+                              <Font name="System Bold" size="10.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <JFXTextField fx:id="signPasswordTxt1" labelFloat="true" onKeyTyped="#validatePassword1" prefHeight="26.0" prefWidth="184.0" promptText="Confirm Password" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

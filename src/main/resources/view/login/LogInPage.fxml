@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXPasswordField?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="780.0" prefWidth="1525.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.gourmetDelight.controller.login.LogInController">
+   <children>
+      <!-- Background Pane with Blue Gradient -->
+      <Pane fx:id="logInPane" prefHeight="780.0" prefWidth="1525.0" style="-fx-background-color: linear-gradient(to bottom, #2193b0, #6dd5ed);">
+         <children>
+            <ImageView fitHeight="780.0" fitWidth="994.0" layoutX="-1.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../images/Leonardo_Phoenix_Create_a_sleek_modern_background_for_a_restau_0.jpg" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="780.0" fitWidth="890.0" layoutX="779.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../images/Leonardo_Phoenix_Create_a_sleek_modern_background_for_a_restau_01.jpg" />
+               </image>
+            </ImageView>
+            <!-- Login Form Pane -->
+            <Pane fx:id="loginBodyPane" layoutX="685.0" layoutY="113.0" prefHeight="658.0" prefWidth="800.0" style="-fx-background-color: white; -fx-background-radius: 25; -fx-border-radius: 25; -fx-border-color: #1e3c72; -fx-border-width: 2;">
+               <children>
+
+                  <!-- Log In Label -->
+                  <Label alignment="CENTER" layoutX="250.0" layoutY="40.0" prefHeight="60.0" prefWidth="300.0" text="Log In" textFill="#1e3c72">
+                     <font>
+                        <Font name="Georgia Bold Italic" size="36.0" />
+                     </font>
+                  </Label>
+
+                  <!-- Username Label -->
+                  <Label layoutX="150.0" layoutY="178.0" text="Username" textFill="#34495e">
+                     <font>
+                        <Font name="System Bold" size="10.0" />
+                     </font>
+                  </Label>
+
+                  <!-- Password Label -->
+                  <Label layoutX="150.0" layoutY="258.0" prefHeight="15.0" prefWidth="47.0" text="Password" textFill="#34495e">
+                     <font>
+                        <Font name="System Bold" size="10.0" />
+                     </font>
+                  </Label>
+
+                  <!-- Username TextField -->
+                  <JFXTextField fx:id="txtUserName" focusTraversable="false" labelFloat="true" layoutX="200.0" layoutY="145.0" prefHeight="40.0" prefWidth="400.0" promptText="Enter your username">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </JFXTextField>
+
+                  <!-- PasswordField -->
+                  <JFXPasswordField fx:id="txtPassword" focusTraversable="false" labelFloat="true" layoutX="200.0" layoutY="225.0" prefHeight="40.0" prefWidth="400.0" promptText="Enter your password">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </JFXPasswordField>
+
+                  <!-- Visible Password TextField -->
+                  <JFXTextField fx:id="visibleTxtPassword" labelFloat="true" layoutX="200.0" layoutY="225.0" managed="false" prefHeight="40.0" prefWidth="400.0" promptText="Enter your password" visible="false">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </JFXTextField>
+
+
+                  <!-- Log In Button -->
+                  <JFXButton fx:id="logInBtn" layoutX="300.0" layoutY="350.0" onAction="#logIn" prefHeight="50.0" prefWidth="200.0" style="-fx-background-color: linear-gradient(to bottom, #00c6ff, #0072ff); -fx-text-fill: white; -fx-background-radius: 25;">
+                     <font>
+                        <Font name="System Bold" size="20.0" />
+                     </font>
+                     Log In
+                  </JFXButton>
+
+                  <!-- Sign Up Prompt Label -->
+                  <Label layoutX="150.0" layoutY="596.0" prefHeight="30.0" prefWidth="200.0" text="Don't have an account?" textFill="#34495e">
+                     <font>
+                        <Font name="System Bold" size="16.0" />
+                     </font>
+                  </Label>
+
+                  <!-- Sign Up Button -->
+                  <JFXButton fx:id="signUpPanelButton" layoutX="335.0" layoutY="593.0" onAction="#getSignUpPanel" prefHeight="30.0" prefWidth="150.0" style="-fx-background-color: transparent; -fx-text-fill: #0072ff;">
+                     <font>
+                        <Font name="System Bold" size="16.0" />
+                     </font>
+                     Sign Up
+                  </JFXButton>
+                  <ImageView fitHeight="40.0" fitWidth="39.0" layoutX="154.0" layoutY="139.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../icons/username-1.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="50.0" fitWidth="45.0" layoutX="151.0" layoutY="213.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../icons/password-76.png" />
+                     </image>
+                  </ImageView>
+                  <JFXButton fx:id="forgotPasswordBtn" layoutX="316.0" layoutY="421.0" onAction="#forgotPasswordPanel" prefHeight="36.0" prefWidth="169.0" style="-fx-background-color: transparent; -fx-text-fill: #0072ff;" text="Forgot Password ?">
+                     <font>
+                        <Font name="System Bold" size="16.0" />
+                     </font>
+                  </JFXButton>
+                  <JFXTextField fx:id="visiblePasswordTxt" focusTraversable="false" labelFloat="true" layoutX="200.0" layoutY="225.0" prefHeight="40.0" prefWidth="400.0" promptText="Enter your password" visible="false">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </JFXTextField>
+                  <ImageView fx:id="setPasswordVisibleImage" fitHeight="45.0" fitWidth="47.0" layoutX="600.0" layoutY="232.0" onMousePressed="#setPasswordVisible" onMouseReleased="#setPasswordInvisible" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../images/icons/closedEye.jpg" />
+                     </image>
+                  </ImageView>
+
+               </children>
+            </Pane>
+
+            <!-- Welcome Message -->
+            <Label alignment="CENTER" layoutX="365.0" layoutY="38.0" prefHeight="71.0" prefWidth="800.0" text="Welcome to Gourmet Delight" textFill="#1f2937">
+               <font>
+                  <Font name="Georgia Bold Italic" size="48.0" />
+               </font>
+            </Label>
+
+            <!-- Restaurant Logo -->
+            <ImageView fx:id="logo" fitHeight="539.0" fitWidth="551.0" layoutX="121.0" layoutY="174.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../icons/RMS_Logo.png" />
+               </image>
+            </ImageView>
+
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>

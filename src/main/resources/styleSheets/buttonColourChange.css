@@ -1,0 +1,9 @@
+.button-selecthover{
+    -fx-cursor: hand;
+    -fx-text-fill: #2d3436;
+    -fx-border-color: #74b9ff;
+    -fx-border-radius: 10px;
+    -fx-border-width: 0px;
+    -fx-background-color: #74b9ff; /* Replace with your desired color */
+    -fx-background-radius:20px;
+}

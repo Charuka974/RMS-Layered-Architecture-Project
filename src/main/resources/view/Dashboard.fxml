@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="dashboardAnchorPane" prefHeight="700.0" prefWidth="1320.0" style="-fx-background-color: #e0e0de; -fx-background-radius: 25; -fx-border-radius: 25; -fx-border-width: 2; -fx-border-color: #1e3c72;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.gourmetDelight.controller.DashboardController">
+   <children>
+      <ImageView fitHeight="68.0" fitWidth="98.0" layoutX="623.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/logo.jpg" />
+         </image>
+      </ImageView>
+      <ScrollPane fx:id="dashboardScrollPane" layoutX="7.0" layoutY="74.0" prefHeight="611.0" prefWidth="1306.0">
+         <content>
+          <AnchorPane fx:id="scrollAnchorPane" minHeight="0.0" minWidth="0.0" prefHeight="2090.0" prefWidth="2246.0">
+               <children>
+                  <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="22.0" layoutY="1171.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/vxPg3kqP5d9iOpMDdl56--1--zaqtk.jpg" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="185.0" fitWidth="224.0" layoutX="21.0" layoutY="1384.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/a-plate-of-food-with-meat-and-sauce-on-it-ai-generated-free-photo.jpg" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="185.0" fitWidth="224.0" layoutX="274.0" layoutY="1383.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/a-plate-of-food-with-meat-vegetables-and-sauce-ai-generated-free-photo.jpg" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="185.0" fitWidth="224.0" layoutX="524.0" layoutY="1383.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/the-food-at-the-restaurant-is-a-mix-of-traditional-and-modern-dishes-ai-generated-free-photo.jpg" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="185.0" fitWidth="224.0" layoutX="775.0" layoutY="1383.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/Leonardo_Phoenix_A_vibrant_and_mouthwatering_image_of_a_variet_2.jpg" />
+                     </image>
+                  </ImageView>
+                  <Button fx:id="reservationsBtn" layoutX="23.0" layoutY="1805.0" mnemonicParsing="false" onAction="#loadReservations" prefHeight="43.0" prefWidth="154.0" text="Reservations">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="menuItemsBtn" layoutX="23.0" layoutY="1333.0" mnemonicParsing="false" onAction="#loadMenuItems" prefHeight="43.0" prefWidth="154.0" text="Todays Special">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Button>
+                  <PieChart fx:id="piechart1" layoutX="26.0" layoutY="5.0" prefHeight="690.0" prefWidth="919.0" />
+                  <PieChart fx:id="piechart2" layoutX="989.0" layoutY="37.0" prefHeight="300.0" prefWidth="300.0" />
+                  <BarChart fx:id="barchart1" layoutX="992.0" layoutY="409.0" prefHeight="300.0" prefWidth="300.0">
+                    <xAxis>
+                      <CategoryAxis side="BOTTOM" />
+                    </xAxis>
+                    <yAxis>
+                      <NumberAxis side="LEFT" />
+                    </yAxis>
+                  </BarChart>
+                  <LineChart fx:id="linechart1" layoutX="1319.0" layoutY="413.0" prefHeight="300.0" prefWidth="300.0">
+                    <xAxis>
+                      <CategoryAxis side="BOTTOM" />
+                    </xAxis>
+                    <yAxis>
+                      <NumberAxis side="LEFT" />
+                    </yAxis>
+                  </LineChart>
+                  <BarChart fx:id="inventoryBarChart" layoutX="12.0" layoutY="739.0" prefHeight="387.0" prefWidth="583.0">
+                    <xAxis>
+                      <CategoryAxis side="BOTTOM" />
+                    </xAxis>
+                    <yAxis>
+                      <NumberAxis side="LEFT" />
+                    </yAxis>
+                  </BarChart>
+                  <HBox layoutX="23.0" layoutY="1866.0" prefHeight="129.0" prefWidth="422.0" spacing="20.0">
+                     <children>
+                        <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/Leonardo_Phoenix_A_highcontrast_cinematic_photo_of_a_warm_and_3.jpg" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/Leonardo_Phoenix_A_highcontrast_cinematic_photo_of_a_warm_and_1.jpg" />
+                           </image>
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
+                        </ImageView>
+                     </children>
+                  </HBox>
+                  <HBox layoutX="23.0" layoutY="1586.0" prefHeight="168.0" prefWidth="1200.0" spacing="20.0">
+                     <children>
+                        <ImageView fitHeight="185.0" fitWidth="224.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../foodImages/intro-import.jpg" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="185.0" fitWidth="224.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../foodImages/Margherita-Pizza-deck-oven.jpg" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="185.0" fitWidth="224.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../foodImages/the-best-caesar-salad-recipe-06-40e70f549ba2489db09355abd62f79a9.jpg" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="185.0" fitWidth="224.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../foodImages/thumbnail-ChickFilA-Grilled-Chicken-Club-500x375.jpg" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="185.0" fitWidth="224.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../foodImages/Tiramisu.jpg" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </HBox>
+                  <HBox layoutX="997.0" layoutY="1386.0" prefHeight="168.0" prefWidth="1200.0" spacing="20.0">
+                     <children>
+                        <ImageView fitHeight="185.0" fitWidth="224.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../foodImages/__opt__aboutcom__coeus__resources__content_migration__simply_recipes__uploads.jpg" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="185.0" fitWidth="224.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../foodImages/5ybpabzh-720.jpg" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="185.0" fitWidth="224.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../foodImages/20240705-how-to-make-iced-tea-glass-with-ice-cubes-and-sliced-and-whole-lemons.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="185.0" fitWidth="224.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../foodImages/Chicken-Alfredo-above.jpg" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="185.0" fitWidth="224.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../foodImages/french-fries-recipe.jpg" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </HBox>
+               </children>
+            </AnchorPane>
+         </content>
+      </ScrollPane>
+   </children>
+</AnchorPane>
