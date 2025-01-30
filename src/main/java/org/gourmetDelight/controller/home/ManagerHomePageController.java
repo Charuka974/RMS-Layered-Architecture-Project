@@ -9,7 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import org.gourmetDelight.model.home.HomeModel;
+import org.gourmetDelight.dao.custom.impl.home.ReminderDAOImpl;
 import org.gourmetDelight.util.KeepUser;
 
 
@@ -122,8 +122,8 @@ public class ManagerHomePageController implements Initializable {
             public void run() {
                 // Run the reminder check after every 1 minute
                 Platform.runLater(() -> {
-                    HomeModel homeModel = new HomeModel();
-                    homeModel.checkAndPrintReminder();
+                    ReminderDAOImpl reminderDAOImpl = new ReminderDAOImpl();
+                    reminderDAOImpl.checkAndPrintReminder();
                 });
             }
         }, 0, 60000);  // 0 initial delay, 60000ms (1 minute) interval

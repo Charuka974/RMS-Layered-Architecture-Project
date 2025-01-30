@@ -12,9 +12,16 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import org.gourmetDelight.bo.custom.EmployeeBO;
+import org.gourmetDelight.bo.custom.UserBO;
+import org.gourmetDelight.bo.custom.impl.EmployeeBOImpl;
+import org.gourmetDelight.bo.custom.impl.UserBOImpl;
+import org.gourmetDelight.dao.custom.impl.employee.EmployeeDAOImpl;
 import org.gourmetDelight.dto.employee.EmployeeDto;
 import org.gourmetDelight.dto.employee.UserDto;
-import org.gourmetDelight.model.employee.UsersModel;
+import org.gourmetDelight.entity.Employee;
+import org.gourmetDelight.entity.User;
+import org.gourmetDelight.dao.custom.impl.employee.UsersDAOImpl;
 import org.gourmetDelight.util.DateAndTime;
 import org.gourmetDelight.util.KeepUser;
 import org.gourmetDelight.util.ValidateUtil;
@@ -27,7 +34,6 @@ import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-import static org.gourmetDelight.model.employee.UsersModel.getAllUsers;
 import static org.gourmetDelight.util.Navigations.*;
 
 public class UsersController implements Initializable {
@@ -54,12 +60,12 @@ public class UsersController implements Initializable {
     @FXML
     private TableView<UserDto> usersTable;
 
-    private final UsersModel USERS_MODEL;
+    private final UserBO userBO = new UserBOImpl();
     private final ValidateUtil validateUtil;
     private final DateAndTime dateAndTime;
+    EmployeeBO employeeBO = new EmployeeBOImpl();
 
     public UsersController() {
-        this.USERS_MODEL = new UsersModel();
         this.validateUtil = new ValidateUtil();
         this.dateAndTime = new DateAndTime();
     }
@@ -108,7 +114,7 @@ public class UsersController implements Initializable {
 
         if (selectedItem != null) {
             populateFields(selectedItem);
-            userEmpNameTxt.setText(USERS_MODEL.getEmployeeName(selectedItem.getEmployeeID()));
+            userEmpNameTxt.setText(employeeBO.getEmployeeName(selectedItem.getEmployeeID()));
         }
     }
 
@@ -183,8 +189,13 @@ public class UsersController implements Initializable {
 
         if (result.isPresent() && result.get() == ButtonType.OK) {
             try {
-                String deleteResult = USERS_MODEL.deleteUser(selectedUser.getUserId());
-                showAlert(Alert.AlertType.INFORMATION, "Success", "User Deleted", deleteResult);
+                boolean deleteResult = userBO.delete(selectedUser.getUserId());
+                if(deleteResult){
+                    showAlert(Alert.AlertType.INFORMATION, "User Deleted");
+                }else{
+                    showAlert(Alert.AlertType.INFORMATION, "Failed to Delete User");
+                }
+
                 loadUsersTable();
                 clearFields();
             } catch (ClassNotFoundException | SQLException e) {
@@ -208,8 +219,12 @@ public class UsersController implements Initializable {
 
         try {
             UserDto newUser = createUserFromFields();
-            String result = USERS_MODEL.saveUser(newUser);
-            showAlert(Alert.AlertType.INFORMATION, "Success", "User Saved", result);
+            boolean result = userBO.save(newUser);
+            if(result){
+                showAlert(Alert.AlertType.INFORMATION, "User Saved");
+            }else{
+                showAlert(Alert.AlertType.INFORMATION, "Failed to save User");
+            }
             loadUsersTable();
             clearFields();
         } catch (ClassNotFoundException | SQLException e) {
@@ -230,8 +245,12 @@ public class UsersController implements Initializable {
 
         try {
             UserDto updatedUser = createUserFromFields();
-            String result = USERS_MODEL.updateUser(updatedUser);
-            showAlert(Alert.AlertType.INFORMATION, "Success", "User Updated", result);
+            boolean result = userBO.update(updatedUser);
+            if(result){
+                showAlert(Alert.AlertType.INFORMATION, "User Updated");
+            }else{
+                showAlert(Alert.AlertType.INFORMATION, "Failed to Update User");
+            }
             loadUsersTable();
             clearFields();
         } catch (ClassNotFoundException | SQLException e) {
@@ -249,7 +268,7 @@ public class UsersController implements Initializable {
         }
 
         try {
-            UserDto foundUser = USERS_MODEL.searchUserById(searchId);
+            UserDto foundUser = userBO.searchById(searchId);
             if (foundUser != null) {
                 populateFields(foundUser);
                 showAlert(Alert.AlertType.INFORMATION, "User Found", "Search Results",
@@ -295,13 +314,13 @@ public class UsersController implements Initializable {
     }
 
     private void loadUsersTable() throws ClassNotFoundException, SQLException {
-        ObservableList<UserDto> userDtos = FXCollections.observableArrayList(getAllUsers());
+        ObservableList<UserDto> userDtos = FXCollections.observableArrayList(userBO.getAll());
         usersTable.setItems(userDtos);
         setNextUserId();
     }
 
     private void setNextUserId() throws SQLException, ClassNotFoundException {
-        userIdTxt.setText(USERS_MODEL.suggestNextUserId());
+        userIdTxt.setText(userBO.suggestNextID());
     }
 
     private void populateFields(UserDto user) throws SQLException{
@@ -361,6 +380,12 @@ public class UsersController implements Initializable {
         alert.showAndWait();
     }
 
+    private void showAlert(Alert.AlertType alertType, String content) {
+        Alert alert = new Alert(alertType);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+
     @FXML
     public void searchUsername(ActionEvent actionEvent) {
         String searchUsername = usernameTxt.getText().trim();
@@ -371,7 +396,7 @@ public class UsersController implements Initializable {
 
         try {
 
-            ArrayList<UserDto> founduser = USERS_MODEL.searchUsersByUsername(searchUsername);
+            ArrayList<UserDto> founduser = userBO.searchByName(searchUsername);
 
             if (!founduser.isEmpty()) {
                 ObservableList<UserDto> userList = FXCollections.observableArrayList(founduser);
@@ -409,7 +434,10 @@ public class UsersController implements Initializable {
     @FXML
     public void getEmployeeId(ActionEvent actionEvent) {
         try {
-            String employeeId = USERS_MODEL.searchEmployeeName(userEmpNameTxt.getText().trim());
+            ArrayList<EmployeeDto> founduser = employeeBO.searchByName(userEmpNameTxt.getText().trim());
+
+            String employeeId = founduser.get(0).getEmployeeID();
+
             if (employeeId == null) {
                 showAlert(Alert.AlertType.ERROR, "Error", "Employee Not Found", "The employee you are searching for could not be found.");
                 userEmpIdTxt.setText(null);

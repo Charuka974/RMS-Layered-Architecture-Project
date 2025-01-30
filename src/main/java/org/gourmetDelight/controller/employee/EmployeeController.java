@@ -13,9 +13,10 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
-import org.gourmetDelight.dto.CustomerDto;
+import org.gourmetDelight.bo.custom.EmployeeBO;
+import org.gourmetDelight.bo.custom.impl.EmployeeBOImpl;
 import org.gourmetDelight.dto.employee.EmployeeDto;
-import org.gourmetDelight.model.employee.EmployeeModel;
+import org.gourmetDelight.dao.custom.impl.employee.EmployeeDAOImpl;
 import org.gourmetDelight.util.DateAndTime;
 import org.gourmetDelight.util.Navigations;
 import org.gourmetDelight.util.ValidateUtil;
@@ -103,11 +104,12 @@ public class EmployeeController implements Initializable {
     @FXML
     private ChoiceBox<String> employeePositionnChoiceBox;
 
-    private final EmployeeModel EMPLOYEE_MODEL;
+
     ValidateUtil validateUtil = new ValidateUtil();
+    EmployeeBO employeeBO = new EmployeeBOImpl();
 
     public EmployeeController() {
-        this.EMPLOYEE_MODEL = new EmployeeModel();
+
         this.validateUtil = new ValidateUtil();
     }
 
@@ -178,7 +180,7 @@ public class EmployeeController implements Initializable {
     }
 
     public ObservableList<EmployeeDto> getAllEmployees() throws ClassNotFoundException, SQLException {
-        ArrayList<EmployeeDto> employeeList = EmployeeModel.getAll();
+        ArrayList<EmployeeDto> employeeList = employeeBO.getAll();
         return FXCollections.observableArrayList(employeeList);
     }
 
@@ -212,7 +214,7 @@ public class EmployeeController implements Initializable {
 
 
     public ObservableList<EmployeeDto> getAllCustomers() throws ClassNotFoundException, SQLException {
-        ArrayList<EmployeeDto> customerList = EMPLOYEE_MODEL.getAll();
+        ArrayList<EmployeeDto> customerList = employeeBO.getAll();
         return FXCollections.observableArrayList(customerList);
     }
 
@@ -273,8 +275,12 @@ public class EmployeeController implements Initializable {
                 );
 
 
-                String result = EMPLOYEE_MODEL.saveEmployee(newEmployee);
-                showAlert(Alert.AlertType.INFORMATION, "Success", "Employee Saved", result);
+                boolean result = employeeBO.save(newEmployee);
+                if(result){
+                    showAlert(Alert.AlertType.INFORMATION, "Employee Saved");
+                }else{
+                    showAlert(Alert.AlertType.INFORMATION, "Failed to save Employee");
+                }
 
                 // Refresh the TableView
                 loadCustomerTable();
@@ -285,6 +291,14 @@ public class EmployeeController implements Initializable {
         } catch (ClassNotFoundException | SQLException e) {
             showAlert(Alert.AlertType.ERROR, "Error", "Failed to save customer.", e.getMessage());
         }
+    }
+
+
+
+    private void showAlert(Alert.AlertType alertType, String content) {
+        Alert alert = new Alert(alertType);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 
 
@@ -312,8 +326,12 @@ public class EmployeeController implements Initializable {
                 );
 
                 // Update employee in the database
-                String result = EMPLOYEE_MODEL.updateEmployee(updatedEmployee);
-                showAlert(Alert.AlertType.INFORMATION, "Success", "Employee Updated", result);
+                boolean result = employeeBO.update(updatedEmployee);
+                if(result){
+                    showAlert(Alert.AlertType.INFORMATION, "Employee Updated");
+                }else{
+                    showAlert(Alert.AlertType.INFORMATION, "Failed to update Employee");
+                }
 
                 // Refresh the TableView
                 loadEmployeeTable();
@@ -345,8 +363,12 @@ public class EmployeeController implements Initializable {
         if (result.isPresent() && result.get() == ButtonType.OK) {
             try {
                 // Delete customer from the database
-                String deleteResult = EMPLOYEE_MODEL.deleteEmployee(selectedEmployee.getEmployeeID());
-                showAlert(Alert.AlertType.INFORMATION, "Success", "Employee Deleted", deleteResult);
+                boolean deleteResult = employeeBO.delete(selectedEmployee.getEmployeeID());
+                if(deleteResult){
+                    showAlert(Alert.AlertType.INFORMATION, "Employee Deleted");
+                }else{
+                    showAlert(Alert.AlertType.INFORMATION, "Failed to Delete Employee");
+                }
 
                 // Refresh the TableView
                 loadCustomerTable();
@@ -370,7 +392,7 @@ public class EmployeeController implements Initializable {
 
         try {
 
-            EmployeeDto foundEmployee = EMPLOYEE_MODEL.searchEmployeeById(searchId);
+            EmployeeDto foundEmployee = employeeBO.searchById(searchId);
 
             if (foundEmployee != null) {
                 populateFields(foundEmployee);
@@ -396,7 +418,7 @@ public class EmployeeController implements Initializable {
 
         try {
 
-            ArrayList<EmployeeDto> foundEmployees = EMPLOYEE_MODEL.searchEmployeesByName(searchName);
+            ArrayList<EmployeeDto> foundEmployees = employeeBO.searchByName(searchName);
 
             if (!foundEmployees.isEmpty()) {
                 ObservableList<EmployeeDto> employeeList = FXCollections.observableArrayList(foundEmployees);
@@ -415,7 +437,7 @@ public class EmployeeController implements Initializable {
     }
 
     private void setNextEmployeeID() throws SQLException, ClassNotFoundException {
-        empIdTxt.setText(EMPLOYEE_MODEL.suggestNextEmployeeID());
+        empIdTxt.setText(employeeBO.suggestNextID());
     }
 
 

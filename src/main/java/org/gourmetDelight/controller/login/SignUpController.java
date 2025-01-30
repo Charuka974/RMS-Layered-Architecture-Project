@@ -11,14 +11,11 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 
-import javax.swing.*;
-
 import javafx.scene.layout.VBox;
-import org.gourmetDelight.dto.employee.EmployeeDto;
-import org.gourmetDelight.dto.employee.UserDto;
-import org.gourmetDelight.model.employee.EmployeeModel;
-import org.gourmetDelight.model.employee.UsersModel;
-import org.gourmetDelight.model.login.SignUpModel;
+import org.gourmetDelight.entity.Employee;
+import org.gourmetDelight.entity.User;
+import org.gourmetDelight.dao.custom.impl.employee.EmployeeDAOImpl;
+import org.gourmetDelight.dao.custom.impl.employee.UsersDAOImpl;
 import org.gourmetDelight.util.DateAndTime;
 import org.gourmetDelight.util.ValidateUtil;
 
@@ -81,8 +78,8 @@ public class SignUpController extends Component implements Initializable {
     @FXML
     private JFXTextField signUsernameTxt;
 
-    private EmployeeModel employeeModel = new EmployeeModel();
-    private UsersModel usersModel = new UsersModel();
+    private EmployeeDAOImpl employeeDAOImpl = new EmployeeDAOImpl();
+    private UsersDAOImpl usersDAOImpl = new UsersDAOImpl();
     DateAndTime dateAndTime = new DateAndTime();
     ValidateUtil validateUtil = new ValidateUtil();
 
@@ -131,11 +128,11 @@ public class SignUpController extends Component implements Initializable {
 
 
     public void setEmployeeId() throws SQLException, ClassNotFoundException {
-        signEmpIdTxt.setText(employeeModel.suggestNextEmployeeID());
+        signEmpIdTxt.setText(employeeDAOImpl.suggestNextID());
     }
 
     public void setUserId() throws SQLException, ClassNotFoundException {
-       signUserIdTxt.setText(usersModel.suggestNextUserId());
+       signUserIdTxt.setText(usersDAOImpl.suggestNextID());
     }
 
 
@@ -168,7 +165,7 @@ public class SignUpController extends Component implements Initializable {
 
                 LocalDate hireDate = parseDate(signDateTxt.getText().trim());
 
-                EmployeeDto newEmployee = new EmployeeDto(
+                Employee newEmployee = new Employee(
                         signEmpIdTxt.getText().trim(),
                         signEmpNameTxt.getText().trim(),
                         signEmpPositionTxt.getText().trim(),
@@ -178,7 +175,7 @@ public class SignUpController extends Component implements Initializable {
                 );
 
 
-                String result = employeeModel.saveEmployee(newEmployee);
+                boolean result = employeeDAOImpl.save(newEmployee);
 
             success = true;
 
@@ -192,8 +189,8 @@ public class SignUpController extends Component implements Initializable {
     private boolean saveUserData(){
         boolean success = false;
         try {
-            UserDto newUser = createUserFromFields();
-            String result = usersModel.saveUser(newUser);
+            User newUser = createUserFromFields();
+            boolean result = usersDAOImpl.save(newUser);
             success = true;
 
         } catch (ClassNotFoundException | SQLException e) {
@@ -259,14 +256,14 @@ public class SignUpController extends Component implements Initializable {
         validateUtil.isValidUsername(signUsernameTxt.getText(), signUsernameTxt);
     }
 
-    private UserDto createUserFromFields() {
+    private User createUserFromFields() {
         String password = null;
         if(signPasswordTxt.getText().equals(signPasswordTxt1.getText())){
             password = signPasswordTxt.getText();
         }else{
             new Alert(Alert.AlertType.ERROR, "Check Confirm Password").show();
         }
-        return new UserDto(
+        return new User(
                 signUserIdTxt.getText().trim(),
                 signUsernameTxt.getText().trim(),
                 password,

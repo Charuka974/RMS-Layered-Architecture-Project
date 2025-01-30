@@ -1,3 +1,32 @@
+
+    /*
+
+    DAO implementation
+
+
+PurchaseItems / created
+
+
+TableAssignments / created
+
+OrderItems / created
+
+
+//Deliveries
+
+//Reviews
+
+Reminder
+
+
+*/
+
+
+
+
+
+
+
 # Gourmet Delight - Restaurant Management System
 
 **Gourmet Delight** is a feature-rich **Restaurant Management System** built using **Java 21**, following the **Model-View-Controller (MVC) architecture**. It employs advanced **Object-Oriented Programming (OOP) concepts**, **JavaFX** for a modern graphical user interface, and **SQL** for reliable data management. This system streamlines restaurant operations by efficiently managing customers, employees, orders, inventory, suppliers, and business insights, while delivering an intuitive user experience.

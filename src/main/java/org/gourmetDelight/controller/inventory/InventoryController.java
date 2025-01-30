@@ -14,13 +14,12 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 
-import static org.gourmetDelight.model.inventory.InventoryModel.getAllItems;
 
 
 
-import org.gourmetDelight.dto.inventory.InventoryItemDto;
+import org.gourmetDelight.entity.InventoryItem;
 
-import org.gourmetDelight.model.inventory.InventoryModel;
+import org.gourmetDelight.dao.custom.impl.inventory.InventoryItemsDAOImpl;
 
 import org.gourmetDelight.util.Navigations;
 import org.gourmetDelight.util.ValidateUtil;
@@ -52,7 +51,7 @@ public class InventoryController implements Initializable {
     private JFXTextField inventoryItemIdTxt;
 
     @FXML
-    private TableView<InventoryItemDto> inventoryItemTable;
+    private TableView<InventoryItem> inventoryItemTable;
 
     @FXML
     private Pane inventoryPane;
@@ -64,12 +63,12 @@ public class InventoryController implements Initializable {
     private JFXTextField itemDescTxt;
 
     @FXML
-    private TableColumn<InventoryItemDto, String> itemIdCol, itemNameCol, itemDescriptionCol;
+    private TableColumn<InventoryItem, String> itemIdCol, itemNameCol, itemDescriptionCol;
 
     @FXML
-    private TableColumn<InventoryItemDto, Double> itemQtyCol;
+    private TableColumn<InventoryItem, Double> itemQtyCol;
     @FXML
-    private TableColumn<InventoryItemDto, String>itemUnitCol;
+    private TableColumn<InventoryItem, String>itemUnitCol;
 
     @FXML
     private JFXTextField itemNameTxt;
@@ -94,11 +93,11 @@ public class InventoryController implements Initializable {
     @FXML
     private ChoiceBox<String> unitChoiceBox;
 
-    private final InventoryModel INVENTORY_MODEL;
+    private final InventoryItemsDAOImpl INVENTORY_MODEL;
     private final ValidateUtil validateUtil;
 
     public InventoryController() {
-        this.INVENTORY_MODEL = new InventoryModel();
+        this.INVENTORY_MODEL = new InventoryItemsDAOImpl();
         this.validateUtil = new ValidateUtil();
     }
 
@@ -142,6 +141,12 @@ public class InventoryController implements Initializable {
         alert.showAndWait();
     }
 
+    private void showAlert(Alert.AlertType alertType , String content) {
+        Alert alert = new Alert(alertType);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+
     private Optional<ButtonType> showConfirmationAlert(String title, String header, String content) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(title);
@@ -151,7 +156,7 @@ public class InventoryController implements Initializable {
     }
 
     private void loadItemTable() throws ClassNotFoundException, SQLException {
-        ObservableList<InventoryItemDto> itemList = FXCollections.observableArrayList(getAllItems());
+        ObservableList<InventoryItem> itemList = FXCollections.observableArrayList(INVENTORY_MODEL.getAll());
         inventoryItemTable.setItems(itemList);
     }
 
@@ -166,8 +171,8 @@ public class InventoryController implements Initializable {
 
     }
 
-    private InventoryItemDto createItemFromFields() {
-        return new InventoryItemDto(
+    private InventoryItem createItemFromFields() {
+        return new InventoryItem(
                 inventoryItemIdTxt.getText().trim(),
                 itemNameTxt.getText().trim(),
                 itemDescTxt.getText().trim(),
@@ -186,7 +191,7 @@ public class InventoryController implements Initializable {
     }
 
     private void setNextItemId() throws SQLException, ClassNotFoundException {
-        inventoryItemIdTxt.setText(INVENTORY_MODEL.suggestNextItemID());
+        inventoryItemIdTxt.setText(INVENTORY_MODEL.suggestNextID());
     }
 
 
@@ -202,14 +207,14 @@ public class InventoryController implements Initializable {
 
     @FXML
     void selectFromTable(MouseEvent event) {
-        InventoryItemDto selectedItem = inventoryItemTable.getSelectionModel().getSelectedItem();
+        InventoryItem selectedItem = inventoryItemTable.getSelectionModel().getSelectedItem();
 
         if (selectedItem != null) {
             populateFields(selectedItem);
         }
     }
 
-    private void populateFields(InventoryItemDto selectedItem) {
+    private void populateFields(InventoryItem selectedItem) {
         inventoryItemIdTxt.setText(selectedItem.getInventoryItemId());
         itemNameTxt.setText(selectedItem.getName());
         itemDescTxt.setText(selectedItem.getDescription());
@@ -229,9 +234,9 @@ public class InventoryController implements Initializable {
         if (!validateInputs()) return;
 
         try {
-            InventoryItemDto newItem = createItemFromFields();
-            String result = INVENTORY_MODEL.addItem(newItem);
-            showAlert(Alert.AlertType.INFORMATION, "Success", "Item Saved", result);
+            InventoryItem newItem = createItemFromFields();
+            boolean result = INVENTORY_MODEL.save(newItem);
+            showAlert(Alert.AlertType.INFORMATION, "Item Saved");
             loadItemTable();
             clearFields();
         } catch (ClassNotFoundException | SQLException e) {
@@ -241,7 +246,7 @@ public class InventoryController implements Initializable {
 
     @FXML
     void updateItem(ActionEvent event) {
-        InventoryItemDto selectedItem = inventoryItemTable.getSelectionModel().getSelectedItem();
+        InventoryItem selectedItem = inventoryItemTable.getSelectionModel().getSelectedItem();
         if (selectedItem == null) {
             showAlert(Alert.AlertType.WARNING, "No Selection", "Please select an item to update.", null);
             return;
@@ -250,9 +255,14 @@ public class InventoryController implements Initializable {
         if (!validateInputs()) return;
 
         try {
-            InventoryItemDto updatedItem = createItemFromFields();
-            String result = INVENTORY_MODEL.updateItem(updatedItem);
-            showAlert(Alert.AlertType.INFORMATION, "Success", "Item Updated", result);
+            InventoryItem updatedItem = createItemFromFields();
+            boolean result = INVENTORY_MODEL.update(updatedItem);
+            if(result){
+                showAlert(Alert.AlertType.INFORMATION,"Item Updated");
+            }else{
+                showAlert(Alert.AlertType.INFORMATION,"Item Update failed");
+            }
+
             loadItemTable();
             clearFields();
         } catch (ClassNotFoundException | SQLException e) {
@@ -281,7 +291,7 @@ public class InventoryController implements Initializable {
 
     @FXML
     void deleteItem(ActionEvent event) {
-        InventoryItemDto selectedItem = inventoryItemTable.getSelectionModel().getSelectedItem();
+        InventoryItem selectedItem = inventoryItemTable.getSelectionModel().getSelectedItem();
         if (selectedItem == null) {
             showAlert(Alert.AlertType.WARNING, "No Selection", "Please select an item to delete.", null);
             return;
@@ -293,8 +303,13 @@ public class InventoryController implements Initializable {
 
         if (result.isPresent() && result.get() == ButtonType.OK) {
             try {
-                String deleteResult = INVENTORY_MODEL.deleteItem(selectedItem.getInventoryItemId());
-                showAlert(Alert.AlertType.INFORMATION, "Success", "Item Deleted", deleteResult);
+                boolean deleteResult = INVENTORY_MODEL.delete(selectedItem.getInventoryItemId());
+                if(deleteResult){
+                    showAlert(Alert.AlertType.INFORMATION,"Item Deleted");
+                }else{
+                    showAlert(Alert.AlertType.INFORMATION,"Item Delete failed");
+                }
+
                 loadItemTable();
                 clearFields();
             } catch (ClassNotFoundException | SQLException e) {
@@ -313,7 +328,7 @@ public class InventoryController implements Initializable {
 
         try {
 
-            InventoryItemDto foundItem = INVENTORY_MODEL.searchItemById(searchId);
+            InventoryItem foundItem = INVENTORY_MODEL.searchById(searchId);
 
             if (foundItem != null) {
                 populateFields(foundItem);
@@ -338,10 +353,10 @@ public class InventoryController implements Initializable {
 
         try {
 
-            ArrayList<InventoryItemDto> foundItems = INVENTORY_MODEL.searchItemByName(searchName);
+            ArrayList<InventoryItem> foundItems = INVENTORY_MODEL.searchByName(searchName);
 
             if (!foundItems.isEmpty()) {
-                ObservableList<InventoryItemDto> itemList = FXCollections.observableArrayList(foundItems);
+                ObservableList<InventoryItem> itemList = FXCollections.observableArrayList(foundItems);
                 inventoryItemTable.setItems(itemList);
                 showAlert(Alert.AlertType.INFORMATION, "Item Found", "Search Results", foundItems.size() + " Item(s) found with the name: " + searchName);
             } else {

@@ -12,9 +12,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import org.gourmetDelight.dto.CustomerDto;
-import org.gourmetDelight.dto.inventory.SupplierDto;
-import org.gourmetDelight.model.inventory.SupplierModel;
+import org.gourmetDelight.entity.Supplier;
+import org.gourmetDelight.dao.custom.impl.inventory.SupplierDAOImpl;
 import org.gourmetDelight.util.KeepUser;
 import org.gourmetDelight.util.ValidateUtil;
 
@@ -32,10 +31,10 @@ public class SuppliersController implements Initializable {
     private JFXButton backToInventoryBtn;
 
     @FXML
-    private TableColumn<SupplierDto, String> supplierIdCol;
+    private TableColumn<Supplier, String> supplierIdCol;
 
     @FXML
-    private TableColumn<SupplierDto, String> supEmailCol, suppAddressCol, suppContactPersonCol, suppNameCol, suppPhoneCol, suppUserIdCol;
+    private TableColumn<Supplier, String> supEmailCol, suppAddressCol, suppContactPersonCol, suppNameCol, suppPhoneCol, suppUserIdCol;
 
     @FXML
     private JFXTextField supplierIdTxt, supplierNameTxt, supplierPhoneTxt, supplierEmailTxt, supplierAddressTxt, supplierContactPersonTxt;
@@ -47,16 +46,16 @@ public class SuppliersController implements Initializable {
     private JFXButton supplierSaveBtn, supplierUpdateBtn, supplierDeleteBtn, supplierIdSearchBtn, supplierNameSearchBtn, loadAllData, clearTXT;
 
     @FXML
-    private TableView<SupplierDto> suppliersTable;
+    private TableView<Supplier> suppliersTable;
 
     @FXML
     private AnchorPane suppliersAnchorPane;
 
-    private final SupplierModel SUPPLIER_MODEL;
+    private final SupplierDAOImpl SUPPLIER_MODEL;
     private final ValidateUtil validateUtil = new ValidateUtil();
 
     public SuppliersController() {
-        this.SUPPLIER_MODEL = new SupplierModel();
+        this.SUPPLIER_MODEL = new SupplierDAOImpl();
     }
 
     @Override
@@ -127,19 +126,19 @@ public class SuppliersController implements Initializable {
     }
 
     private void loadSupplierTable() throws SQLException, ClassNotFoundException {
-        ObservableList<SupplierDto> suppliers = getAllSuppliers();
+        ObservableList<Supplier> suppliers = getAllSuppliers();
         suppliersTable.setItems(suppliers);
         suppliersTable.refresh(); // because table did not show data sometimes
     }
 
-    private ObservableList<SupplierDto> getAllSuppliers() throws SQLException, ClassNotFoundException {
-        ArrayList<SupplierDto> supplierList = SUPPLIER_MODEL.getAll();
+    private ObservableList<Supplier> getAllSuppliers() throws SQLException, ClassNotFoundException {
+        ArrayList<Supplier> supplierList = SUPPLIER_MODEL.getAll();
         return FXCollections.observableArrayList(supplierList);
     }
 
     @FXML
     void selectFromTable(MouseEvent event) {
-        SupplierDto selectedItem = suppliersTable.getSelectionModel().getSelectedItem();
+        Supplier selectedItem = suppliersTable.getSelectionModel().getSelectedItem();
 
         if (selectedItem != null) {
             populateFields(selectedItem);
@@ -151,7 +150,7 @@ public class SuppliersController implements Initializable {
     void saveSupplier(ActionEvent event) {
         try {
             if (validateInputs()) {
-                SupplierDto supplier = new SupplierDto(
+                Supplier supplier = new Supplier(
                         supplierIdTxt.getText().trim(),
                         supplierNameTxt.getText().trim(),
                         supplierContactPersonTxt.getText().trim(),
@@ -161,8 +160,13 @@ public class SuppliersController implements Initializable {
                         supplierUserIdLabel.getText().trim()
                 );
 
-                String result = SUPPLIER_MODEL.saveSupplier(supplier);
-                showAlert(Alert.AlertType.INFORMATION, "Success", "Supplier Saved", result);
+                boolean result = SUPPLIER_MODEL.save(supplier);
+                if(result){
+                    showAlert(Alert.AlertType.INFORMATION, "Supplier Saved");
+                }else{
+                    showAlert(Alert.AlertType.INFORMATION, "Failed to save supplier");
+                }
+
                 loadSupplierTable();
                 clearFields();
             }
@@ -175,7 +179,7 @@ public class SuppliersController implements Initializable {
     void updateSupplier(ActionEvent event) {
         try {
             if (validateInputs()) {
-                SupplierDto supplier = new SupplierDto(
+                Supplier supplier = new Supplier(
                         supplierIdTxt.getText().trim(),
                         supplierNameTxt.getText().trim(),
                         supplierContactPersonTxt.getText().trim(),
@@ -185,8 +189,12 @@ public class SuppliersController implements Initializable {
                         supplierUserIdLabel.getText().trim()
                 );
 
-                String result = SUPPLIER_MODEL.updateSupplier(supplier);
-                showAlert(Alert.AlertType.INFORMATION, "Success", "Supplier Updated", result);
+                boolean result = SUPPLIER_MODEL.update(supplier);
+                if(result){
+                    showAlert(Alert.AlertType.INFORMATION, "Supplier Updated");
+                }else{
+                    showAlert(Alert.AlertType.INFORMATION, "Failed to update supplier");
+                }
                 loadSupplierTable();
                 clearFields();
             }
@@ -197,7 +205,7 @@ public class SuppliersController implements Initializable {
 
     @FXML
     void deleteSupplier(ActionEvent event) {
-        SupplierDto selectedSupplier = suppliersTable.getSelectionModel().getSelectedItem();
+        Supplier selectedSupplier = suppliersTable.getSelectionModel().getSelectedItem();
         if (selectedSupplier == null) {
             showAlert(Alert.AlertType.WARNING, "No Selection", "No Supplier Selected", "Please select a supplier to delete.");
             return;
@@ -208,8 +216,13 @@ public class SuppliersController implements Initializable {
 
         if (result.isPresent() && result.get() == ButtonType.YES) {
             try {
-                String deleteResult = SUPPLIER_MODEL.deleteSupplier(selectedSupplier.getSupplierID());
-                showAlert(Alert.AlertType.INFORMATION, "Success", "Supplier Deleted", deleteResult);
+                boolean deleteResult = SUPPLIER_MODEL.delete(selectedSupplier.getSupplierID());
+                if(deleteResult){
+                    showAlert(Alert.AlertType.INFORMATION, "Supplier Deleted");
+                }else{
+                    showAlert(Alert.AlertType.INFORMATION, "Failed to Delete supplier");
+                }
+
                 loadSupplierTable();
                 clearFields();
             } catch (Exception e) {
@@ -221,7 +234,7 @@ public class SuppliersController implements Initializable {
     @FXML
     void searchSupplierId(ActionEvent event) {
         try {
-            SupplierDto foundSupplier = SUPPLIER_MODEL.searchSupplierById(supplierIdTxt.getText().trim());
+            Supplier foundSupplier = SUPPLIER_MODEL.searchById(supplierIdTxt.getText().trim());
             if (foundSupplier != null) {
                 populateFields(foundSupplier);
             } else {
@@ -238,10 +251,10 @@ public class SuppliersController implements Initializable {
 
             try {
 
-                ArrayList<SupplierDto> foundsuppliers = SUPPLIER_MODEL.searchSuppliersByName(searchName);
+                ArrayList<Supplier> foundsuppliers = SUPPLIER_MODEL.searchByName(searchName);
 
                 if (!foundsuppliers.isEmpty()) {
-                    ObservableList<SupplierDto> supplierList = FXCollections.observableArrayList(foundsuppliers);
+                    ObservableList<Supplier> supplierList = FXCollections.observableArrayList(foundsuppliers);
                     suppliersTable.setItems(supplierList);
                     showAlert(Alert.AlertType.INFORMATION, "Suppliers Found", "Search Results", foundsuppliers.size() + " Suppliers(s) found with the name: " + searchName);
                 } else {
@@ -257,7 +270,7 @@ public class SuppliersController implements Initializable {
 
     }
 
-    private void populateFields(SupplierDto supplier) {
+    private void populateFields(Supplier supplier) {
         supplierIdTxt.setText(supplier.getSupplierID());
         supplierNameTxt.setText(supplier.getName());
         supplierPhoneTxt.setText(supplier.getPhone());
@@ -334,7 +347,7 @@ public class SuppliersController implements Initializable {
     }
 
     public void setNextSupplierId() throws SQLException, ClassNotFoundException {
-        supplierIdTxt.setText(SUPPLIER_MODEL.suggestNextSupplierID());
+        supplierIdTxt.setText(SUPPLIER_MODEL.suggestNextID());
     }
 
         @FXML
@@ -372,6 +385,12 @@ public class SuppliersController implements Initializable {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
         alert.setHeaderText(header);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+
+    private void showAlert(Alert.AlertType alertType,String content) {
+        Alert alert = new Alert(alertType);
         alert.setContentText(content);
         alert.showAndWait();
     }

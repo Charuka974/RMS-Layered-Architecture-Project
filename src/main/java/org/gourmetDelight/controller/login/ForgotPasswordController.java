@@ -8,7 +8,10 @@ import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
-import org.gourmetDelight.model.login.ForgotPasswordModel;
+import org.gourmetDelight.bo.custom.UserBO;
+import org.gourmetDelight.bo.custom.impl.UserBOImpl;
+import org.gourmetDelight.dao.custom.impl.QueryDAOImpl;
+import org.gourmetDelight.dao.custom.impl.employee.UsersDAOImpl;
 
 import org.gourmetDelight.util.EmailUtil;
 import org.gourmetDelight.util.SmsSend;
@@ -80,20 +83,22 @@ public class ForgotPasswordController {
 
     ValidateUtil validateUtil = new ValidateUtil();
 
-    private final ForgotPasswordModel FORGOTPASSWORD_MODEL;
+    private final QueryDAOImpl queryDAOImpl;
+    private final UserBO userBO = new UserBOImpl();
 
     public ForgotPasswordController() {
-        this.FORGOTPASSWORD_MODEL = new ForgotPasswordModel();
+
+        this.queryDAOImpl = new QueryDAOImpl();
     }
 
     @FXML
     void confirmUsername(ActionEvent event) throws SQLException, ClassNotFoundException {
         username = txtUserName.getText();
-        boolean userExists = FORGOTPASSWORD_MODEL.validateUser(username);
+        boolean userExists = userBO.validateUserForgetPassword(username);
 
         if (userExists) {
-            recieverEmail = FORGOTPASSWORD_MODEL.selectEmail(username);
-            phoneNumber = FORGOTPASSWORD_MODEL.selectPhone(username);
+            recieverEmail = queryDAOImpl.selectEmail(username);
+            phoneNumber = queryDAOImpl.selectPhone(username);
 
             recieverEmailLbl.setText(recieverEmail);
             recieverPhoneNumberLbl.setText(phoneNumber);
@@ -180,7 +185,7 @@ public class ForgotPasswordController {
         String newPassword = newPasswordTxt.getText();
         String confirmPassword = newPasswordConfirmTxt.getText();
         if (newPassword.equals(confirmPassword)) {
-            FORGOTPASSWORD_MODEL.setNewPassword(username, newPassword);
+            userBO.setNewPassword(username, newPassword);
         }
         else {
             JOptionPane.showMessageDialog(null, "Your confirm password is Incorrect");

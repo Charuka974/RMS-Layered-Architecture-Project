@@ -8,17 +8,15 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
         import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.stage.Stage;
-import org.gourmetDelight.dto.CustomerDto;
+import org.gourmetDelight.bo.custom.TableBO;
+import org.gourmetDelight.bo.custom.impl.TableBOImpl;
 import org.gourmetDelight.dto.reservations.TablesDto;
-import org.gourmetDelight.model.reservations.TableModel;
+import org.gourmetDelight.dao.custom.impl.reservations.TableDAOImpl;
 import org.gourmetDelight.util.Navigations;
 import org.gourmetDelight.util.ValidateUtil;
 
@@ -83,7 +81,7 @@ public class TableController implements Initializable {
     @FXML
     private JFXButton searchAvailableBtn;
 
-    private final TableModel TABLE_MODEL = new TableModel();
+    TableBO tableBO = new TableBOImpl();
     private final ValidateUtil validateUtil = new ValidateUtil();
 
     @Override
@@ -126,7 +124,7 @@ public class TableController implements Initializable {
     }
 
     private void loadTableData() throws ClassNotFoundException, SQLException {
-        ObservableList<TablesDto> tableList = FXCollections.observableArrayList(TABLE_MODEL.getAll());
+        ObservableList<TablesDto> tableList = FXCollections.observableArrayList(tableBO.getAll());
         tablesTable.setItems(tableList);
     }
 
@@ -142,14 +140,27 @@ public class TableController implements Initializable {
                         tableStatusChoice.getValue()
                 );
 
-                String result = TABLE_MODEL.saveTable(table);
-                showAlert(Alert.AlertType.INFORMATION, "Success", "Table Saved", result);
+                boolean result = tableBO.save(table);
+                if(result){
+                    showAlert(Alert.AlertType.INFORMATION, "Table Saved");
+                }else{
+                    showAlert(Alert.AlertType.INFORMATION, "Failed to save Table");
+                }
                 loadTableData();
                 clearFields();
             }
         } catch (ClassNotFoundException | SQLException e) {
             showAlert(Alert.AlertType.ERROR, "Error", "Failed to save table.", e.getMessage());
         }
+    }
+
+
+
+
+    private void showAlert(Alert.AlertType alertType, String content) {
+        Alert alert = new Alert(alertType);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 
     @FXML
@@ -170,8 +181,12 @@ public class TableController implements Initializable {
                         tableStatusChoice.getValue()
                 );
 
-                String result = TABLE_MODEL.updateTable(updatedTable);
-                showAlert(Alert.AlertType.INFORMATION, "Success", "Table Updated", result);
+                boolean result = tableBO.update(updatedTable);
+                if(result){
+                    showAlert(Alert.AlertType.INFORMATION, "Table Updated");
+                }else{
+                    showAlert(Alert.AlertType.INFORMATION, "Failed to update Table");
+                }
                 loadTableData();
                 clearFields();
             }
@@ -196,8 +211,12 @@ public class TableController implements Initializable {
         Optional<ButtonType> result = confirmation.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             try {
-                String deleteResult = TABLE_MODEL.deleteTable(selectedTable.getTableID());
-                showAlert(Alert.AlertType.INFORMATION, "Success", "Table Deleted", deleteResult);
+                boolean deleteResult = tableBO.delete(selectedTable.getTableID());
+                if(deleteResult){
+                    showAlert(Alert.AlertType.INFORMATION, "Table Deleted");
+                }else{
+                    showAlert(Alert.AlertType.INFORMATION, "Failed to Delete Table");
+                }
                 loadTableData();
                 clearFields();
             } catch (ClassNotFoundException | SQLException e) {
@@ -215,7 +234,7 @@ public class TableController implements Initializable {
         }
 
         try {
-            TablesDto foundTable = TABLE_MODEL.searchTableById(searchId);
+            TablesDto foundTable = tableBO.searchById(searchId);
             if (foundTable != null) {
                 populateFields(foundTable);
             } else {
@@ -293,7 +312,7 @@ public class TableController implements Initializable {
     void searchAvailableTables(ActionEvent event) throws SQLException, ClassNotFoundException {
 
         try {
-            ArrayList<TablesDto> foundTables = TABLE_MODEL.searchTablesByAvailability("Available");
+            ArrayList<TablesDto> foundTables = tableBO.searchTablesByAvailability("Available");
 
             if (!foundTables.isEmpty()) {
                 ObservableList<TablesDto> tableList = FXCollections.observableArrayList(foundTables);
@@ -358,7 +377,7 @@ public class TableController implements Initializable {
     }
 
     private void suggestNextTableID() throws SQLException, ClassNotFoundException {
-        tableIdTxt.setText(TABLE_MODEL.suggestNextTableID());
+        tableIdTxt.setText(tableBO.suggestNextID());
     }
 
 

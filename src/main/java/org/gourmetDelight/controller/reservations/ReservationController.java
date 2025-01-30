@@ -12,11 +12,13 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import org.gourmetDelight.bo.custom.CustomerBO;
+import org.gourmetDelight.bo.custom.ReservationBO;
+import org.gourmetDelight.bo.custom.impl.CustomerBOImpl;
+import org.gourmetDelight.bo.custom.impl.ReservationBOImpl;
 import org.gourmetDelight.dto.CustomerDto;
 import org.gourmetDelight.dto.reservations.ReservationDto;
-import org.gourmetDelight.dto.reservations.TablesDto;
-import org.gourmetDelight.model.CustomerModel;
-import org.gourmetDelight.model.reservations.ReservationModel;
+import org.gourmetDelight.dao.custom.impl.CustomerDAOImpl;
 import org.gourmetDelight.util.DateAndTime;
 import org.gourmetDelight.util.ValidateUtil;
 
@@ -82,7 +84,7 @@ public class ReservationController implements Initializable {
     @FXML
     private JFXButton resSaveBtn, resUpdateBtn, resDeleteBtn, loadAllData, clearTXT, reservationIdSearchBtn, cusNameSearchBtn;
 
-    private final ReservationModel RESERVATION_MODEL = new ReservationModel();
+    ReservationBO reservationBO = new ReservationBOImpl();
     private final ValidateUtil validateUtil = new ValidateUtil();
     DateAndTime dateAndTime = new DateAndTime();
 
@@ -161,7 +163,7 @@ public class ReservationController implements Initializable {
 
         try {
             // Retrieve all reservations for the customer
-            ArrayList<ReservationDto> foundReservations = RESERVATION_MODEL.searchReservationsByCustomerID(customerID);
+            ArrayList<ReservationDto> foundReservations = reservationBO.searchReservationsByCustomerID(customerID);
             if (!foundReservations.isEmpty()) {
                 // Populate the TableView with the search results
                 ObservableList<ReservationDto> reservationList = FXCollections.observableArrayList(foundReservations);
@@ -176,7 +178,7 @@ public class ReservationController implements Initializable {
 
 
     private void loadReservationData() throws ClassNotFoundException, SQLException {
-        ObservableList<ReservationDto> reservationList = FXCollections.observableArrayList(RESERVATION_MODEL.getAllReservations());
+        ObservableList<ReservationDto> reservationList = FXCollections.observableArrayList(reservationBO.getAllReservationDetails());
         reservationTable.setItems(reservationList);
     }
 
@@ -209,6 +211,9 @@ public class ReservationController implements Initializable {
 
     @FXML
     void saveReservation(ActionEvent event) {
+        if (assignmentTimeTxt.getText().trim().isEmpty()){
+            assignmentTimeTxt.setText("00:00:00");
+        }
 
 
         try {
@@ -229,8 +234,12 @@ public class ReservationController implements Initializable {
                         tableID
                 );
 
-                String result = RESERVATION_MODEL.saveReservation(reservation, tableID, dateTimeFormat());
-                showAlert(Alert.AlertType.INFORMATION, "Success", "Reservation Saved", result);
+                boolean result = reservationBO.save(reservation, tableID, dateTimeFormat());
+                if(result){
+                    showAlert(Alert.AlertType.INFORMATION, "Reservation Saved");
+                }else{
+                    showAlert(Alert.AlertType.INFORMATION, "Failed to Save Reservation");
+                }
                 loadReservationData();
                 clearFields();
             }
@@ -242,6 +251,9 @@ public class ReservationController implements Initializable {
 
     @FXML
     void updateReservation(ActionEvent event) {
+        if (assignmentTimeTxt.getText().trim().isEmpty()){
+            assignmentTimeTxt.setText("00:00:00");
+        }
         ReservationDto selectedReservation = reservationTable.getSelectionModel().getSelectedItem();
         String specialReq = null;
         if (specialReqTxt.getText() != null && !specialReqTxt.getText().trim().isEmpty()) {
@@ -272,8 +284,12 @@ public class ReservationController implements Initializable {
                         tableID
                 );
 
-                String result = RESERVATION_MODEL.updateReservation(updatedReservation, tableID, dateTimeFormat());
-                showAlert(Alert.AlertType.INFORMATION, "Success", "Reservation Updated", result);
+                boolean result = reservationBO.update(updatedReservation, tableID, dateTimeFormat());
+                if(result){
+                    showAlert(Alert.AlertType.INFORMATION, "Reservation Updated");
+                }else{
+                    showAlert(Alert.AlertType.INFORMATION, "Failed to Update Reservation");
+                }
                 loadReservationData();
                 clearFields();
             }
@@ -299,14 +315,27 @@ public class ReservationController implements Initializable {
         Optional<ButtonType> result = confirmation.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             try {
-                String deleteResult = RESERVATION_MODEL.deleteReservation(selectedReservation.getReservationID());
-                showAlert(Alert.AlertType.INFORMATION, "Success", "Reservation Deleted", deleteResult);
+                boolean deleteResult = reservationBO.delete(selectedReservation.getReservationID());
+                if(deleteResult){
+                    showAlert(Alert.AlertType.INFORMATION, "Reservation Deleted");
+                }else{
+                    showAlert(Alert.AlertType.INFORMATION, "Failed to Delete Reservation");
+                }
+
                 loadReservationData();
                 clearFields();
             } catch (ClassNotFoundException | SQLException e) {
                 showAlert(Alert.AlertType.ERROR, "Error", "Failed to delete reservation.", e.getMessage());
             }
         }
+    }
+
+
+
+    private void showAlert(Alert.AlertType alertType, String content) {
+        Alert alert = new Alert(alertType);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 
     @FXML
@@ -319,7 +348,7 @@ public class ReservationController implements Initializable {
         }
 
         try {
-            ReservationDto foundReservation = RESERVATION_MODEL.searchReservationById(searchId);
+            ReservationDto foundReservation = reservationBO.searchById(searchId);
             if (foundReservation != null) {
                 populateFields(foundReservation);
 
@@ -333,8 +362,7 @@ public class ReservationController implements Initializable {
 
 
     private void populateFields(ReservationDto reservation) throws SQLException, ClassNotFoundException {
-        ReservationModel reservationModel = new ReservationModel();
-        CustomerModel customerModel = new CustomerModel();
+        CustomerDAOImpl customerDAOImpl = new CustomerDAOImpl();
 
         reservationIdTxt.setText(reservation.getReservationID());
         cusIdTxt.setText(reservation.getCustomerID());
@@ -343,8 +371,8 @@ public class ReservationController implements Initializable {
         specialReqTxt.setText(reservation.getSpecialRequests());
         reservationStatusChoice.setValue(reservation.getStatus());
         tableIdLabel.setText(reservation.getTableID());
-        cusNameTxt.setText(customerModel.searchCustomerById(reservation.getCustomerID()).getCusName());
-        setDateTimeFields(reservationModel.findDateTime(reservation.getReservationID()));
+        cusNameTxt.setText(customerDAOImpl.searchById(reservation.getCustomerID()).getCusName());
+        setDateTimeFields(reservationBO.findDateTime(reservation.getReservationID()));
 
         resSaveBtn.setDisable(true);
         resUpdateBtn.setDisable(false);
@@ -403,7 +431,7 @@ public class ReservationController implements Initializable {
     }
 
     private void suggestNextReservationID() throws SQLException, ClassNotFoundException {
-        reservationIdTxt.setText(RESERVATION_MODEL.suggestNextReservationID());
+        reservationIdTxt.setText(reservationBO.suggestNextID());
     }
 
     public void setTableId(String tableId) {
@@ -437,7 +465,8 @@ public class ReservationController implements Initializable {
 
     @FXML
     void searchCustomerName(ActionEvent event) throws SQLException, ClassNotFoundException {
-        CustomerModel customerModel = new CustomerModel();
+        //CustomerDAOImpl customerDAOImpl = new CustomerDAOImpl();
+        CustomerBO customerBO = new CustomerBOImpl();
 
         String searchName = cusNameTxt.getText().trim();
         if (searchName.isEmpty()) {
@@ -447,7 +476,7 @@ public class ReservationController implements Initializable {
 
         try {
 
-            ArrayList<CustomerDto> foundCustomers = customerModel.searchCustomersByName(searchName);
+            ArrayList<CustomerDto> foundCustomers = customerBO.searchByName(searchName);
 
             if (!foundCustomers.isEmpty()) {
                 for (CustomerDto customer : foundCustomers) {

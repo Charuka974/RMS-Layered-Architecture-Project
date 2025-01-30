@@ -14,8 +14,11 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import org.gourmetDelight.bo.custom.CustomerBO;
+import org.gourmetDelight.bo.custom.impl.CustomerBOImpl;
 import org.gourmetDelight.dto.CustomerDto;
-import org.gourmetDelight.model.CustomerModel;
+import org.gourmetDelight.dao.custom.impl.CustomerDAOImpl;
+import org.gourmetDelight.entity.Customer;
 import org.gourmetDelight.util.KeepUser;
 import org.gourmetDelight.util.ValidateUtil;
 
@@ -93,11 +96,12 @@ public class CustomerController implements Initializable {
     @FXML
     private TableView<CustomerDto> customerTable;
 
-    private final CustomerModel CUSTOMER_MODEL;
+    //private final CustomerDAOImpl CUSTOMER_MODEL;
     ValidateUtil validateUtil = new ValidateUtil();
+    CustomerBO customerBO = new CustomerBOImpl();
 
     public CustomerController() {
-        this.CUSTOMER_MODEL = new CustomerModel();
+        //this.CUSTOMER_MODEL = new CustomerDAOImpl();
         this.validateUtil = new ValidateUtil();
     }
 
@@ -186,7 +190,7 @@ public class CustomerController implements Initializable {
 
 
     public ObservableList<CustomerDto> getAllCustomers() throws ClassNotFoundException, SQLException {
-        ArrayList<CustomerDto> customerList = CUSTOMER_MODEL.getAll();
+        ArrayList<CustomerDto> customerList = customerBO.getAll();
         return FXCollections.observableArrayList(customerList);
     }
 
@@ -248,8 +252,12 @@ public class CustomerController implements Initializable {
                 );
 
                 // Save customer to the database
-                String result = CUSTOMER_MODEL.saveCustomer(newCustomer);
-                showAlert(Alert.AlertType.INFORMATION, "Success", "Customer Saved", result);
+                boolean result = customerBO.save(newCustomer);
+                if(result){
+                    showAlert(Alert.AlertType.INFORMATION, "Customer Saved");
+                }else{
+                    showAlert(Alert.AlertType.INFORMATION, "Failed to save Customer");
+                }
 
                 // Refresh the TableView
                 loadCustomerTable();
@@ -260,6 +268,15 @@ public class CustomerController implements Initializable {
         } catch (ClassNotFoundException | SQLException e) {
             showAlert(Alert.AlertType.ERROR, "Error", "Failed to save customer.", e.getMessage());
         }
+    }
+
+
+
+
+    private void showAlert(Alert.AlertType alertType, String content) {
+        Alert alert = new Alert(alertType);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 
 
@@ -285,8 +302,12 @@ public class CustomerController implements Initializable {
                 );
 
                 // Update customer in the database
-                String result = CUSTOMER_MODEL.updateCustomer(updatedCustomer);
-                showAlert(Alert.AlertType.INFORMATION, "Success", "Customer Updated", result);
+                boolean result = customerBO.update(updatedCustomer);
+                if(result){
+                    showAlert(Alert.AlertType.INFORMATION, "Customer Updated");
+                }else{
+                    showAlert(Alert.AlertType.INFORMATION, "Failed to update Customer");
+                }
 
                 // Refresh the TableView
                 loadCustomerTable();
@@ -318,8 +339,12 @@ public class CustomerController implements Initializable {
         if (result.isPresent() && result.get() == ButtonType.OK) {
             try {
                 // Delete customer from the database
-                String deleteResult = CUSTOMER_MODEL.deleteCustomer(selectedCustomer.getCustomerID());
-                showAlert(Alert.AlertType.INFORMATION, "Success", "Customer Deleted", deleteResult);
+                boolean deleteResult = customerBO.delete(selectedCustomer.getCustomerID());
+                if(deleteResult){
+                    showAlert(Alert.AlertType.INFORMATION, "Customer Deleted");
+                }else{
+                    showAlert(Alert.AlertType.INFORMATION, "Failed to Delete Customer");
+                }
 
                 // Refresh the TableView
                 loadCustomerTable();
@@ -343,7 +368,7 @@ public class CustomerController implements Initializable {
 
         try {
 
-            CustomerDto foundCustomer = CUSTOMER_MODEL.searchCustomerById(searchId);
+            CustomerDto foundCustomer = customerBO.searchById(searchId);
 
             if (foundCustomer != null) {
                 // Populate TextFields with found customer data
@@ -370,7 +395,7 @@ public class CustomerController implements Initializable {
 
         try {
 
-            ArrayList<CustomerDto> foundCustomers = CUSTOMER_MODEL.searchCustomersByName(searchName);
+            ArrayList<CustomerDto> foundCustomers = customerBO.searchByName(searchName);
 
             if (!foundCustomers.isEmpty()) {
                 ObservableList<CustomerDto> customerList = FXCollections.observableArrayList(foundCustomers);
@@ -389,7 +414,7 @@ public class CustomerController implements Initializable {
     }
 
     private void setNextCustomerID() throws SQLException, ClassNotFoundException {
-        cusIdTxt.setText(CUSTOMER_MODEL.suggestNextCustomerID());
+        cusIdTxt.setText(customerBO.suggestNextID());
     }
 
 

@@ -14,7 +14,10 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
-import org.gourmetDelight.model.login.LogInModel;
+import org.gourmetDelight.bo.custom.UserBO;
+import org.gourmetDelight.bo.custom.impl.UserBOImpl;
+import org.gourmetDelight.dao.custom.impl.QueryDAOImpl;
+import org.gourmetDelight.dao.custom.impl.employee.UsersDAOImpl;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -62,6 +65,12 @@ public class LogInController {
     @FXML
     private Pane loginBodyPane;
 
+    private final QueryDAOImpl queryDAOImpl;
+    private final UserBO userBO = new UserBOImpl();
+
+    public LogInController() {
+        this.queryDAOImpl = new QueryDAOImpl();
+    }
 
     @FXML
     void logIn(ActionEvent event) throws IOException {
@@ -148,11 +157,8 @@ public class LogInController {
         loginBodyPane.getChildren().add(FXMLLoader.load(this.getClass().getResource("/view/login/SignUpPanel.fxml")));
     }
 
-    private final LogInModel LOGIN_MODEL;
 
-    public LogInController() {
-        this.LOGIN_MODEL = new LogInModel();
-    }
+
 
     public void logInValidation(String inputUserName, String inputPassword) {
 
@@ -227,15 +233,15 @@ public class LogInController {
     }
 
     public String selectPosition(String username, String password) throws ClassNotFoundException, SQLException {
-        return LOGIN_MODEL.getRole(username, password);
+        return queryDAOImpl.getRole(username, password);
     }
 
     public boolean validateUser(String username, String password) throws ClassNotFoundException, SQLException {
-        return LOGIN_MODEL.validateUser(username, password);
+        return userBO.validateUser(username, password);
     }
 
     public String getUserID(String username, String password) throws ClassNotFoundException, SQLException {
-        return LOGIN_MODEL.getUserID(username, password);
+        return userBO.getUserID(username, password);
     }
 
 
