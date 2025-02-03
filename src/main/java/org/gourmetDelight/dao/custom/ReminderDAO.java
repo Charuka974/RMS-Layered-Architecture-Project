@@ -17,11 +17,9 @@ public interface ReminderDAO extends CrudDAO {
 
     public void checkAndPrintReminder();
 
-    private void sendInventoryEmail() throws SQLException, ClassNotFoundException{}
+    public void sendInventoryEmail() throws SQLException, ClassNotFoundException;
 
-    private void updateStartingDate(String reminderID, LocalDateTime newStartingDate){}
-
-    public ArrayList<String> selectAllManagerEmails() throws SQLException, ClassNotFoundException;
+    public void updateStartingDate(String reminderID, LocalDateTime newStartingDate);
 
     public void showAlert(Alert.AlertType alertType, String title, String header, String content);
 

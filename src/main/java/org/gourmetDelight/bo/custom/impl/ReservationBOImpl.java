@@ -5,8 +5,11 @@ import org.gourmetDelight.dao.custom.QueryDAO;
 import org.gourmetDelight.dao.custom.ReservationDAO;
 import org.gourmetDelight.dao.custom.impl.QueryDAOImpl;
 import org.gourmetDelight.dao.custom.impl.reservations.ReservationDAOImpl;
+import org.gourmetDelight.dto.CustomerDto;
 import org.gourmetDelight.dto.reservations.ReservationDto;
+import org.gourmetDelight.entity.Customer;
 import org.gourmetDelight.entity.Reservation;
+import org.gourmetDelight.entity.custom.ReservationCustom;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -71,7 +74,7 @@ public class ReservationBOImpl implements ReservationBO {
 
 
     public ReservationDto searchById(String id) throws ClassNotFoundException, SQLException {
-        ReservationDto reservation = queryDAO.searchById(id);
+        ReservationCustom reservation = queryDAO.searchById(id);
         ReservationDto dto = new ReservationDto();
         dto.setReservationID(reservation.getReservationID());
         dto.setCustomerID(reservation.getCustomerID());
@@ -88,18 +91,51 @@ public class ReservationBOImpl implements ReservationBO {
     }
 
     public ArrayList<ReservationDto> searchReservationsByCustomerID(String customerID) throws ClassNotFoundException, SQLException {
-        return queryDAO.searchReservationsByCustomerID(customerID);
+        ArrayList<ReservationCustom> reservations = queryDAO.searchReservationsByCustomerID(customerID);
+        ArrayList<ReservationDto> reservationDTOs = new ArrayList<>();
+        for (ReservationCustom reservation : reservations) {
+            ReservationDto dto = new ReservationDto();
+            dto.setReservationID(reservation.getReservationID());
+            dto.setCustomerID(reservation.getCustomerID());
+            dto.setReservationDate(reservation.getReservationDate());
+            dto.setNumberOfGuests(reservation.getNumberOfGuests());
+            dto.setSpecialRequests(reservation.getSpecialRequests());
+            dto.setStatus(reservation.getStatus());
+            reservationDTOs.add(dto);
+        }
+        return reservationDTOs;
     }
 
     public ReservationDto searchReservationsByReserveID(String id) throws ClassNotFoundException, SQLException {
-        return queryDAO.searchById(id);
+        ReservationCustom reservation = queryDAO.searchById(id);
+        ReservationDto dto = new ReservationDto();
+        dto.setReservationID(reservation.getReservationID());
+        dto.setCustomerID(reservation.getCustomerID());
+        dto.setReservationDate(reservation.getReservationDate());
+        dto.setNumberOfGuests(reservation.getNumberOfGuests());
+        dto.setSpecialRequests(reservation.getSpecialRequests());
+        dto.setStatus(reservation.getStatus());
+
+        return dto;
     }
 
 
 
 
     public ArrayList<ReservationDto> getAllReservationDetails() throws ClassNotFoundException, SQLException {
-        return queryDAO.getAllReservationDetails();
+        ArrayList<ReservationCustom> reservations = queryDAO.getAllReservationDetails();
+        ArrayList<ReservationDto> reservationDTOs = new ArrayList<>();
+        for (ReservationCustom reservation : reservations) {
+            ReservationDto dto = new ReservationDto();
+            dto.setReservationID(reservation.getReservationID());
+            dto.setCustomerID(reservation.getCustomerID());
+            dto.setReservationDate(reservation.getReservationDate());
+            dto.setNumberOfGuests(reservation.getNumberOfGuests());
+            dto.setSpecialRequests(reservation.getSpecialRequests());
+            dto.setStatus(reservation.getStatus());
+            reservationDTOs.add(dto);
+        }
+        return reservationDTOs;
     }
 
 

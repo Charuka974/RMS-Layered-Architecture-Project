@@ -1,7 +1,9 @@
 package org.gourmetDelight.dao.custom.impl.home;
 
 import javafx.scene.control.Alert;
+import org.gourmetDelight.dao.custom.EmployeeDAO;
 import org.gourmetDelight.dao.custom.ReminderDAO;
+import org.gourmetDelight.dao.custom.impl.employee.EmployeeDAOImpl;
 import org.gourmetDelight.db.DBConnection;
 import org.gourmetDelight.util.CrudUtil;
 import org.gourmetDelight.util.DateAndTime;
@@ -16,6 +18,7 @@ import java.util.ArrayList;
 public class ReminderDAOImpl implements ReminderDAO {
 
     DateAndTime dateAndTime = new DateAndTime();
+    EmployeeDAO employeeDAO = new EmployeeDAOImpl();
 
     // ------------Check Time-------------------
     public void checkAndPrintReminder() {
@@ -56,14 +59,13 @@ public class ReminderDAOImpl implements ReminderDAO {
         }
     }
 
-    private void sendInventoryEmail() throws SQLException, ClassNotFoundException {
-        selectAllManagerEmails();
-
+    public void sendInventoryEmail() throws SQLException, ClassNotFoundException {
+        employeeDAO.selectAllManagerEmails();
 
     }
 
 
-    private void updateStartingDate(String reminderID, LocalDateTime newStartingDate) {
+    public void updateStartingDate(String reminderID, LocalDateTime newStartingDate) {
         String updateSql = "UPDATE Reminder SET StartingDate = ? WHERE ReminderID = ?";
 
         try {
@@ -82,32 +84,6 @@ public class ReminderDAOImpl implements ReminderDAO {
             e.printStackTrace();
         }
     }
-
-
-    public ArrayList<String> selectAllManagerEmails() throws SQLException, ClassNotFoundException {
-
-        ArrayList<String> emails = new ArrayList<>();
-
-        java.sql.Connection connection = DBConnection.getInstance().getConnection();
-        String sql = "SELECT e.Email " +
-                "FROM Employees e " +
-                "WHERE e.Position = 'Manager'";
-
-        try (PreparedStatement statement = connection.prepareStatement(sql);
-             ResultSet result = statement.executeQuery()) {
-
-            while (result.next()) {
-                emails.add(result.getString("Email"));
-                //EmailUtil.sendEmail(result.getString("Email"),"Gourmet Delight Inventory Reminder", "Please Check The Inventory and Update The Inventory");
-                System.out.println("Inventory Email Sent");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return emails;
-    }
-
 
 
 

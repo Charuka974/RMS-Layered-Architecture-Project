@@ -32,6 +32,7 @@ import org.gourmetDelight.dao.custom.impl.orders.PaymentDAOImpl;
 import org.gourmetDelight.dao.custom.impl.reservations.ReservationDAOImpl;
 import org.gourmetDelight.dao.custom.impl.reservations.TableDAOImpl;
 import org.gourmetDelight.entity.MenuItem;
+import org.gourmetDelight.entity.custom.ReservationCustom;
 import org.gourmetDelight.util.DateAndTime;
 import org.gourmetDelight.util.KeepUser;
 import org.gourmetDelight.util.Navigations;
@@ -1007,7 +1008,7 @@ public class OrdersController implements Initializable {
 
             try {
 
-                ReservationDto orderReservation = queryDAO.searchReservationsByReserveID(reservationId);
+                ReservationCustom orderReservation = queryDAO.searchReservationsByReserveID(reservationId);
                 if (orderReservation == null) {
                     System.out.println("Reservation not found for ID: " + reservationId);
                     return;

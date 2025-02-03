@@ -5,9 +5,9 @@ import javafx.collections.ObservableList;
 import org.gourmetDelight.dao.SuperDAO;
 import org.gourmetDelight.dao.custom.QueryDAO;
 import org.gourmetDelight.db.DBConnection;
-import org.gourmetDelight.dto.reservations.ReservationDto;
 import org.gourmetDelight.dto.tm.StockPurchaseTM;
 import org.gourmetDelight.entity.Reservation;
+import org.gourmetDelight.entity.custom.ReservationCustom;
 import org.gourmetDelight.util.CrudUtil;
 
 import java.sql.PreparedStatement;
@@ -152,7 +152,7 @@ public class QueryDAOImpl implements QueryDAO {
 
 
     // Reservation -----------------------------------------------------------------------------------------------------
-    public ReservationDto searchById(String reservationID) throws ClassNotFoundException, SQLException {
+    public ReservationCustom searchById(String reservationID) throws ClassNotFoundException, SQLException {
         String sql = "SELECT r.ReservationID, r.CustomerID, r.ReservationDate, r.NumberOfGuests, " +
                 "r.SpecialRequests, r.Status, ta.TableID " +
                 "FROM Reservations r " +
@@ -162,7 +162,7 @@ public class QueryDAOImpl implements QueryDAO {
         ResultSet resultSet = CrudUtil.execute(sql, reservationID);
 
         if (resultSet.next()) {
-            ReservationDto reservation = new ReservationDto(
+            ReservationCustom reservation = new ReservationCustom(
                     resultSet.getString("ReservationID"),
                     resultSet.getString("CustomerID"),
                     resultSet.getDate("ReservationDate").toLocalDate(),
@@ -202,7 +202,7 @@ public class QueryDAOImpl implements QueryDAO {
         return null;
     }
 
-    public ArrayList<ReservationDto> searchReservationsByCustomerID(String customerID) throws ClassNotFoundException, SQLException {
+    public ArrayList<ReservationCustom> searchReservationsByCustomerID(String customerID) throws ClassNotFoundException, SQLException {
         // SQL query to fetch all reservations for the given customer ID
         String sql = "SELECT r.ReservationID, r.CustomerID, r.ReservationDate, r.NumberOfGuests, " +
                 "r.SpecialRequests, r.Status, ta.TableID " +
@@ -214,11 +214,11 @@ public class QueryDAOImpl implements QueryDAO {
         ResultSet resultSet = CrudUtil.execute(sql, customerID);
 
         // List to store reservations for the customer
-        ArrayList<ReservationDto> reservationList = new ArrayList<>();
+        ArrayList<ReservationCustom> reservationList = new ArrayList<>();
 
         // Iterate through the result set and populate the reservationList
         while (resultSet.next()) {
-            ReservationDto reservation = new ReservationDto(
+            ReservationCustom reservation = new ReservationCustom(
                     resultSet.getString("ReservationID"),
                     resultSet.getString("CustomerID"),
                     resultSet.getDate("ReservationDate").toLocalDate(),
@@ -237,7 +237,7 @@ public class QueryDAOImpl implements QueryDAO {
         return reservationList;
     }
 
-    public ReservationDto searchReservationsByReserveID(String resId) throws ClassNotFoundException, SQLException {
+    public ReservationCustom searchReservationsByReserveID(String resId) throws ClassNotFoundException, SQLException {
         // SQL query to fetch all reservations for the given reservation ID
         String sql = "SELECT r.ReservationID, r.CustomerID, r.ReservationDate, r.NumberOfGuests, " +
                 "r.SpecialRequests, r.Status, ta.TableID " +
@@ -250,7 +250,7 @@ public class QueryDAOImpl implements QueryDAO {
 
         // Move the cursor to the first row
         if (resultSet.next()) {  // Ensure there's a record before accessing data
-            return new ReservationDto(
+            return new ReservationCustom(
                     resultSet.getString("ReservationID"),
                     resultSet.getString("CustomerID"),
                     resultSet.getDate("ReservationDate").toLocalDate(),
@@ -268,17 +268,17 @@ public class QueryDAOImpl implements QueryDAO {
 
 
 
-    public ArrayList<ReservationDto> getAllReservationDetails() throws ClassNotFoundException, SQLException {
+    public ArrayList<ReservationCustom> getAllReservationDetails() throws ClassNotFoundException, SQLException {
         String sql = "SELECT r.ReservationID, r.CustomerID, r.ReservationDate, r.NumberOfGuests, " +
                 "r.SpecialRequests, r.Status, ta.TableID " +
                 "FROM Reservations r " +
                 "LEFT JOIN TableAssignments ta ON r.ReservationID = ta.ReservationID";
 
         ResultSet resultSet = CrudUtil.execute(sql);
-        ArrayList<ReservationDto> reservations = new ArrayList<>();
+        ArrayList<ReservationCustom> reservations = new ArrayList<>();
 
         while (resultSet.next()) {
-            ReservationDto reservation = new ReservationDto(
+            ReservationCustom reservation = new ReservationCustom(
                     resultSet.getString("ReservationID"),
                     resultSet.getString("CustomerID"),
                     resultSet.getDate("ReservationDate").toLocalDate(),

@@ -15,12 +15,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 
 
-
-
-import org.gourmetDelight.entity.InventoryItem;
-
-import org.gourmetDelight.dao.custom.impl.inventory.InventoryItemsDAOImpl;
-
+import org.gourmetDelight.bo.custom.InventoryItemsBO;
+import org.gourmetDelight.bo.custom.impl.InventoryItemsBOImpl;
+import org.gourmetDelight.dto.inventory.InventoryItemDto;
 import org.gourmetDelight.util.Navigations;
 import org.gourmetDelight.util.ValidateUtil;
 
@@ -34,6 +31,8 @@ import java.util.ResourceBundle;
 
 
 public class InventoryController implements Initializable {
+
+    InventoryItemsBO inventoryItemsBO = new InventoryItemsBOImpl();
 
     @FXML
     private JFXButton ItemIdSearchBtn;
@@ -51,7 +50,7 @@ public class InventoryController implements Initializable {
     private JFXTextField inventoryItemIdTxt;
 
     @FXML
-    private TableView<InventoryItem> inventoryItemTable;
+    private TableView<InventoryItemDto> inventoryItemTable;
 
     @FXML
     private Pane inventoryPane;
@@ -63,12 +62,12 @@ public class InventoryController implements Initializable {
     private JFXTextField itemDescTxt;
 
     @FXML
-    private TableColumn<InventoryItem, String> itemIdCol, itemNameCol, itemDescriptionCol;
+    private TableColumn<InventoryItemDto, String> itemIdCol, itemNameCol, itemDescriptionCol;
 
     @FXML
-    private TableColumn<InventoryItem, Double> itemQtyCol;
+    private TableColumn<InventoryItemDto, Double> itemQtyCol;
     @FXML
-    private TableColumn<InventoryItem, String>itemUnitCol;
+    private TableColumn<InventoryItemDto, String>itemUnitCol;
 
     @FXML
     private JFXTextField itemNameTxt;
@@ -93,11 +92,9 @@ public class InventoryController implements Initializable {
     @FXML
     private ChoiceBox<String> unitChoiceBox;
 
-    private final InventoryItemsDAOImpl INVENTORY_MODEL;
     private final ValidateUtil validateUtil;
 
     public InventoryController() {
-        this.INVENTORY_MODEL = new InventoryItemsDAOImpl();
         this.validateUtil = new ValidateUtil();
     }
 
@@ -156,7 +153,7 @@ public class InventoryController implements Initializable {
     }
 
     private void loadItemTable() throws ClassNotFoundException, SQLException {
-        ObservableList<InventoryItem> itemList = FXCollections.observableArrayList(INVENTORY_MODEL.getAll());
+        ObservableList<InventoryItemDto> itemList = FXCollections.observableArrayList(inventoryItemsBO.getAll());
         inventoryItemTable.setItems(itemList);
     }
 
@@ -171,8 +168,8 @@ public class InventoryController implements Initializable {
 
     }
 
-    private InventoryItem createItemFromFields() {
-        return new InventoryItem(
+    private InventoryItemDto createItemFromFields() {
+        return new InventoryItemDto(
                 inventoryItemIdTxt.getText().trim(),
                 itemNameTxt.getText().trim(),
                 itemDescTxt.getText().trim(),
@@ -191,7 +188,7 @@ public class InventoryController implements Initializable {
     }
 
     private void setNextItemId() throws SQLException, ClassNotFoundException {
-        inventoryItemIdTxt.setText(INVENTORY_MODEL.suggestNextID());
+        inventoryItemIdTxt.setText(inventoryItemsBO.suggestNextID());
     }
 
 
@@ -207,14 +204,14 @@ public class InventoryController implements Initializable {
 
     @FXML
     void selectFromTable(MouseEvent event) {
-        InventoryItem selectedItem = inventoryItemTable.getSelectionModel().getSelectedItem();
+        InventoryItemDto selectedItem = inventoryItemTable.getSelectionModel().getSelectedItem();
 
         if (selectedItem != null) {
             populateFields(selectedItem);
         }
     }
 
-    private void populateFields(InventoryItem selectedItem) {
+    private void populateFields(InventoryItemDto selectedItem) {
         inventoryItemIdTxt.setText(selectedItem.getInventoryItemId());
         itemNameTxt.setText(selectedItem.getName());
         itemDescTxt.setText(selectedItem.getDescription());
@@ -234,8 +231,8 @@ public class InventoryController implements Initializable {
         if (!validateInputs()) return;
 
         try {
-            InventoryItem newItem = createItemFromFields();
-            boolean result = INVENTORY_MODEL.save(newItem);
+            InventoryItemDto newItem = createItemFromFields();
+            boolean result = inventoryItemsBO.save(newItem);
             showAlert(Alert.AlertType.INFORMATION, "Item Saved");
             loadItemTable();
             clearFields();
@@ -246,7 +243,7 @@ public class InventoryController implements Initializable {
 
     @FXML
     void updateItem(ActionEvent event) {
-        InventoryItem selectedItem = inventoryItemTable.getSelectionModel().getSelectedItem();
+        InventoryItemDto selectedItem = inventoryItemTable.getSelectionModel().getSelectedItem();
         if (selectedItem == null) {
             showAlert(Alert.AlertType.WARNING, "No Selection", "Please select an item to update.", null);
             return;
@@ -255,8 +252,8 @@ public class InventoryController implements Initializable {
         if (!validateInputs()) return;
 
         try {
-            InventoryItem updatedItem = createItemFromFields();
-            boolean result = INVENTORY_MODEL.update(updatedItem);
+            InventoryItemDto updatedItem = createItemFromFields();
+            boolean result = inventoryItemsBO.update(updatedItem);
             if(result){
                 showAlert(Alert.AlertType.INFORMATION,"Item Updated");
             }else{
@@ -291,7 +288,7 @@ public class InventoryController implements Initializable {
 
     @FXML
     void deleteItem(ActionEvent event) {
-        InventoryItem selectedItem = inventoryItemTable.getSelectionModel().getSelectedItem();
+        InventoryItemDto selectedItem = inventoryItemTable.getSelectionModel().getSelectedItem();
         if (selectedItem == null) {
             showAlert(Alert.AlertType.WARNING, "No Selection", "Please select an item to delete.", null);
             return;
@@ -303,7 +300,7 @@ public class InventoryController implements Initializable {
 
         if (result.isPresent() && result.get() == ButtonType.OK) {
             try {
-                boolean deleteResult = INVENTORY_MODEL.delete(selectedItem.getInventoryItemId());
+                boolean deleteResult = inventoryItemsBO.delete(selectedItem.getInventoryItemId());
                 if(deleteResult){
                     showAlert(Alert.AlertType.INFORMATION,"Item Deleted");
                 }else{
@@ -328,7 +325,7 @@ public class InventoryController implements Initializable {
 
         try {
 
-            InventoryItem foundItem = INVENTORY_MODEL.searchById(searchId);
+            InventoryItemDto foundItem = inventoryItemsBO.searchById(searchId);
 
             if (foundItem != null) {
                 populateFields(foundItem);
@@ -353,10 +350,10 @@ public class InventoryController implements Initializable {
 
         try {
 
-            ArrayList<InventoryItem> foundItems = INVENTORY_MODEL.searchByName(searchName);
+            ArrayList<InventoryItemDto> foundItems = inventoryItemsBO.searchByName(searchName);
 
             if (!foundItems.isEmpty()) {
-                ObservableList<InventoryItem> itemList = FXCollections.observableArrayList(foundItems);
+                ObservableList<InventoryItemDto> itemList = FXCollections.observableArrayList(foundItems);
                 inventoryItemTable.setItems(itemList);
                 showAlert(Alert.AlertType.INFORMATION, "Item Found", "Search Results", foundItems.size() + " Item(s) found with the name: " + searchName);
             } else {

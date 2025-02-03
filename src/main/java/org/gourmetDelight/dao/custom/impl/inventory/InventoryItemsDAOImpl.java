@@ -133,6 +133,52 @@ public class InventoryItemsDAOImpl implements InventoryItemsDAO {
         return "I001";
     }
 
+    public String searchInventoryItemName(String itemName) throws ClassNotFoundException, SQLException {
+        String sql = "SELECT InventoryItemID FROM InventoryItems WHERE Name LIKE ?";
+        ResultSet resultSet = CrudUtil.execute(sql, "%" + itemName.toLowerCase() + "%");
+
+        String itemID = null;
+
+        while (resultSet.next()) {
+            itemID = resultSet.getString("InventoryItemID");
+
+        }
+
+        resultSet.close();
+        return itemID;
+    }
+
+    public String getItemUnits(String itemID) throws ClassNotFoundException, SQLException {
+        String sql = "SELECT UnitsMeasured FROM InventoryItems WHERE InventoryItemID LIKE ?";
+        ResultSet resultSet = CrudUtil.execute(sql, "%" + itemID + "%");
+
+        String unit = null;
+
+        while (resultSet.next()) {
+            unit = resultSet.getString("UnitsMeasured");
+
+        }
+
+        resultSet.close();
+        return unit;
+    }
+
+    public String getItemUnitsByName(String itemName) throws ClassNotFoundException, SQLException {
+        String sql = "SELECT UnitsMeasured FROM InventoryItems WHERE Name LIKE ?";
+        ResultSet resultSet = CrudUtil.execute(sql, "%" + itemName.toLowerCase() + "%");
+
+        String unit = null;
+
+        while (resultSet.next()) {
+            unit = resultSet.getString("UnitsMeasured");
+
+        }
+
+        resultSet.close();
+        return unit;
+    }
+
+
 }
 
 

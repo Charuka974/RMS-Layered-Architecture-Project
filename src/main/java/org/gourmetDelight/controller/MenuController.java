@@ -13,11 +13,16 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import org.gourmetDelight.bo.custom.InventoryItemsBO;
+import org.gourmetDelight.bo.custom.MenuItemBO;
+import org.gourmetDelight.bo.custom.MenuItemIngredientsBO;
+import org.gourmetDelight.bo.custom.impl.InventoryItemsBOImpl;
+import org.gourmetDelight.bo.custom.impl.MenuItemBOImpl;
+import org.gourmetDelight.bo.custom.impl.MenuItemIngredientsBOImpl;
 import org.gourmetDelight.dao.custom.impl.QueryDAOImpl;
-import org.gourmetDelight.entity.MenuItem;
-import org.gourmetDelight.entity.MenuItemIngredients;
-import org.gourmetDelight.dao.custom.impl.menuItems.MenuItemIngredientsDAOImpl;
-import org.gourmetDelight.dao.custom.impl.menuItems.MenuItemDAOImpl;
+
+import org.gourmetDelight.dto.menuItems.MenuItemDto;
+import org.gourmetDelight.dto.menuItems.MenuItemIngredientsDto;
 import org.gourmetDelight.util.ValidateUtil;
 
 import java.net.URL;
@@ -30,23 +35,26 @@ import java.util.ResourceBundle;
 
 public class MenuController implements Initializable {
 
-    @FXML
-    private TableColumn<MenuItem, String> menuItemIdCol;
+    MenuItemIngredientsBO menuItemIngredientsBO = new MenuItemIngredientsBOImpl();
+    InventoryItemsBO inventoryItemsBO = new InventoryItemsBOImpl();
 
     @FXML
-    private TableColumn<MenuItem, String> itemNameCol;
+    private TableColumn<MenuItemDto, String> menuItemIdCol;
 
     @FXML
-    private TableColumn<MenuItem, String> itemDescriptionCol;
+    private TableColumn<MenuItemDto, String> itemNameCol;
 
     @FXML
-    private TableColumn<MenuItem, Double> unitPriceCol;
+    private TableColumn<MenuItemDto, String> itemDescriptionCol;
 
     @FXML
-    private TableColumn<MenuItem, String> categoryCol;
+    private TableColumn<MenuItemDto, Double> unitPriceCol;
 
     @FXML
-    private TableColumn<MenuItem, String> kitchenSectionCol;
+    private TableColumn<MenuItemDto, String> categoryCol;
+
+    @FXML
+    private TableColumn<MenuItemDto, String> kitchenSectionCol;
 
     @FXML
     private JFXButton clearTXT;
@@ -61,17 +69,16 @@ public class MenuController implements Initializable {
     private JFXButton itemSaveBtn, itemUpdateBtn, itemDeleteBtn, menuItemIdSearchBtn, menuItemNameSearchBtn, loadAllData;
 
     @FXML
-    private TableView<MenuItem> menuItemTable;
+    private TableView<MenuItemDto> menuItemTable;
 
     @FXML
     private AnchorPane menuAnchorPane;
 
-    private final MenuItemDAOImpl MENU_ITEM_MODEL;
+    MenuItemBO menuItemBO = new MenuItemBOImpl();
     private final QueryDAOImpl queryDAOImpl;
     private final ValidateUtil validateUtil = new ValidateUtil();
 
     public MenuController() {
-        this.MENU_ITEM_MODEL = new MenuItemDAOImpl();
         this.queryDAOImpl = new QueryDAOImpl();
     }
 
@@ -131,7 +138,7 @@ public class MenuController implements Initializable {
 
     @FXML
     void selectFromTable(MouseEvent event) throws SQLException, ClassNotFoundException {
-        MenuItem selectedItem = menuItemTable.getSelectionModel().getSelectedItem();
+        MenuItemDto selectedItem = menuItemTable.getSelectionModel().getSelectedItem();
 
         if (selectedItem != null) {
             populateFields(selectedItem);
@@ -148,16 +155,16 @@ public class MenuController implements Initializable {
     }
 
     private void loadMenuItemsTable() throws ClassNotFoundException, SQLException {
-        ObservableList<MenuItem> menuItems = getAllMenuItems();
+        ObservableList<MenuItemDto> menuItems = getAllMenuItems();
         menuItemTable.setItems(menuItems);
     }
 
-    private ObservableList<MenuItem> getAllMenuItems() throws ClassNotFoundException, SQLException {
-        ArrayList<MenuItem> itemList = MENU_ITEM_MODEL.getAll();
+    private ObservableList<MenuItemDto> getAllMenuItems() throws ClassNotFoundException, SQLException {
+        ArrayList<MenuItemDto> itemList = menuItemBO.getAll();
         return FXCollections.observableArrayList(itemList);
     }
 
-    private void populateFields(MenuItem item) throws SQLException, ClassNotFoundException {
+    private void populateFields(MenuItemDto item) throws SQLException, ClassNotFoundException {
         menuItemIdTxt.setText(item.getMenuItemID());
         menuItemNameTxt.setText(item.getName());
         menuItemDescTxt.setText(item.getDescription());
@@ -197,7 +204,7 @@ public class MenuController implements Initializable {
     void saveItem(ActionEvent event) {
         try {
             if (validateInputs()) {
-                MenuItem newItem = new MenuItem(
+                MenuItemDto newItem = new MenuItemDto(
                         menuItemIdTxt.getText().trim(),
                         menuItemNameTxt.getText().trim(),
                         menuItemDescTxt.getText().trim(),
@@ -206,7 +213,7 @@ public class MenuController implements Initializable {
                         itemKitchenSectionTxtCB.getValue().trim()
                 );
 
-                boolean result = MENU_ITEM_MODEL.save(newItem);
+                boolean result = menuItemBO.save(newItem);
                 if (result){
                     showAlert("Successfully saved");
                 }else{
@@ -223,7 +230,7 @@ public class MenuController implements Initializable {
 
     @FXML
     void updateItem(ActionEvent event) {
-        MenuItem selectedItem = menuItemTable.getSelectionModel().getSelectedItem();
+        MenuItemDto selectedItem = menuItemTable.getSelectionModel().getSelectedItem();
         if (selectedItem == null) {
             showAlert(Alert.AlertType.WARNING, "No Selection", "No Menu Item Selected", "Please select a menu item to update.");
             return;
@@ -231,7 +238,7 @@ public class MenuController implements Initializable {
 
         try {
             if (validateInputs()) {
-                MenuItem updatedItem = new MenuItem(
+                MenuItemDto updatedItem = new MenuItemDto(
                         menuItemIdTxt.getText().trim(),
                         menuItemNameTxt.getText().trim(),
                         menuItemDescTxt.getText().trim(),
@@ -240,7 +247,7 @@ public class MenuController implements Initializable {
                         itemKitchenSectionTxtCB.getValue().trim()
                 );
 
-                boolean result = MENU_ITEM_MODEL.update(updatedItem);
+                boolean result = menuItemBO.update(updatedItem);
                 if (result){
                     showAlert("Successfully updated menu item");
                 }else{
@@ -257,7 +264,7 @@ public class MenuController implements Initializable {
 
     @FXML
     void deleteItem(ActionEvent event) {
-        MenuItem selectedItem = menuItemTable.getSelectionModel().getSelectedItem();
+        MenuItemDto selectedItem = menuItemTable.getSelectionModel().getSelectedItem();
         if (selectedItem == null) {
             showAlert(Alert.AlertType.WARNING, "No Selection", "No Menu Item Selected", "Please select a menu item to delete.");
             return;
@@ -271,7 +278,7 @@ public class MenuController implements Initializable {
         Optional<ButtonType> result = confirmationAlert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             try {
-                boolean deleteResult = MENU_ITEM_MODEL.delete(selectedItem.getMenuItemID());
+                boolean deleteResult = menuItemBO.delete(selectedItem.getMenuItemID());
                 if (deleteResult){
                     showAlert("Successfully deleted menu item");
                 }else{
@@ -351,10 +358,10 @@ public class MenuController implements Initializable {
 
         try {
             // Search for menu items by name
-            ArrayList<MenuItem> foundMenuItems = MENU_ITEM_MODEL.searchByName(searchName);
+            ArrayList<MenuItemDto> foundMenuItems = menuItemBO.searchByName(searchName);
 
             if (!foundMenuItems.isEmpty()) {
-                ObservableList<MenuItem> menuItemList = FXCollections.observableArrayList(foundMenuItems);
+                ObservableList<MenuItemDto> menuItemList = FXCollections.observableArrayList(foundMenuItems);
                 menuItemTable.setItems(menuItemList);
                 showAlert(Alert.AlertType.INFORMATION, "Menu Items Found", "Search Results", foundMenuItems.size() + " menu item(s) found with the name: " + searchName);
             } else {
@@ -377,7 +384,7 @@ public class MenuController implements Initializable {
 
         try {
             // Search for menu item by ID
-            MenuItem foundMenuItem = MENU_ITEM_MODEL.searchById(searchId);
+            MenuItemDto foundMenuItem = menuItemBO.searchById(searchId);
 
             if (foundMenuItem != null) {
                 // Populate TextFields with found menu item data
@@ -395,7 +402,7 @@ public class MenuController implements Initializable {
 
     private void setNextMenuItemID() throws SQLException, ClassNotFoundException {
         // Set the next Menu Item ID by calling the method from your model
-        menuItemIdTxt.setText(MENU_ITEM_MODEL.suggestNextID());
+        menuItemIdTxt.setText(menuItemBO.suggestNextID());
     }
 
 
@@ -409,16 +416,16 @@ public class MenuController implements Initializable {
     private JFXButton clearTXTReciepe;
 
     @FXML
-    private TableColumn<MenuItemIngredients, String> ingredientsMenuItemIDCol;
+    private TableColumn<MenuItemIngredientsDto, String> ingredientsMenuItemIDCol;
 
     @FXML
-    private TableColumn<MenuItemIngredients, Double> ingredientsQtyCol;
+    private TableColumn<MenuItemIngredientsDto, Double> ingredientsQtyCol;
 
     @FXML
-    private TableView<MenuItemIngredients> ingredientsTable;
+    private TableView<MenuItemIngredientsDto> ingredientsTable;
 
     @FXML
-    private TableColumn<MenuItemIngredients, String> ingredientsTableInventoryIdCol;
+    private TableColumn<MenuItemIngredientsDto, String> ingredientsTableInventoryIdCol;
 
     @FXML
     private JFXButton inventoryItemIdSearchBtn;
@@ -451,9 +458,9 @@ public class MenuController implements Initializable {
     @FXML
     void searchInventoryItemName(ActionEvent event) throws SQLException, ClassNotFoundException {
         // we can search the item by name first and then search it by id so that we can get all menu  items made with that item
-        itemUnitsLbl.setText(menuItemIngredientsDAOImpl.getItemUnitsByName(inventoryItemNameTxt.getText()));
+        itemUnitsLbl.setText(inventoryItemsBO.getItemUnitsByName(inventoryItemNameTxt.getText()));
         try {
-            String itemId = menuItemIngredientsDAOImpl.searchInventoryItemName(inventoryItemNameTxt.getText().trim());
+            String itemId = inventoryItemsBO.searchInventoryItemName(inventoryItemNameTxt.getText().trim());
             if (itemId == null) {
                 showAlert(Alert.AlertType.ERROR, "Error", "Inventory Item Not Found", "The item you are searching for could not be found.");
                 inventoryItemIdTxt.setText(null);
@@ -474,7 +481,7 @@ public class MenuController implements Initializable {
 
     }
 
-    private final MenuItemIngredientsDAOImpl menuItemIngredientsDAOImpl = new MenuItemIngredientsDAOImpl();
+
 
     // Load the table and disable buttons initially
     private void loadMenuItemIngredients() throws SQLException, ClassNotFoundException {
@@ -493,7 +500,7 @@ public class MenuController implements Initializable {
 
     // Load data into the table
     private void loadIngredientsItemsTable(String menuItemID) throws SQLException, ClassNotFoundException {
-        ObservableList<MenuItemIngredients> recipeItems = FXCollections.observableArrayList(menuItemIngredientsDAOImpl.getAll(menuItemID));
+        ObservableList<MenuItemIngredientsDto> recipeItems = FXCollections.observableArrayList(menuItemIngredientsBO.getAll(menuItemID));
         ingredientsTable.setItems(recipeItems);
     }
 
@@ -506,8 +513,8 @@ public class MenuController implements Initializable {
             String inventoryItemID = inventoryItemIdTxt.getText();
             double quantityNeeded = Double.parseDouble(inventoryItemQtyTxt.getText());
 
-            MenuItemIngredients dto = new MenuItemIngredients(menuItemID, inventoryItemID, quantityNeeded);
-            boolean result = menuItemIngredientsDAOImpl.save(dto);
+            MenuItemIngredientsDto dto = new MenuItemIngredientsDto(menuItemID, inventoryItemID, quantityNeeded);
+            boolean result = menuItemIngredientsBO.save(dto);
 
             if (result){
                 showAlert("Successfully saved");
@@ -531,8 +538,8 @@ public class MenuController implements Initializable {
             String inventoryItemID = inventoryItemIdTxt.getText();
             double quantityNeeded = Double.parseDouble(inventoryItemQtyTxt.getText());
 
-            MenuItemIngredients dto = new MenuItemIngredients(menuItemID, inventoryItemID, quantityNeeded);
-            boolean result = menuItemIngredientsDAOImpl.update(dto);
+            MenuItemIngredientsDto dto = new MenuItemIngredientsDto(menuItemID, inventoryItemID, quantityNeeded);
+            boolean result = menuItemIngredientsBO.update(dto);
 
             if (result){
                 showAlert("Successfully updated");
@@ -555,7 +562,7 @@ public class MenuController implements Initializable {
             menuItemID = menuItemIdTxt.getText();
             String inventoryItemID = inventoryItemIdTxt.getText();
 
-            String result = menuItemIngredientsDAOImpl.delete(menuItemID, inventoryItemID);
+            String result = menuItemIngredientsBO.delete(menuItemID, inventoryItemID);
 
             showAlert(result);
             loadIngredientsItemsTable(menuItemID);
@@ -569,7 +576,7 @@ public class MenuController implements Initializable {
     // Select an item from the table and populate the text fields
     @FXML
     void selectFromTheReciepeTable(MouseEvent event) {
-        MenuItemIngredients selectedItem = ingredientsTable.getSelectionModel().getSelectedItem();
+        MenuItemIngredientsDto selectedItem = ingredientsTable.getSelectionModel().getSelectedItem();
 
         if (selectedItem != null) {
             //menuItemIdTxt.setText(selectedItem.getMenuItemID());
@@ -584,11 +591,11 @@ public class MenuController implements Initializable {
 
     @FXML
     void searchInventoryItemId(ActionEvent event) throws SQLException, ClassNotFoundException {
-        itemUnitsLbl.setText(menuItemIngredientsDAOImpl.getItemUnits(inventoryItemIdTxt.getText()));
+        itemUnitsLbl.setText(inventoryItemsBO.getItemUnits(inventoryItemIdTxt.getText()));
         try {
             String inventoryItemID = inventoryItemIdTxt.getText();
-            ObservableList<MenuItemIngredients> result = FXCollections.observableArrayList(
-                    menuItemIngredientsDAOImpl.searchIngredientsByInventoryItemID(inventoryItemID)
+            ObservableList<MenuItemIngredientsDto> result = FXCollections.observableArrayList(
+                    menuItemIngredientsBO.searchIngredientsByInventoryItemID(inventoryItemID)
             );
             ingredientsTable.setItems(result);
         } catch (Exception e) {

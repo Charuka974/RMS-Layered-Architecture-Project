@@ -9,15 +9,17 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
+import org.gourmetDelight.bo.custom.InventoryItemsBO;
+import org.gourmetDelight.bo.custom.SupplierBO;
+import org.gourmetDelight.bo.custom.impl.InventoryItemsBOImpl;
+import org.gourmetDelight.bo.custom.impl.SupplierBOImpl;
 import org.gourmetDelight.dao.custom.impl.QueryDAOImpl;
-import org.gourmetDelight.entity.InventoryItem;
+import org.gourmetDelight.dto.inventory.InventoryItemDto;
+import org.gourmetDelight.dto.inventory.SupplierDto;
 import org.gourmetDelight.entity.StockPurchase;
 import org.gourmetDelight.entity.StockPurchaseItems;
-import org.gourmetDelight.entity.Supplier;
 import org.gourmetDelight.dto.tm.StockPurchaseTM;
-import org.gourmetDelight.dao.custom.impl.inventory.InventoryItemsDAOImpl;
 import org.gourmetDelight.dao.custom.impl.inventory.PurchaseDAOImpl;
-import org.gourmetDelight.dao.custom.impl.inventory.SupplierDAOImpl;
 import org.gourmetDelight.util.DateAndTime;
 
 import java.io.IOException;
@@ -128,6 +130,8 @@ public class StockPurchaseController implements Initializable {
     @FXML
     private JFXButton updateBtn;
 
+    InventoryItemsBO inventoryItemsBO = new InventoryItemsBOImpl();
+    SupplierBO supplierBO = new SupplierBOImpl();
     PurchaseDAOImpl purchaseDAOImpl = new PurchaseDAOImpl();
     DateAndTime dateAndTime = new DateAndTime();
     QueryDAOImpl queryDAOImpl = new QueryDAOImpl();
@@ -277,9 +281,8 @@ public class StockPurchaseController implements Initializable {
     @FXML
     void searchItem(ActionEvent event) throws SQLException, ClassNotFoundException {
         String itemName = itemNameTxt.getText();
-        InventoryItemsDAOImpl inventoryItemsDAOImpl = new InventoryItemsDAOImpl();
 
-        ArrayList<InventoryItem> items = inventoryItemsDAOImpl.searchByName(itemName);
+        ArrayList<InventoryItemDto> items = inventoryItemsBO.searchByName(itemName);
 
         if (!items.isEmpty()) {
             itemIdTxt.setText(items.get(0).getInventoryItemId());
@@ -312,9 +315,8 @@ public class StockPurchaseController implements Initializable {
     @FXML
     void searchSupplier(ActionEvent event) throws SQLException, ClassNotFoundException {
         String name = supplierNameTxt.getText();
-        SupplierDAOImpl supplierDAOImpl = new SupplierDAOImpl();
 
-        ArrayList<Supplier> supplier = supplierDAOImpl.searchByName(name);
+        ArrayList<SupplierDto> supplier = supplierBO.searchByName(name);
 
         if (!supplier.isEmpty()) {
             supplierIdTxt.setText(supplier.get(0).getSupplierID());

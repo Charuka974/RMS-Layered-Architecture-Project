@@ -18,10 +18,5 @@ public interface MenuItemIngredientsDAO extends CrudDAO<MenuItemIngredients> {
 
     public ArrayList<MenuItemIngredients> searchIngredientsByInventoryItemID(String inventoryItemID) throws ClassNotFoundException, SQLException;
 
-    public String searchInventoryItemName(String itemName) throws ClassNotFoundException, SQLException;
-
-    public String getItemUnits(String itemID) throws ClassNotFoundException, SQLException;
-
-    public String getItemUnitsByName(String itemName) throws ClassNotFoundException, SQLException;
 
 }

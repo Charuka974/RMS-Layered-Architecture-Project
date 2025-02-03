@@ -2,9 +2,11 @@ package org.gourmetDelight.dao.custom.impl.employee;
 
 
 import org.gourmetDelight.dao.custom.EmployeeDAO;
+import org.gourmetDelight.db.DBConnection;
 import org.gourmetDelight.entity.Employee;
 import org.gourmetDelight.util.CrudUtil;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -141,6 +143,30 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 
         resultSet.close();
         return Name;
+    }
+
+    public ArrayList<String> selectAllManagerEmails() throws SQLException, ClassNotFoundException {
+
+        ArrayList<String> emails = new ArrayList<>();
+
+        java.sql.Connection connection = DBConnection.getInstance().getConnection();
+        String sql = "SELECT e.Email " +
+                "FROM Employees e " +
+                "WHERE e.Position = 'Manager'";
+
+        try (PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet result = statement.executeQuery()) {
+
+            while (result.next()) {
+                emails.add(result.getString("Email"));
+                //EmailUtil.sendEmail(result.getString("Email"),"Gourmet Delight Inventory Reminder", "Please Check The Inventory and Update The Inventory");
+                System.out.println("Inventory Email Sent");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return emails;
     }
 
 
