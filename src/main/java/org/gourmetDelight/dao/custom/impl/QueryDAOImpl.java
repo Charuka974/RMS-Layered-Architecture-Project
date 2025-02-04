@@ -2,7 +2,7 @@ package org.gourmetDelight.dao.custom.impl;
 
 import org.gourmetDelight.dao.custom.QueryDAO;
 import org.gourmetDelight.db.DBConnection;
-import org.gourmetDelight.dto.custom.StockPurchaseDTOCustom;
+
 import org.gourmetDelight.entity.custom.ReservationCustom;
 import org.gourmetDelight.entity.custom.StockPurchaseCustom;
 import org.gourmetDelight.util.CrudUtil;
@@ -292,7 +292,7 @@ public class QueryDAOImpl implements QueryDAO {
 
 
     // Stock Purchase
-    public StockPurchaseDTOCustom searchStochPurchaseByID(String purchaseID) throws SQLException, ClassNotFoundException {
+    public StockPurchaseCustom searchStochPurchaseByID(String purchaseID) throws SQLException, ClassNotFoundException {
         Connection connection = DBConnection.getInstance().getConnection();
 
         // SQL query with JOINs to fetch necessary data
@@ -312,7 +312,7 @@ public class QueryDAOImpl implements QueryDAO {
             // Check if a result is found
             if (rs.next()) {
                 // Return the populated StockPurchaseTM object
-                return new StockPurchaseDTOCustom(
+                return new StockPurchaseCustom(
                         rs.getString("PurchaseID"),
                         rs.getString("InventoryItemID"),
                         rs.getString("ItemName"),

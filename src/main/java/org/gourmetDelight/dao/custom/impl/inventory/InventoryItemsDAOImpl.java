@@ -1,5 +1,6 @@
 package org.gourmetDelight.dao.custom.impl.inventory;
 
+import javafx.scene.control.Alert;
 import org.gourmetDelight.dao.custom.InventoryItemsDAO;
 import org.gourmetDelight.entity.InventoryItem;
 import org.gourmetDelight.util.CrudUtil;
@@ -212,6 +213,95 @@ public class InventoryItemsDAOImpl implements InventoryItemsDAO {
     public boolean updateInventoryQuantityForPurchase(String itemID, double unitsBought) throws SQLException, ClassNotFoundException {
         String updateInventorySql = "UPDATE InventoryItems SET Quantity = Quantity - ? WHERE InventoryItemID = ?";
         return CrudUtil.execute(updateInventorySql, unitsBought, itemID);
+    }
+
+    public boolean decreaseFromInventoryForOrder(String menuItemID, String itemQuantity) throws SQLException, ClassNotFoundException {
+        double orderQuantity = Double.parseDouble(itemQuantity);
+
+        try {
+            // Retrieve the required ingredients for the selected menu item
+            String getIngredientsSQL = "SELECT InventoryItemID, QuantityNeeded FROM MenuItemIngredients WHERE MenuItemID = ?";
+            ResultSet ingredientsResult = CrudUtil.execute(getIngredientsSQL, menuItemID);
+
+            // Loop through each ingredient and check inventory availability
+            while (ingredientsResult.next()) {
+                String inventoryItemID = ingredientsResult.getString("InventoryItemID");
+                double quantityNeededPerItem = ingredientsResult.getDouble("QuantityNeeded");
+                double totalQuantityNeeded = quantityNeededPerItem * orderQuantity;
+
+                // Check if there is enough inventory
+                String checkInventorySQL = "SELECT Quantity FROM InventoryItems WHERE InventoryItemID = ?";
+                ResultSet inventoryResult = CrudUtil.execute(checkInventorySQL, inventoryItemID);
+
+                if (inventoryResult.next()) {
+                    double currentQuantity = inventoryResult.getDouble("Quantity");
+
+                    if (currentQuantity < totalQuantityNeeded) {
+                        showAlert(Alert.AlertType.INFORMATION, "Info", "Insufficient inventory", "Insufficient inventory for item: " + inventoryItemID);
+                    }
+                } else {
+                    showAlert(Alert.AlertType.INFORMATION, "Info", "Order Failed", "Inventory Item not found" );
+                }
+
+                // Update the inventory by deducting the total quantity needed
+                String updateInventorySQL = "UPDATE InventoryItems SET Quantity = Quantity - ? WHERE InventoryItemID = ?";
+                boolean isUpdated = CrudUtil.execute(updateInventorySQL, totalQuantityNeeded, inventoryItemID);
+
+                if (!isUpdated) {
+                    showAlert(Alert.AlertType.INFORMATION, "Info", "Order Failed", "Failed to place Order" );
+                }
+            }
+
+            return true;
+
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error during inventory update: " + e.getMessage());
+            throw e;
+        }
+
+
+    }
+
+    public boolean increaseInventoryForOrder(String menuItemID, double quantityOfOrder) throws SQLException, ClassNotFoundException {
+
+        try {
+
+            String getIngredientsSQL = "SELECT InventoryItemID, QuantityNeeded FROM MenuItemIngredients WHERE MenuItemID = ?";
+            ResultSet ingredientsResult = CrudUtil.execute(getIngredientsSQL, menuItemID);
+
+
+            while (ingredientsResult.next()) {
+                String inventoryItemID = ingredientsResult.getString("InventoryItemID");
+                double quantityNeededPerItem = ingredientsResult.getDouble("QuantityNeeded");
+                double totalQuantityNeeded = quantityNeededPerItem * quantityOfOrder;
+
+
+                String updateInventorySQL = "UPDATE InventoryItems SET Quantity = Quantity + ? WHERE InventoryItemID = ?";
+                boolean isUpdated = CrudUtil.execute(updateInventorySQL, totalQuantityNeeded, inventoryItemID);
+
+                if (!isUpdated) {
+                    showAlert(Alert.AlertType.INFORMATION, "Info", "Order Failed", "Failed to place Order" );
+                }
+            }
+
+            return true;
+
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error during inventory update: " + e.getMessage());
+            throw e;
+        }
+
+
+    }
+
+
+
+    public void showAlert(Alert.AlertType alertType, String title, String header, String content) {
+        Alert alert = new Alert(alertType); // Use the provided alertType
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 
 

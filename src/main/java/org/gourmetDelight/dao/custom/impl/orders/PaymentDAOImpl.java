@@ -13,39 +13,6 @@ import java.util.ArrayList;
 
 public class PaymentDAOImpl implements PaymentDAO {
 
-    public String suggestNextPaymentID() throws ClassNotFoundException, SQLException {
-        ResultSet rst = CrudUtil.execute("SELECT PaymentID FROM Payments ORDER BY PaymentID DESC LIMIT 1");
-
-        if (rst.next()) {
-            String lastId = rst.getString(1);
-            String substring = lastId.substring(1);
-            int i = Integer.parseInt(substring);
-            int newIdIndex = i + 1;
-            return String.format("P%03d", newIdIndex);
-        }
-        return "P001";
-    }
-
-    public Payments getPaymentById(String paymentId) throws SQLException, ClassNotFoundException {
-        Connection connection = DBConnection.getInstance().getConnection();
-
-        String query = "SELECT * FROM Payments WHERE PaymentID = ?";
-
-        try (PreparedStatement pst = connection.prepareStatement(query)) {
-            pst.setString(1, paymentId);
-            ResultSet rs = pst.executeQuery();
-            if (rs.next()) {
-                return new Payments(
-                        rs.getString("PaymentID"),
-                        rs.getString("PaymentMethod"),
-                        rs.getDouble("Amount"),
-                        rs.getDate("PaymentDate").toLocalDate() // Adjust the date field according to your database
-                );
-            }
-        }
-        return null;
-    }
-
     public boolean processPayments(ArrayList<Payments> paymentsDtos, Connection connection) throws SQLException, ClassNotFoundException {
         // Start a transaction
         connection.setAutoCommit(false); // Disable auto-commit for transaction
@@ -82,13 +49,21 @@ public class PaymentDAOImpl implements PaymentDAO {
     }
 
     @Override
-    public boolean save(Payments dto) throws ClassNotFoundException, SQLException {
-        return false;
+    public boolean save(Payments payment) throws ClassNotFoundException, SQLException {
+        String insertPaymentSQL = "INSERT INTO Payments (PaymentID, PaymentMethod, Amount, PaymentDate) VALUES (?, ?, ?, ?)";
+        boolean paymentInserted = CrudUtil.execute(insertPaymentSQL,
+                payment.getPaymentID(),
+                payment.getPaymentMethod(),
+                payment.getAmount(),
+                payment.getPaymentDate());
+        return paymentInserted;
     }
 
     @Override
-    public boolean delete(String Id) throws ClassNotFoundException, SQLException {
-        return false;
+    public boolean delete(String paymentID) throws ClassNotFoundException, SQLException {
+        String deletePaymentSQL = "DELETE FROM Payments WHERE PaymentID = ?";
+        boolean paymentDeleted = CrudUtil.execute(deletePaymentSQL, paymentID);
+        return paymentDeleted;
     }
 
     @Override
@@ -97,7 +72,23 @@ public class PaymentDAOImpl implements PaymentDAO {
     }
 
     @Override
-    public Payments searchById(String Id) throws ClassNotFoundException, SQLException {
+    public Payments searchById(String id) throws ClassNotFoundException, SQLException {
+        Connection connection = DBConnection.getInstance().getConnection();
+
+        String query = "SELECT * FROM Payments WHERE PaymentID = ?";
+
+        try (PreparedStatement pst = connection.prepareStatement(query)) {
+            pst.setString(1, id);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                return new Payments(
+                        rs.getString("PaymentID"),
+                        rs.getString("PaymentMethod"),
+                        rs.getDouble("Amount"),
+                        rs.getDate("PaymentDate").toLocalDate() // Adjust the date field according to your database
+                );
+            }
+        }
         return null;
     }
 
@@ -108,6 +99,15 @@ public class PaymentDAOImpl implements PaymentDAO {
 
     @Override
     public String suggestNextID() throws ClassNotFoundException, SQLException {
-        return "";
+        ResultSet rst = CrudUtil.execute("SELECT PaymentID FROM Payments ORDER BY PaymentID DESC LIMIT 1");
+
+        if (rst.next()) {
+            String lastId = rst.getString(1);
+            String substring = lastId.substring(1);
+            int i = Integer.parseInt(substring);
+            int newIdIndex = i + 1;
+            return String.format("P%03d", newIdIndex);
+        }
+        return "P001";
     }
 }

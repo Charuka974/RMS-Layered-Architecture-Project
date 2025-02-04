@@ -1,6 +1,7 @@
 package org.gourmetDelight.dao.custom;
 
 
+import javafx.scene.control.Alert;
 import org.gourmetDelight.dao.CrudDAO;
 import org.gourmetDelight.entity.InventoryItem;
 import org.gourmetDelight.util.CrudUtil;
@@ -20,6 +21,11 @@ public interface InventoryItemsDAO extends CrudDAO<InventoryItem> {
 
     public boolean updateInventoryQuantityForPurchase(String itemID, double unitsBought) throws SQLException, ClassNotFoundException;
 
-}
+    public boolean decreaseFromInventoryForOrder(String menuItemID, String itemQuantity) throws SQLException, ClassNotFoundException;
+
+    public boolean increaseInventoryForOrder(String menuItemID, double quantityOfOrder) throws SQLException, ClassNotFoundException;
+
+
+    }
 
 

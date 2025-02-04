@@ -138,5 +138,9 @@ public class ReservationBOImpl implements ReservationBO {
         return reservationDTOs;
     }
 
+    public ReservationCustom getJoinReservationDetails(String id) throws ClassNotFoundException, SQLException {
+        return queryDAO.searchReservationsByReserveID(id);
+    }
+
 
 }

@@ -25,7 +25,7 @@ public interface QueryDAO extends SuperDAO {
     public ArrayList<ReservationCustom> searchReservationsByCustomerID(String customerID) throws ClassNotFoundException, SQLException;
     public ArrayList<ReservationCustom> getAllReservationDetails() throws ClassNotFoundException, SQLException;
 
-    public StockPurchaseDTOCustom searchStochPurchaseByID(String purchaseID) throws SQLException, ClassNotFoundException;
+    public StockPurchaseCustom searchStochPurchaseByID(String purchaseID) throws SQLException, ClassNotFoundException;
 
 
     public ArrayList<StockPurchaseCustom> getAllStockPurchases() throws ClassNotFoundException, SQLException;

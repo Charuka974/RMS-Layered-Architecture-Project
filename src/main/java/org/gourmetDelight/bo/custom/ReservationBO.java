@@ -7,6 +7,7 @@ import org.gourmetDelight.dao.custom.impl.reservations.TableDAOImpl;
 import org.gourmetDelight.dto.reservations.ReservationDto;
 import org.gourmetDelight.entity.Reservation;
 import org.gourmetDelight.entity.TableAssignments;
+import org.gourmetDelight.entity.custom.ReservationCustom;
 import org.gourmetDelight.util.CrudUtil;
 
 import java.sql.ResultSet;
@@ -53,5 +54,6 @@ public interface ReservationBO {
 
     public ArrayList<ReservationDto> getAllReservationDetails() throws ClassNotFoundException, SQLException;
 
+    public ReservationCustom getJoinReservationDetails(String id) throws ClassNotFoundException, SQLException;
 
 }

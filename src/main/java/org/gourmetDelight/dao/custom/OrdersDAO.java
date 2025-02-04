@@ -19,27 +19,14 @@ import java.util.ArrayList;
 
 public interface OrdersDAO extends CrudDAO<Orders> {
 
-    public boolean placeOrder(Orders orderDTO, ArrayList<OrderItems> orderItemsDtos, ArrayList<Payments> paymentsDtos) throws SQLException, ClassNotFoundException;
-
-    public boolean decreaseFromInventory(String menuItemID, String itemQuantity) throws SQLException, ClassNotFoundException;
-
-    public String suggestNextOrderID() throws ClassNotFoundException, SQLException;
-
-    public boolean deleteOrder(String orderID) throws SQLException, ClassNotFoundException;
-
-    public boolean increaseInventory(String menuItemID, double quantityOfOrder) throws SQLException, ClassNotFoundException;
-
-    public boolean updateOrder(Orders orderDTO, ArrayList<OrderItems> newOrderItemsDtos, ArrayList<Payments> paymentsDtos) throws SQLException, ClassNotFoundException;
-
-    public Orders getOrderById(String orderId) throws SQLException, ClassNotFoundException;
-
     public ArrayList<OrderItems> getOrderItemsByOrderId(String orderId) throws SQLException, ClassNotFoundException;
 
-    public boolean validateReservation(String reservationID) throws SQLException, ClassNotFoundException;
 
     public void showAlert(Alert.AlertType alertType, String title, String header, String content);
 
     public void completeTheOrder(String orderID) throws SQLException, ClassNotFoundException, JRException;
+
+    public ResultSet findByIdAndReturnResult(String orderID) throws SQLException, ClassNotFoundException;
 
 
 }

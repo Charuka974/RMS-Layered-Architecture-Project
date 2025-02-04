@@ -16,23 +16,22 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.view.JasperViewer;
-import org.gourmetDelight.bo.custom.CustomerBO;
-import org.gourmetDelight.bo.custom.impl.CustomerBOImpl;
-import org.gourmetDelight.dao.custom.QueryDAO;
-import org.gourmetDelight.dao.custom.impl.QueryDAOImpl;
+import org.gourmetDelight.bo.custom.*;
+import org.gourmetDelight.bo.custom.impl.*;
+
+
 import org.gourmetDelight.db.DBConnection;
 import org.gourmetDelight.dto.CustomerDto;
-import org.gourmetDelight.dto.reservations.ReservationDto;
-import org.gourmetDelight.entity.*;
+import org.gourmetDelight.dto.menuItems.MenuItemDto;
+import org.gourmetDelight.dto.reservations.TablesDto;
 import org.gourmetDelight.dto.tm.OrdersTM;
-import org.gourmetDelight.dao.custom.impl.CustomerDAOImpl;
-import org.gourmetDelight.dao.custom.impl.menuItems.MenuItemDAOImpl;
-import org.gourmetDelight.dao.custom.impl.orders.OrdersDAOImpl;
-import org.gourmetDelight.dao.custom.impl.orders.PaymentDAOImpl;
-import org.gourmetDelight.dao.custom.impl.reservations.ReservationDAOImpl;
-import org.gourmetDelight.dao.custom.impl.reservations.TableDAOImpl;
-import org.gourmetDelight.entity.MenuItem;
+
+
+import org.gourmetDelight.entity.OrderItems;
+import org.gourmetDelight.entity.Orders;
+import org.gourmetDelight.entity.Payments;
 import org.gourmetDelight.entity.custom.ReservationCustom;
+
 import org.gourmetDelight.util.DateAndTime;
 import org.gourmetDelight.util.KeepUser;
 import org.gourmetDelight.util.Navigations;
@@ -180,22 +179,22 @@ public class OrdersController implements Initializable {
     @FXML
     private TableColumn<OrdersTM, Double> unitPriceCol;
 
-    //private final CustomerDAOImpl CUSTOMER_MODEL = new CustomerDAOImpl();
+
     CustomerBO customerBO = new CustomerBOImpl();
-    MenuItemDAOImpl menuItemDAOImpl = new MenuItemDAOImpl();
+    MenuItemBO menuItemDAOImpl = new MenuItemBOImpl();
     DateAndTime dateAndTime = new DateAndTime();
 
-    TableDAOImpl tableDAOImpl = new TableDAOImpl();
-    ReservationDAOImpl reservationDAOImpl = new ReservationDAOImpl();
-    private final MenuItemDAOImpl MENU_ITEM_MODEL;
-    OrdersDAOImpl ordersDAOImpl = new OrdersDAOImpl();
-    PaymentDAOImpl paymentDAOImpl = new PaymentDAOImpl();
+    TableBO tableBO = new TableBOImpl();
+    ReservationBO reservationDAOImpl = new ReservationBOImpl();
+    MenuItemBOImpl MENU_ITEM_MODEL;
+    OrderBO ordersBO = new OrderBOImpl();
     private final ValidateUtil validateUtil = new ValidateUtil();
     private final ObservableList<OrdersTM> ordersTMS = FXCollections.observableArrayList();
-    QueryDAO queryDAO = new QueryDAOImpl();
+    ReservationBO  reservationBO = new ReservationBOImpl();
+
 
     public OrdersController() {
-        this.MENU_ITEM_MODEL = new MenuItemDAOImpl();
+        this.MENU_ITEM_MODEL = new MenuItemBOImpl();
     }
 
     public void initialize(URL url, ResourceBundle rb){
@@ -233,8 +232,8 @@ public class OrdersController implements Initializable {
         orderDateTxt.setText(dateAndTime.addDate());
         String currentUserID = KeepUser.getInstance().getUserID();
         orderUserIdTxt.setText(currentUserID);
-        orderIdTxt.setText(ordersDAOImpl.suggestNextOrderID());
-        orderPaymentId.setText(paymentDAOImpl.suggestNextPaymentID());
+        orderIdTxt.setText(ordersBO.suggestNextID());
+        orderPaymentId.setText(ordersBO.suggestNextPaymentID());
 
     }
 
@@ -427,17 +426,17 @@ public class OrdersController implements Initializable {
 
                 if (reservationIdTxt.getText() == null || reservationIdTxt.getText().isEmpty()) {
 
-                    tableDAOImpl.updateTableStatus(tableIdLbl.getText(), "Available");
+                    tableBO.updateTableStatus(tableIdLbl.getText(), "Available");
                 } else {
 
-                    tableDAOImpl.updateTableStatus(tableIdLbl.getText(), "Available");
+                    tableBO.updateTableStatus(tableIdLbl.getText(), "Available");
                     reservationDAOImpl.updateReservationStatus(reservationIdTxt.getText(), "Canceled");
                 }
             }
         }
 
 
-        ordersDAOImpl.completeTheOrder(orderIdTxt.getText());
+        ordersBO.completeTheOrder(orderIdTxt.getText());
 
 
 
@@ -458,7 +457,6 @@ public class OrdersController implements Initializable {
     @FXML
     void deleteOrder(ActionEvent event) throws SQLException, ClassNotFoundException {
         String deleteOrderID = orderIdTxt.getText();
-        OrdersDAOImpl ordersDAOImpl = new OrdersDAOImpl();
 
         // Check if an order is selected
         if (deleteOrderID == null || deleteOrderID.isEmpty()) {
@@ -476,7 +474,7 @@ public class OrdersController implements Initializable {
         if (result.isPresent() && result.get() == ButtonType.OK) {
             try {
                 // Attempt to delete the order
-                boolean isDeleted = ordersDAOImpl.deleteOrder(deleteOrderID);
+                boolean isDeleted = ordersBO.deleteOrder(deleteOrderID);
 
                 if (isDeleted) {
                     showAlert(Alert.AlertType.INFORMATION, "Success", "Order Deleted", "Order deleted successfully.");
@@ -653,7 +651,7 @@ public class OrdersController implements Initializable {
                 paymentId
         );
 
-        boolean isSaved = ordersDAOImpl.placeOrder(ordersDto, orderItemsDtos, paymentsDtos);
+        boolean isSaved = ordersBO.placeOrder(ordersDto, orderItemsDtos, paymentsDtos);
 
         if (isSaved) {
             //new Alert(Alert.AlertType.INFORMATION, "Order Placed Successfully").show();
@@ -662,9 +660,9 @@ public class OrdersController implements Initializable {
                 loadPayment(true);
             }else{
                 if (orderType.equals("Dine in") && reservation == null) {
-                    tableDAOImpl.updateTableStatus(tableIdLbl.getText(), "Occupied");
+                    tableBO.updateTableStatus(tableIdLbl.getText(), "Occupied");
                 }else if(orderType.equals("Dine in")){
-                    tableDAOImpl.updateTableStatus(tableIdLbl.getText(), "Reserved");
+                    tableBO.updateTableStatus(tableIdLbl.getText(), "Reserved");
                 }
                 loadPayment(false);
             }
@@ -825,17 +823,17 @@ public class OrdersController implements Initializable {
         }
 
         try {
-            ArrayList<MenuItem> foundMenuItems = MENU_ITEM_MODEL.searchByName(searchName);
+            ArrayList<MenuItemDto> foundMenuItems = MENU_ITEM_MODEL.searchByName(searchName);
 
             if (!foundMenuItems.isEmpty()) {
 
-                for (MenuItem menuItem : foundMenuItems) {
+                for (MenuItemDto menuItem : foundMenuItems) {
                     menuItemIdTxt.setText(menuItem.getMenuItemID());
                     unitPriceLabel.setText(String.valueOf(menuItem.getPrice()));
                     menuItemNameTxt.setText(menuItem.getName());
                 }
 
-                ObservableList<MenuItem> menuItemList = FXCollections.observableArrayList(foundMenuItems);
+                ObservableList<MenuItemDto> menuItemList = FXCollections.observableArrayList(foundMenuItems);
                 // menuItemTable.setItems(menuItemList);
                 showAlert(Alert.AlertType.INFORMATION, "Menu Items Found", "Search Results", foundMenuItems.size() + " menu item(s) found with the name: " + searchName);
             } else {
@@ -852,14 +850,14 @@ public class OrdersController implements Initializable {
 
     @FXML
     void searchOrderId(ActionEvent event) throws SQLException, ClassNotFoundException {
-        CustomerDAOImpl customerDAOImpl = new CustomerDAOImpl();
+
         try {
             String orderId = orderIdTxt.getText();
             showTheBill(orderIdTxt.getText());
             String paymentId = null;
 
             // Retrieve order details based on orderId
-            Orders orderDetails = ordersDAOImpl.getOrderById(orderId);
+            Orders orderDetails = ordersBO.searchById(orderId);
             if (orderDetails != null) {
                 // Set the order details into the respective text fields
                 orderCusIdTxt.setText(orderDetails.getCustomerID());
@@ -874,7 +872,7 @@ public class OrdersController implements Initializable {
                 if(orderDetails.getCustomerID() == null){
                     orderCusNameTxt.clear();
                 }else{
-                    orderCusNameTxt.setText(customerDAOImpl.searchById(orderDetails.getCustomerID()).getCusName());
+                    orderCusNameTxt.setText(customerBO.searchById(orderDetails.getCustomerID()).getCusName());
                 }
 
             } else {
@@ -882,7 +880,7 @@ public class OrdersController implements Initializable {
             }
 
             // Retrieve order items related to this orderId
-            ArrayList<OrderItems> orderItems = ordersDAOImpl.getOrderItemsByOrderId(orderId);
+            ArrayList<OrderItems> orderItems = ordersBO.getOrderItemsByOrderId(orderId);
             if (orderItems != null) {
                 ordersTMS.clear();
                 for (OrderItems item : orderItems) {
@@ -901,7 +899,7 @@ public class OrdersController implements Initializable {
 
 
             // Retrieve payment details for the order
-            Payments paymentDetails = paymentDAOImpl.getPaymentById(paymentId);
+            Payments paymentDetails = ordersBO.getPaymentById(paymentId);
             if (paymentDetails != null) {
                 orderPaymentId.setText(paymentDetails.getPaymentID());
                 totalAmountLabel.setText(String.valueOf(paymentDetails.getAmount())); // Assuming amount is the total amount
@@ -922,7 +920,7 @@ public class OrdersController implements Initializable {
     public String getMenuItemName(String menuItemId) {
         String name = null;
         try {
-            MenuItem menuItem = menuItemDAOImpl.searchById(menuItemId);
+            MenuItemDto menuItem = menuItemDAOImpl.searchById(menuItemId);
 
             if (menuItem != null) {
                 name = menuItem.getName();
@@ -942,7 +940,7 @@ public class OrdersController implements Initializable {
 
         double price = 0.0;
         try {
-            MenuItem menuItem = menuItemDAOImpl.searchById(menuItemId);
+            MenuItemDto menuItem = menuItemDAOImpl.searchById(menuItemId);
 
             if (menuItem != null) {
                 price = menuItem.getPrice();
@@ -967,7 +965,6 @@ public class OrdersController implements Initializable {
     static int availableSearchTimes = 0;
     void loadTableData() throws SQLException, ClassNotFoundException {
         String reservationId = reservationIdTxt.getText();  // Get the reservation ID from the text field
-        TableDAOImpl tableDAOImpl = new TableDAOImpl();
 
 
         if (reservationId == null || reservationId.trim().isEmpty()) {
@@ -985,7 +982,7 @@ public class OrdersController implements Initializable {
                 return;
             }
 
-            ArrayList<Tables> tables = tableDAOImpl.findAvailableTable(numberOfPeople);
+            ArrayList<TablesDto> tables = tableBO.findAvailableTable(numberOfPeople);
             if (tables.isEmpty()) {
                 tableIdLbl.setText("N/A");  // N/A   means Not Available
                 locationLbl.setText("N/A");
@@ -998,7 +995,7 @@ public class OrdersController implements Initializable {
                 availableSearchTimes = 0;
             }
 
-            Tables table = tables.get(availableSearchTimes);
+            TablesDto table = tables.get(availableSearchTimes);
             tableIdLbl.setText(table.getTableID());
             locationLbl.setText(table.getLocation());
             tableNumberLbl.setText(table.getTableNumber());
@@ -1008,7 +1005,7 @@ public class OrdersController implements Initializable {
 
             try {
 
-                ReservationCustom orderReservation = queryDAO.searchReservationsByReserveID(reservationId);
+                ReservationCustom orderReservation = reservationBO.getJoinReservationDetails(reservationId);
                 if (orderReservation == null) {
                     System.out.println("Reservation not found for ID: " + reservationId);
                     return;
@@ -1018,7 +1015,7 @@ public class OrdersController implements Initializable {
                 numberOfPeopleLbl.setText(String.valueOf(orderReservation.getNumberOfGuests()));
 
 
-                Tables tableDetail = tableDAOImpl.searchById(orderReservation.getTableID());
+                TablesDto tableDetail = tableBO.searchById(orderReservation.getTableID());
                 if (tableDetail != null) {
 
                     tableIdLbl.setText(orderReservation.getTableID());

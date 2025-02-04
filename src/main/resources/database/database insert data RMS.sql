@@ -85,8 +85,6 @@ VALUES
     ('P004', 'S004', 700.00, '2024-09-13'),
     ('P005', 'S005', 150.00, '2024-09-14');
 
-    use RMS;
-    delete from Purchases where PurchaseID='P008';
 
 INSERT INTO PurchaseItems (InventoryItemID, PurchaseID, Unit, UnitPrice, UnitsBought, Status)
 VALUES
