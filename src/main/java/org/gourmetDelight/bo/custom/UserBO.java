@@ -1,16 +1,9 @@
 package org.gourmetDelight.bo.custom;
 
 import org.gourmetDelight.bo.SuperBO;
-import org.gourmetDelight.db.DBConnection;
 import org.gourmetDelight.dto.employee.UserDto;
-import org.gourmetDelight.entity.User;
-import org.gourmetDelight.util.CrudUtil;
 
-import javax.swing.*;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 
 public interface UserBO extends SuperBO {

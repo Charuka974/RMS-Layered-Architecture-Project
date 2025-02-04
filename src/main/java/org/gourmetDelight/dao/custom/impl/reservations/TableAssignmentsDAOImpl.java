@@ -2,11 +2,10 @@ package org.gourmetDelight.dao.custom.impl.reservations;
 
 import org.gourmetDelight.dao.custom.TableAssignmentsDAO;
 import org.gourmetDelight.entity.TableAssignments;
-import org.gourmetDelight.util.CrudUtil;
+import org.gourmetDelight.dao.SQLUtil;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class TableAssignmentsDAOImpl implements TableAssignmentsDAO {
@@ -20,20 +19,20 @@ public class TableAssignmentsDAOImpl implements TableAssignmentsDAO {
     @Override
     public boolean save(TableAssignments dto) throws ClassNotFoundException, SQLException {
         String assignmentSql = "INSERT INTO TableAssignments (TableID, ReservationID, AssignmentTime) VALUES (?, ?, ?)";
-        return CrudUtil.execute(assignmentSql, dto.getTableID(), dto.getReservationId(), dto.getAssignDateTime());
+        return SQLUtil.execute(assignmentSql, dto.getTableID(), dto.getReservationId(), dto.getAssignDateTime());
 
     }
 
     @Override
     public boolean delete(String id) throws ClassNotFoundException, SQLException {
         String deleteAssignmentSql = "DELETE FROM TableAssignments WHERE ReservationID = ?";
-        return CrudUtil.execute(deleteAssignmentSql, id);
+        return SQLUtil.execute(deleteAssignmentSql, id);
     }
 
     @Override
     public boolean update(TableAssignments dto) throws ClassNotFoundException, SQLException {
         String updateAssignmentSql = "UPDATE TableAssignments SET TableID = ?, AssignmentTime = ? WHERE ReservationID = ?";
-        return CrudUtil.execute(updateAssignmentSql, dto.getTableID(), dto.getAssignDateTime(), dto.getReservationId());
+        return SQLUtil.execute(updateAssignmentSql, dto.getTableID(), dto.getAssignDateTime(), dto.getReservationId());
 
     }
 
@@ -45,7 +44,7 @@ public class TableAssignmentsDAOImpl implements TableAssignmentsDAO {
     @Override
     public ResultSet searchByReserveId(String id) throws ClassNotFoundException, SQLException {
         String getTableIdSql = "SELECT TableID FROM TableAssignments WHERE ReservationID = ?";
-        ResultSet resultSet = CrudUtil.execute(getTableIdSql, id);
+        ResultSet resultSet = SQLUtil.execute(getTableIdSql, id);
         return resultSet;
     }
 

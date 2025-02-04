@@ -2,12 +2,8 @@ package org.gourmetDelight.bo.custom;
 
 import org.gourmetDelight.bo.SuperBO;
 import org.gourmetDelight.dto.employee.EmployeeDto;
-import org.gourmetDelight.entity.Employee;
-import org.gourmetDelight.util.CrudUtil;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 
 public interface EmployeeBO extends SuperBO {

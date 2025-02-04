@@ -12,10 +12,12 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 
 import javafx.scene.layout.VBox;
+import org.gourmetDelight.bo.BOFactory;
+import org.gourmetDelight.bo.custom.CustomerBO;
+import org.gourmetDelight.dao.custom.EmployeeDAO;
+import org.gourmetDelight.dao.custom.UsersDAO;
 import org.gourmetDelight.entity.Employee;
 import org.gourmetDelight.entity.User;
-import org.gourmetDelight.dao.custom.impl.employee.EmployeeDAOImpl;
-import org.gourmetDelight.dao.custom.impl.employee.UsersDAOImpl;
 import org.gourmetDelight.util.DateAndTime;
 import org.gourmetDelight.util.ValidateUtil;
 
@@ -78,8 +80,8 @@ public class SignUpController extends Component implements Initializable {
     @FXML
     private JFXTextField signUsernameTxt;
 
-    private EmployeeDAOImpl employeeDAOImpl = new EmployeeDAOImpl();
-    private UsersDAOImpl usersDAOImpl = new UsersDAOImpl();
+    EmployeeDAO employeeDAOImpl = (EmployeeDAO) BOFactory.getInstance().getBO(BOFactory.BOType.EMPLOYEE);
+    UsersDAO usersDAOImpl = (UsersDAO) BOFactory.getInstance().getBO(BOFactory.BOType.USERS);
     DateAndTime dateAndTime = new DateAndTime();
     ValidateUtil validateUtil = new ValidateUtil();
 

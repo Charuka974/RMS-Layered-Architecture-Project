@@ -3,7 +3,7 @@ package org.gourmetDelight.dao.custom.impl.inventory;
 import javafx.scene.control.Alert;
 import org.gourmetDelight.dao.custom.InventoryItemsDAO;
 import org.gourmetDelight.entity.InventoryItem;
-import org.gourmetDelight.util.CrudUtil;
+import org.gourmetDelight.dao.SQLUtil;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,7 +15,7 @@ public class InventoryItemsDAOImpl implements InventoryItemsDAO {
 
         String query = "SELECT InventoryItemID, Name, Description, Quantity, UnitsMeasured FROM InventoryItems";
 
-        ResultSet resultSet = CrudUtil.execute(query);
+        ResultSet resultSet = SQLUtil.execute(query);
 
         ArrayList<InventoryItem> itemList = new ArrayList<>();
 
@@ -41,7 +41,7 @@ public class InventoryItemsDAOImpl implements InventoryItemsDAO {
 
         String query = "INSERT INTO InventoryItems (InventoryItemID, Name, Description, Quantity, UnitsMeasured) VALUES (?, ?, ?, ?, ?)";
 
-        Boolean result = CrudUtil.execute(query,
+        Boolean result = SQLUtil.execute(query,
                 item.getInventoryItemId(),
                 item.getName(),
                 item.getDescription(),
@@ -57,7 +57,7 @@ public class InventoryItemsDAOImpl implements InventoryItemsDAO {
 
         String query = "UPDATE InventoryItems SET Name = ?, Description = ?, Quantity = ?, UnitsMeasured = ? WHERE InventoryItemID = ?";
 
-        Boolean result = CrudUtil.execute(query,
+        Boolean result = SQLUtil.execute(query,
                 item.getName(),
                 item.getDescription(),
                 item.getQuantity(),
@@ -74,12 +74,12 @@ public class InventoryItemsDAOImpl implements InventoryItemsDAO {
 
         String query = "DELETE FROM InventoryItems WHERE InventoryItemID = ?";
 
-        return CrudUtil.execute(query, itemId);
+        return SQLUtil.execute(query, itemId);
     }
 
     public InventoryItem searchById(String itemId) throws ClassNotFoundException, SQLException {
         String sql = "SELECT * FROM InventoryItems WHERE InventoryItemID = ?";
-        ResultSet resultSet = CrudUtil.execute(sql, itemId);
+        ResultSet resultSet = SQLUtil.execute(sql, itemId);
 
         if (resultSet.next()) {
             InventoryItem item = new InventoryItem(
@@ -101,7 +101,7 @@ public class InventoryItemsDAOImpl implements InventoryItemsDAO {
 
     public ArrayList<InventoryItem> searchByName(String name) throws ClassNotFoundException, SQLException {
         String sql = "SELECT * FROM InventoryItems WHERE Name LIKE ?";
-        ResultSet resultSet = CrudUtil.execute(sql, "%" + name.toLowerCase() + "%");
+        ResultSet resultSet = SQLUtil.execute(sql, "%" + name.toLowerCase() + "%");
 
         ArrayList<InventoryItem> itemDtos = new ArrayList<>();
 
@@ -122,7 +122,7 @@ public class InventoryItemsDAOImpl implements InventoryItemsDAO {
 
 
     public String suggestNextID() throws ClassNotFoundException, SQLException {
-        ResultSet rst = CrudUtil.execute("SELECT InventoryItemID FROM InventoryItems ORDER BY InventoryItemID DESC LIMIT 1");
+        ResultSet rst = SQLUtil.execute("SELECT InventoryItemID FROM InventoryItems ORDER BY InventoryItemID DESC LIMIT 1");
 
         if (rst.next()) {
             String lastId = rst.getString(1);
@@ -136,7 +136,7 @@ public class InventoryItemsDAOImpl implements InventoryItemsDAO {
 
     public String searchInventoryItemName(String itemName) throws ClassNotFoundException, SQLException {
         String sql = "SELECT InventoryItemID FROM InventoryItems WHERE Name LIKE ?";
-        ResultSet resultSet = CrudUtil.execute(sql, "%" + itemName.toLowerCase() + "%");
+        ResultSet resultSet = SQLUtil.execute(sql, "%" + itemName.toLowerCase() + "%");
 
         String itemID = null;
 
@@ -151,7 +151,7 @@ public class InventoryItemsDAOImpl implements InventoryItemsDAO {
 
     public String getItemUnits(String itemID) throws ClassNotFoundException, SQLException {
         String sql = "SELECT UnitsMeasured FROM InventoryItems WHERE InventoryItemID LIKE ?";
-        ResultSet resultSet = CrudUtil.execute(sql, "%" + itemID + "%");
+        ResultSet resultSet = SQLUtil.execute(sql, "%" + itemID + "%");
 
         String unit = null;
 
@@ -166,7 +166,7 @@ public class InventoryItemsDAOImpl implements InventoryItemsDAO {
 
     public String getItemUnitsByName(String itemName) throws ClassNotFoundException, SQLException {
         String sql = "SELECT UnitsMeasured FROM InventoryItems WHERE Name LIKE ?";
-        ResultSet resultSet = CrudUtil.execute(sql, "%" + itemName.toLowerCase() + "%");
+        ResultSet resultSet = SQLUtil.execute(sql, "%" + itemName.toLowerCase() + "%");
 
         String unit = null;
 
@@ -183,7 +183,7 @@ public class InventoryItemsDAOImpl implements InventoryItemsDAO {
         try {
             // Check current inventory quantity
             String checkInventorySQL = "SELECT Quantity FROM InventoryItems WHERE InventoryItemID = ?";
-            ResultSet inventoryResult = CrudUtil.execute(checkInventorySQL, inventoryItemID);
+            ResultSet inventoryResult = SQLUtil.execute(checkInventorySQL, inventoryItemID);
 
             if (inventoryResult.next()) {
                 double currentQuantity = inventoryResult.getDouble("Quantity");
@@ -191,7 +191,7 @@ public class InventoryItemsDAOImpl implements InventoryItemsDAO {
 
                 // Update inventory with the new quantity
                 String updateInventorySQL = "UPDATE InventoryItems SET Quantity = ? WHERE InventoryItemID = ?";
-                boolean isUpdated = CrudUtil.execute(updateInventorySQL, newQuantity, inventoryItemID);
+                boolean isUpdated = SQLUtil.execute(updateInventorySQL, newQuantity, inventoryItemID);
 
                 if (!isUpdated) {
                     throw new SQLException("Failed to update inventory for item: " + inventoryItemID);
@@ -212,7 +212,7 @@ public class InventoryItemsDAOImpl implements InventoryItemsDAO {
     // Update inventory quantity for the given item in Purchase
     public boolean updateInventoryQuantityForPurchase(String itemID, double unitsBought) throws SQLException, ClassNotFoundException {
         String updateInventorySql = "UPDATE InventoryItems SET Quantity = Quantity - ? WHERE InventoryItemID = ?";
-        return CrudUtil.execute(updateInventorySql, unitsBought, itemID);
+        return SQLUtil.execute(updateInventorySql, unitsBought, itemID);
     }
 
     public boolean decreaseFromInventoryForOrder(String menuItemID, String itemQuantity) throws SQLException, ClassNotFoundException {
@@ -221,7 +221,7 @@ public class InventoryItemsDAOImpl implements InventoryItemsDAO {
         try {
             // Retrieve the required ingredients for the selected menu item
             String getIngredientsSQL = "SELECT InventoryItemID, QuantityNeeded FROM MenuItemIngredients WHERE MenuItemID = ?";
-            ResultSet ingredientsResult = CrudUtil.execute(getIngredientsSQL, menuItemID);
+            ResultSet ingredientsResult = SQLUtil.execute(getIngredientsSQL, menuItemID);
 
             // Loop through each ingredient and check inventory availability
             while (ingredientsResult.next()) {
@@ -231,7 +231,7 @@ public class InventoryItemsDAOImpl implements InventoryItemsDAO {
 
                 // Check if there is enough inventory
                 String checkInventorySQL = "SELECT Quantity FROM InventoryItems WHERE InventoryItemID = ?";
-                ResultSet inventoryResult = CrudUtil.execute(checkInventorySQL, inventoryItemID);
+                ResultSet inventoryResult = SQLUtil.execute(checkInventorySQL, inventoryItemID);
 
                 if (inventoryResult.next()) {
                     double currentQuantity = inventoryResult.getDouble("Quantity");
@@ -245,7 +245,7 @@ public class InventoryItemsDAOImpl implements InventoryItemsDAO {
 
                 // Update the inventory by deducting the total quantity needed
                 String updateInventorySQL = "UPDATE InventoryItems SET Quantity = Quantity - ? WHERE InventoryItemID = ?";
-                boolean isUpdated = CrudUtil.execute(updateInventorySQL, totalQuantityNeeded, inventoryItemID);
+                boolean isUpdated = SQLUtil.execute(updateInventorySQL, totalQuantityNeeded, inventoryItemID);
 
                 if (!isUpdated) {
                     showAlert(Alert.AlertType.INFORMATION, "Info", "Order Failed", "Failed to place Order" );
@@ -267,7 +267,7 @@ public class InventoryItemsDAOImpl implements InventoryItemsDAO {
         try {
 
             String getIngredientsSQL = "SELECT InventoryItemID, QuantityNeeded FROM MenuItemIngredients WHERE MenuItemID = ?";
-            ResultSet ingredientsResult = CrudUtil.execute(getIngredientsSQL, menuItemID);
+            ResultSet ingredientsResult = SQLUtil.execute(getIngredientsSQL, menuItemID);
 
 
             while (ingredientsResult.next()) {
@@ -277,7 +277,7 @@ public class InventoryItemsDAOImpl implements InventoryItemsDAO {
 
 
                 String updateInventorySQL = "UPDATE InventoryItems SET Quantity = Quantity + ? WHERE InventoryItemID = ?";
-                boolean isUpdated = CrudUtil.execute(updateInventorySQL, totalQuantityNeeded, inventoryItemID);
+                boolean isUpdated = SQLUtil.execute(updateInventorySQL, totalQuantityNeeded, inventoryItemID);
 
                 if (!isUpdated) {
                     showAlert(Alert.AlertType.INFORMATION, "Info", "Order Failed", "Failed to place Order" );

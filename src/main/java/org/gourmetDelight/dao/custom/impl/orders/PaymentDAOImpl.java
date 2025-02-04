@@ -3,7 +3,7 @@ package org.gourmetDelight.dao.custom.impl.orders;
 import org.gourmetDelight.dao.custom.PaymentDAO;
 import org.gourmetDelight.db.DBConnection;
 import org.gourmetDelight.entity.Payments;
-import org.gourmetDelight.util.CrudUtil;
+import org.gourmetDelight.dao.SQLUtil;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -24,7 +24,7 @@ public class PaymentDAOImpl implements PaymentDAO {
                     + "ON DUPLICATE KEY UPDATE PaymentMethod = VALUES(PaymentMethod), Amount = VALUES(Amount), PaymentDate = VALUES(PaymentDate)";
 
             // Execute the insert or update query
-            boolean paymentInserted = CrudUtil.execute(insertPaymentSQL,
+            boolean paymentInserted = SQLUtil.execute(insertPaymentSQL,
                     payment.getPaymentID(),
                     payment.getPaymentMethod(),
                     payment.getAmount(),
@@ -51,7 +51,7 @@ public class PaymentDAOImpl implements PaymentDAO {
     @Override
     public boolean save(Payments payment) throws ClassNotFoundException, SQLException {
         String insertPaymentSQL = "INSERT INTO Payments (PaymentID, PaymentMethod, Amount, PaymentDate) VALUES (?, ?, ?, ?)";
-        boolean paymentInserted = CrudUtil.execute(insertPaymentSQL,
+        boolean paymentInserted = SQLUtil.execute(insertPaymentSQL,
                 payment.getPaymentID(),
                 payment.getPaymentMethod(),
                 payment.getAmount(),
@@ -62,7 +62,7 @@ public class PaymentDAOImpl implements PaymentDAO {
     @Override
     public boolean delete(String paymentID) throws ClassNotFoundException, SQLException {
         String deletePaymentSQL = "DELETE FROM Payments WHERE PaymentID = ?";
-        boolean paymentDeleted = CrudUtil.execute(deletePaymentSQL, paymentID);
+        boolean paymentDeleted = SQLUtil.execute(deletePaymentSQL, paymentID);
         return paymentDeleted;
     }
 
@@ -99,7 +99,7 @@ public class PaymentDAOImpl implements PaymentDAO {
 
     @Override
     public String suggestNextID() throws ClassNotFoundException, SQLException {
-        ResultSet rst = CrudUtil.execute("SELECT PaymentID FROM Payments ORDER BY PaymentID DESC LIMIT 1");
+        ResultSet rst = SQLUtil.execute("SELECT PaymentID FROM Payments ORDER BY PaymentID DESC LIMIT 1");
 
         if (rst.next()) {
             String lastId = rst.getString(1);

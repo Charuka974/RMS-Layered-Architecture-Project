@@ -12,16 +12,12 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import org.gourmetDelight.bo.BOFactory;
+import org.gourmetDelight.bo.custom.CustomerBO;
 import org.gourmetDelight.bo.custom.EmployeeBO;
 import org.gourmetDelight.bo.custom.UserBO;
-import org.gourmetDelight.bo.custom.impl.EmployeeBOImpl;
-import org.gourmetDelight.bo.custom.impl.UserBOImpl;
-import org.gourmetDelight.dao.custom.impl.employee.EmployeeDAOImpl;
 import org.gourmetDelight.dto.employee.EmployeeDto;
 import org.gourmetDelight.dto.employee.UserDto;
-import org.gourmetDelight.entity.Employee;
-import org.gourmetDelight.entity.User;
-import org.gourmetDelight.dao.custom.impl.employee.UsersDAOImpl;
 import org.gourmetDelight.util.DateAndTime;
 import org.gourmetDelight.util.KeepUser;
 import org.gourmetDelight.util.ValidateUtil;
@@ -60,10 +56,10 @@ public class UsersController implements Initializable {
     @FXML
     private TableView<UserDto> usersTable;
 
-    private final UserBO userBO = new UserBOImpl();
+    private final UserBO userBO = (UserBO) BOFactory.getInstance().getBO(BOFactory.BOType.USERS);
     private final ValidateUtil validateUtil;
     private final DateAndTime dateAndTime;
-    EmployeeBO employeeBO = new EmployeeBOImpl();
+    EmployeeBO employeeBO = (EmployeeBO) BOFactory.getInstance().getBO(BOFactory.BOType.EMPLOYEE);
 
     public UsersController() {
         this.validateUtil = new ValidateUtil();

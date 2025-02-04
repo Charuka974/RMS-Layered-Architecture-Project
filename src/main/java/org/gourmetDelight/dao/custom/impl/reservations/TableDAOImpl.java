@@ -2,7 +2,7 @@ package org.gourmetDelight.dao.custom.impl.reservations;
 
 import org.gourmetDelight.dao.custom.TableDAO;
 import org.gourmetDelight.entity.Tables;
-import org.gourmetDelight.util.CrudUtil;
+import org.gourmetDelight.dao.SQLUtil;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,7 +13,7 @@ public class TableDAOImpl implements TableDAO {
     @Override
     public ArrayList<Tables> getAll() throws ClassNotFoundException, SQLException {
         String sql = "SELECT TableID, TableNumber, Capacity, Location, Status FROM Tables";
-        ResultSet resultSet = CrudUtil.execute(sql);
+        ResultSet resultSet = SQLUtil.execute(sql);
 
         ArrayList<Tables> tables = new ArrayList<>();
 
@@ -36,7 +36,7 @@ public class TableDAOImpl implements TableDAO {
     @Override
     public boolean save(Tables tablesDto) throws ClassNotFoundException, SQLException {
         String sql = "INSERT INTO Tables (TableID, TableNumber, Capacity, Location, Status) VALUES (?, ?, ?, ?, ?)";
-        boolean result = CrudUtil.execute(sql,
+        boolean result = SQLUtil.execute(sql,
                 tablesDto.getTableID(),
                 tablesDto.getTableNumber(),
                 tablesDto.getCapacity(),
@@ -50,7 +50,7 @@ public class TableDAOImpl implements TableDAO {
     @Override
     public boolean delete(String tableID) throws ClassNotFoundException, SQLException {
         String sql = "DELETE FROM Tables WHERE TableID = ?";
-        boolean result = CrudUtil.execute(sql, tableID);
+        boolean result = SQLUtil.execute(sql, tableID);
         return result;
     }
 
@@ -58,7 +58,7 @@ public class TableDAOImpl implements TableDAO {
     @Override
     public boolean update(Tables tablesDto) throws ClassNotFoundException, SQLException {
         String sql = "UPDATE Tables SET TableNumber = ?, Capacity = ?, Location = ?, Status = ? WHERE TableID = ?";
-        boolean result = CrudUtil.execute(sql,
+        boolean result = SQLUtil.execute(sql,
                 tablesDto.getTableNumber(),
                 tablesDto.getCapacity(),
                 tablesDto.getLocation(),
@@ -71,7 +71,7 @@ public class TableDAOImpl implements TableDAO {
     @Override
     public Tables searchById(String tableID) throws ClassNotFoundException, SQLException {
         String sql = "SELECT * FROM Tables WHERE TableID = ?";
-        ResultSet resultSet = CrudUtil.execute(sql, tableID);
+        ResultSet resultSet = SQLUtil.execute(sql, tableID);
 
         if (resultSet.next()) {
             Tables table = new Tables(
@@ -97,7 +97,7 @@ public class TableDAOImpl implements TableDAO {
 
     public ArrayList<Tables> searchTablesByLocation(String location) throws ClassNotFoundException, SQLException {
         String sql = "SELECT * FROM Tables WHERE Location LIKE ?";
-        ResultSet resultSet = CrudUtil.execute(sql, "%" + location.toLowerCase() + "%");
+        ResultSet resultSet = SQLUtil.execute(sql, "%" + location.toLowerCase() + "%");
 
         ArrayList<Tables> tables = new ArrayList<>();
 
@@ -118,7 +118,7 @@ public class TableDAOImpl implements TableDAO {
 
     public ArrayList<Tables> searchTablesByAvailability(String status) throws ClassNotFoundException, SQLException {
         String sql = "SELECT * FROM Tables WHERE Status = ?";
-        ResultSet resultSet = CrudUtil.execute(sql, status);
+        ResultSet resultSet = SQLUtil.execute(sql, status);
 
         ArrayList<Tables> tables = new ArrayList<>();
 
@@ -140,7 +140,7 @@ public class TableDAOImpl implements TableDAO {
     @Override
     public String suggestNextID() throws ClassNotFoundException, SQLException {
         String sql = "SELECT TableID FROM Tables ORDER BY TableID DESC LIMIT 1";
-        ResultSet resultSet = CrudUtil.execute(sql);
+        ResultSet resultSet = SQLUtil.execute(sql);
 
         if (resultSet.next()) {
             String lastId = resultSet.getString("TableID");
@@ -161,7 +161,7 @@ public class TableDAOImpl implements TableDAO {
         String sql = "SELECT * FROM Tables WHERE Status = ? AND Capacity >= ?";
         ArrayList<Tables> tables = new ArrayList<>();
 
-        try (ResultSet resultSet = CrudUtil.execute(sql, "Available", capacity)) {
+        try (ResultSet resultSet = SQLUtil.execute(sql, "Available", capacity)) {
             while (resultSet.next()) {
                 Tables dto = new Tables(
                         resultSet.getString("TableID"),
@@ -196,7 +196,7 @@ public class TableDAOImpl implements TableDAO {
         String sql = "UPDATE Tables SET Status = ? WHERE TableID = ?";
 
         try {
-            return CrudUtil.execute(sql, newStatus, tableID);
+            return SQLUtil.execute(sql, newStatus, tableID);
         } catch (SQLException | ClassNotFoundException e) {
             System.err.println("Error updating table status for TableID " + tableID + ": " + e.getMessage());
             throw e;

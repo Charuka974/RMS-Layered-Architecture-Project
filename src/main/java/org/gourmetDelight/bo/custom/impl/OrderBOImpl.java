@@ -3,21 +3,15 @@ package org.gourmetDelight.bo.custom.impl;
 import javafx.scene.control.Alert;
 import net.sf.jasperreports.engine.JRException;
 import org.gourmetDelight.bo.custom.OrderBO;
-import org.gourmetDelight.controller.orders.OrdersController;
 import org.gourmetDelight.dao.DAOFactory;
 import org.gourmetDelight.dao.custom.*;
-import org.gourmetDelight.dao.custom.impl.inventory.InventoryItemsDAOImpl;
-import org.gourmetDelight.dao.custom.impl.orders.OrderItemsDAOImpl;
-import org.gourmetDelight.dao.custom.impl.orders.OrdersDAOImpl;
-import org.gourmetDelight.dao.custom.impl.orders.PaymentDAOImpl;
 import org.gourmetDelight.db.DBConnection;
 import org.gourmetDelight.entity.OrderItems;
 import org.gourmetDelight.entity.Orders;
 import org.gourmetDelight.entity.Payments;
-import org.gourmetDelight.util.CrudUtil;
+import org.gourmetDelight.dao.SQLUtil;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -185,7 +179,7 @@ public class OrderBOImpl implements OrderBO {
 
             // Step 1: Get existing order items from the database
             String getOrderItemsSQL = "SELECT MenuItemID, Quantity FROM OrderItems WHERE OrderID = ?";
-            ResultSet existingItemsResult = CrudUtil.execute(getOrderItemsSQL, orderDTO.getOrderID());
+            ResultSet existingItemsResult = SQLUtil.execute(getOrderItemsSQL, orderDTO.getOrderID());
 
             ArrayList<OrderItems> existingOrderItemsDtos = new ArrayList<>();
             while (existingItemsResult.next()) {
@@ -207,7 +201,7 @@ public class OrderBOImpl implements OrderBO {
                 // If the item does not exist in the new list, delete it and restore inventory
                 if (!itemExistsInNewList) {
                     String deleteOrderItemSQL = "DELETE FROM OrderItems WHERE OrderID = ? AND MenuItemID = ?";
-                    boolean itemDeleted = CrudUtil.execute(deleteOrderItemSQL, existingItem.getOrderID(), existingItem.getMenuItemID());
+                    boolean itemDeleted = SQLUtil.execute(deleteOrderItemSQL, existingItem.getOrderID(), existingItem.getMenuItemID());
 
                     if (!itemDeleted || !(inventoryDAO.increaseInventoryForOrder(existingItem.getMenuItemID(), existingItem.getQuantity()))) {
                         connection.rollback();
@@ -218,7 +212,7 @@ public class OrderBOImpl implements OrderBO {
 
             // Step 3: Update the order details
             String updateOrderSQL = "UPDATE Orders SET CustomerID = ?, UserID = ?, OrderDate = ?, TotalAmount = ?, Status = ?, OrderType = ?, ReservationID = ?, PaymentID = ? WHERE OrderID = ?";
-            boolean orderUpdated = CrudUtil.execute(updateOrderSQL,
+            boolean orderUpdated = SQLUtil.execute(updateOrderSQL,
                     orderDTO.getCustomerID(),
                     orderDTO.getUserID(),
                     orderDTO.getOrderDate(),
@@ -238,7 +232,7 @@ public class OrderBOImpl implements OrderBO {
             // Step 4: Process payments
             for (Payments payment : paymentsDtos) {
                 String insertPaymentSQL = "INSERT INTO Payments (PaymentID, PaymentMethod, Amount, PaymentDate) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE PaymentMethod = VALUES(PaymentMethod), Amount = VALUES(Amount), PaymentDate = VALUES(PaymentDate)";
-                boolean paymentInserted = CrudUtil.execute(insertPaymentSQL,
+                boolean paymentInserted = SQLUtil.execute(insertPaymentSQL,
                         payment.getPaymentID(),
                         payment.getPaymentMethod(),
                         payment.getAmount(),
@@ -274,7 +268,7 @@ public class OrderBOImpl implements OrderBO {
 
                         // Update the existing order item
                         String updateOrderItemSQL = "UPDATE OrderItems SET Quantity = ?, Price = ? WHERE OrderID = ? AND MenuItemID = ?";
-                        boolean itemUpdated = CrudUtil.execute(updateOrderItemSQL,
+                        boolean itemUpdated = SQLUtil.execute(updateOrderItemSQL,
                                 newItem.getQuantity(),
                                 newItem.getPrice(),
                                 newItem.getOrderID(),
@@ -291,7 +285,7 @@ public class OrderBOImpl implements OrderBO {
                 // If the item does not exist, insert it as a new order item
                 if (!itemExists) {
                     String insertOrderItemSQL = "INSERT INTO OrderItems (OrderID, MenuItemID, Quantity, Price) VALUES (?, ?, ?, ?)";
-                    boolean itemInserted = CrudUtil.execute(insertOrderItemSQL,
+                    boolean itemInserted = SQLUtil.execute(insertOrderItemSQL,
                             newItem.getOrderID(),
                             newItem.getMenuItemID(),
                             newItem.getQuantity(),

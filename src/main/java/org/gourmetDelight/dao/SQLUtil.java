@@ -1,10 +1,10 @@
-package org.gourmetDelight.util;
+package org.gourmetDelight.dao;
 
 import org.gourmetDelight.db.DBConnection;
 
 import java.sql.*;
 
-public class CrudUtil{
+public class SQLUtil {
     public static <T>T execute(String sql, Object... obj) throws SQLException, ClassNotFoundException {
         Connection connection = DBConnection.getInstance().getConnection();
         PreparedStatement pst = connection.prepareStatement(sql);

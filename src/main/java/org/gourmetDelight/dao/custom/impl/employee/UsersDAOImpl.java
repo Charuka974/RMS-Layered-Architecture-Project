@@ -3,7 +3,7 @@ package org.gourmetDelight.dao.custom.impl.employee;
 import org.gourmetDelight.dao.custom.UsersDAO;
 import org.gourmetDelight.db.DBConnection;
 import org.gourmetDelight.entity.User;
-import org.gourmetDelight.util.CrudUtil;
+import org.gourmetDelight.dao.SQLUtil;
 
 import javax.swing.*;
 import java.sql.PreparedStatement;
@@ -17,7 +17,7 @@ public class UsersDAOImpl implements UsersDAO {
     public ArrayList<User> getAll() throws ClassNotFoundException, SQLException {
         String sql = "SELECT UserID, Username, Password, LoginTime, EmployeeID FROM Users";
 
-        ResultSet resultSet = CrudUtil.execute(sql);
+        ResultSet resultSet = SQLUtil.execute(sql);
 
         ArrayList<User> users = new ArrayList<>();
 
@@ -38,7 +38,7 @@ public class UsersDAOImpl implements UsersDAO {
 
     public boolean save(User userDto) throws ClassNotFoundException, SQLException {
         String sql = "INSERT INTO Users (UserID, Username, Password, LoginTime, EmployeeID) VALUES (?, ?, ?, ?, ?)";
-        Boolean result = CrudUtil.execute(sql,
+        Boolean result = SQLUtil.execute(sql,
                 userDto.getUserId(),
                 userDto.getUsername(),
                 userDto.getPassword(),
@@ -50,13 +50,13 @@ public class UsersDAOImpl implements UsersDAO {
 
     public boolean delete(String userId) throws ClassNotFoundException, SQLException {
         String sql = "DELETE FROM Users WHERE UserID = ?";
-        Boolean result = CrudUtil.execute(sql, userId);
+        Boolean result = SQLUtil.execute(sql, userId);
         return result;
     }
 
     public boolean update(User userDto) throws ClassNotFoundException, SQLException {
         String sql = "UPDATE Users SET Username = ?, Password = ?, LoginTime = ?, EmployeeID = ? WHERE UserID = ?";
-        Boolean result = CrudUtil.execute(sql,
+        Boolean result = SQLUtil.execute(sql,
                 userDto.getUsername(),
                 userDto.getPassword(),
                 userDto.getLoginTime(),
@@ -68,7 +68,7 @@ public class UsersDAOImpl implements UsersDAO {
 
     public User searchById(String userId) throws ClassNotFoundException, SQLException {
         String sql = "SELECT * FROM Users WHERE UserID = ?";
-        ResultSet resultSet = CrudUtil.execute(sql, userId);
+        ResultSet resultSet = SQLUtil.execute(sql, userId);
 
         if (resultSet.next()) {
             User user = new User(
@@ -88,7 +88,7 @@ public class UsersDAOImpl implements UsersDAO {
 
     public ArrayList<User> searchByName(String username) throws ClassNotFoundException, SQLException {
         String sql = "SELECT * FROM Users WHERE Username LIKE ?";
-        ResultSet resultSet = CrudUtil.execute(sql, "%" + username + "%");
+        ResultSet resultSet = SQLUtil.execute(sql, "%" + username + "%");
 
         ArrayList<User> userDtos = new ArrayList<>();
 
@@ -109,7 +109,7 @@ public class UsersDAOImpl implements UsersDAO {
 
     @Override
     public String suggestNextID() throws ClassNotFoundException, SQLException {
-        ResultSet rst = CrudUtil.execute("SELECT UserID FROM Users ORDER BY UserID DESC LIMIT 1");
+        ResultSet rst = SQLUtil.execute("SELECT UserID FROM Users ORDER BY UserID DESC LIMIT 1");
 
         if (rst.next()) {
             String lastId = rst.getString(1);
@@ -125,7 +125,7 @@ public class UsersDAOImpl implements UsersDAO {
 
     public ArrayList<String> searchToHidePassword() throws ClassNotFoundException, SQLException {
         String sql = "SELECT UserID FROM Users";
-        ResultSet resultSet = CrudUtil.execute(sql);
+        ResultSet resultSet = SQLUtil.execute(sql);
 
         ArrayList<String> users = new ArrayList<>();
 

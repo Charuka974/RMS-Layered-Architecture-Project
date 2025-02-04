@@ -1,12 +1,9 @@
 package org.gourmetDelight.dao.custom;
 
 
-import javafx.scene.control.Alert;
 import org.gourmetDelight.dao.CrudDAO;
 import org.gourmetDelight.entity.InventoryItem;
-import org.gourmetDelight.util.CrudUtil;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public interface InventoryItemsDAO extends CrudDAO<InventoryItem> {

@@ -1,9 +1,8 @@
 package org.gourmetDelight.dao.custom.impl.inventory;
 
 import org.gourmetDelight.dao.custom.PurchaseItemsDAO;
-import org.gourmetDelight.dto.inventory.StockPurchaseItemsDto;
 import org.gourmetDelight.entity.StockPurchaseItems;
-import org.gourmetDelight.util.CrudUtil;
+import org.gourmetDelight.dao.SQLUtil;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,7 +17,7 @@ public class PurchaseItemsDAOImpl implements PurchaseItemsDAO {
 
     public boolean save(StockPurchaseItems purchaseItemsDto) throws SQLException, ClassNotFoundException {
             String insertPurchaseItemSQL = "INSERT INTO PurchaseItems (PurchaseID, InventoryItemID, Unit, UnitPrice, UnitsBought, Status) VALUES (?, ?, ?, ?, ?, ?)";
-            return CrudUtil.execute(insertPurchaseItemSQL,
+            return SQLUtil.execute(insertPurchaseItemSQL,
                     purchaseItemsDto.getPurchaseID(),
                     purchaseItemsDto.getInventoryItemID(),
                     purchaseItemsDto.getUnitPerPrice(),
@@ -29,13 +28,13 @@ public class PurchaseItemsDAOImpl implements PurchaseItemsDAO {
 
         public boolean delete(String purchaseID) throws ClassNotFoundException, SQLException {
             String query = "DELETE FROM PurchaseItems WHERE PurchaseID = ?";
-            return CrudUtil.execute(query, purchaseID);
+            return SQLUtil.execute(query, purchaseID);
         }
 
 
         public boolean update(StockPurchaseItems purchaseItemsDto) throws SQLException, ClassNotFoundException {
             String updatePurchaseItemSQL = "UPDATE PurchaseItems SET Unit = ?, UnitPrice = ?, UnitsBought = ?, Status = ? WHERE PurchaseID = ? AND InventoryItemID = ?";
-            return CrudUtil.execute(updatePurchaseItemSQL,
+            return SQLUtil.execute(updatePurchaseItemSQL,
                     purchaseItemsDto.getUnitPerPrice(),
                     purchaseItemsDto.getUnitPrice(),
                     purchaseItemsDto.getUnitsBought(),
@@ -47,7 +46,7 @@ public class PurchaseItemsDAOImpl implements PurchaseItemsDAO {
     @Override
     public StockPurchaseItems searchById(String id) throws ClassNotFoundException, SQLException {
         String query = "SELECT * FROM PurchaseItems WHERE inventoryItemID = ?";
-        ResultSet resultSet = CrudUtil.execute(query, id);
+        ResultSet resultSet = SQLUtil.execute(query, id);
 
         if (resultSet.next()) {  // Move cursor to first row
             return new StockPurchaseItems(
@@ -76,14 +75,14 @@ public class PurchaseItemsDAOImpl implements PurchaseItemsDAO {
 
     public ResultSet fetchItemFromBothIds(StockPurchaseItems purchaseItemsDto) throws ClassNotFoundException, SQLException {
         String fetchItemSQL = "SELECT Status, UnitsBought FROM PurchaseItems WHERE PurchaseID = ? AND InventoryItemID = ?";
-        return CrudUtil.execute(fetchItemSQL, purchaseItemsDto.getPurchaseID(), purchaseItemsDto.getInventoryItemID());
+        return SQLUtil.execute(fetchItemSQL, purchaseItemsDto.getPurchaseID(), purchaseItemsDto.getInventoryItemID());
 
     }
 
     // Fetch purchase items based on purchaseID
     public ArrayList<StockPurchaseItems> fetchPurchaseItems(String purchaseID) throws SQLException, ClassNotFoundException {
         String fetchItemsSql = "SELECT * FROM PurchaseItems WHERE PurchaseID = ?";
-        ResultSet resultSet = CrudUtil.execute(fetchItemsSql, purchaseID);
+        ResultSet resultSet = SQLUtil.execute(fetchItemsSql, purchaseID);
         ArrayList<StockPurchaseItems> items = new ArrayList<>();
         while (resultSet.next()) {
             StockPurchaseItems item = new StockPurchaseItems(

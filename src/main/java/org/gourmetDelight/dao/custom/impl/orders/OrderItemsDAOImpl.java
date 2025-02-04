@@ -2,7 +2,7 @@ package org.gourmetDelight.dao.custom.impl.orders;
 
 import org.gourmetDelight.dao.custom.OrderItemsDAO;
 import org.gourmetDelight.entity.OrderItems;
-import org.gourmetDelight.util.CrudUtil;
+import org.gourmetDelight.dao.SQLUtil;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,7 +19,7 @@ public class OrderItemsDAOImpl implements OrderItemsDAO {
     @Override
     public boolean save(OrderItems item) throws ClassNotFoundException, SQLException {
         String insertOrderItemSQL = "INSERT INTO OrderItems (OrderID, MenuItemID, Quantity, Price) VALUES (?, ?, ?, ?)";
-        boolean itemsInserted = CrudUtil.execute(insertOrderItemSQL,
+        boolean itemsInserted = SQLUtil.execute(insertOrderItemSQL,
                 item.getOrderID(),
                 item.getMenuItemID(),
                 item.getQuantity(),
@@ -30,7 +30,7 @@ public class OrderItemsDAOImpl implements OrderItemsDAO {
     @Override
     public boolean delete(String orderID) throws ClassNotFoundException, SQLException {
         String deleteOrderItemsSQL = "DELETE FROM OrderItems WHERE OrderID = ?";
-        boolean itemsDeleted = CrudUtil.execute(deleteOrderItemsSQL, orderID);
+        boolean itemsDeleted = SQLUtil.execute(deleteOrderItemsSQL, orderID);
         return itemsDeleted;
 
     }
@@ -58,7 +58,7 @@ public class OrderItemsDAOImpl implements OrderItemsDAO {
     @Override
     public ResultSet findByIdReturnResult(String orderID) throws ClassNotFoundException, SQLException {
         String getOrderItemsSQL = "SELECT MenuItemID, Quantity FROM OrderItems WHERE OrderID = ?";
-        ResultSet orderItemsResult = CrudUtil.execute(getOrderItemsSQL, orderID);
+        ResultSet orderItemsResult = SQLUtil.execute(getOrderItemsSQL, orderID);
 
         return orderItemsResult;
     }

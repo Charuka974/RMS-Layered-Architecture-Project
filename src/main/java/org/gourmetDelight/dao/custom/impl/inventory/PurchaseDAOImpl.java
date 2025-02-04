@@ -2,7 +2,7 @@ package org.gourmetDelight.dao.custom.impl.inventory;
 
 import org.gourmetDelight.dao.custom.PurchaseDAO;
 import org.gourmetDelight.entity.StockPurchase;
-import org.gourmetDelight.util.CrudUtil;
+import org.gourmetDelight.dao.SQLUtil;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,7 +19,7 @@ public class PurchaseDAOImpl implements PurchaseDAO {
     @Override
     public boolean save(StockPurchase purchaseDto) throws ClassNotFoundException, SQLException {
         String insertPurchaseSQL = "INSERT INTO Purchases (PurchaseID, SupplierID, TotalAmount, PurchaseDate) VALUES (?, ?, ?, ?)";
-        boolean purchaseInserted = CrudUtil.execute(insertPurchaseSQL,
+        boolean purchaseInserted = SQLUtil.execute(insertPurchaseSQL,
                 purchaseDto.getPurchaseID(),
                 purchaseDto.getSupplierID(),
                 purchaseDto.getTotalAmount(),
@@ -31,14 +31,14 @@ public class PurchaseDAOImpl implements PurchaseDAO {
     @Override
     public boolean delete(String purchaseID) throws ClassNotFoundException, SQLException {
         String deletePurchaseSql = "DELETE FROM Purchases WHERE PurchaseID = ?";
-        return CrudUtil.execute(deletePurchaseSql, purchaseID);
+        return SQLUtil.execute(deletePurchaseSql, purchaseID);
     }
 
 
     @Override
     public boolean update(StockPurchase purchaseDto) throws ClassNotFoundException, SQLException {
         String updatePurchaseSQL = "UPDATE Purchases SET SupplierID = ?, TotalAmount = ?, PurchaseDate = ? WHERE PurchaseID = ?";
-        boolean purchaseUpdated = CrudUtil.execute(updatePurchaseSQL,
+        boolean purchaseUpdated = SQLUtil.execute(updatePurchaseSQL,
                 purchaseDto.getSupplierID(),
                 purchaseDto.getTotalAmount(),
                 purchaseDto.getPurchaseDate(),
@@ -59,7 +59,7 @@ public class PurchaseDAOImpl implements PurchaseDAO {
 
 
     public String suggestNextID() throws ClassNotFoundException, SQLException {
-        ResultSet rst = CrudUtil.execute("SELECT PurchaseID FROM Purchases ORDER BY PurchaseID DESC LIMIT 1");
+        ResultSet rst = SQLUtil.execute("SELECT PurchaseID FROM Purchases ORDER BY PurchaseID DESC LIMIT 1");
 
         if (rst.next()) {
             String lastId = rst.getString(1);

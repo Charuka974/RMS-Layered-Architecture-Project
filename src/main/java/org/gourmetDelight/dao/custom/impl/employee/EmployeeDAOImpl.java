@@ -4,7 +4,7 @@ package org.gourmetDelight.dao.custom.impl.employee;
 import org.gourmetDelight.dao.custom.EmployeeDAO;
 import org.gourmetDelight.db.DBConnection;
 import org.gourmetDelight.entity.Employee;
-import org.gourmetDelight.util.CrudUtil;
+import org.gourmetDelight.dao.SQLUtil;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,7 +16,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
     public ArrayList<Employee> getAll() throws ClassNotFoundException, SQLException {
         String sql = "SELECT employeeID, name, position, phone, email, hireDate FROM employees";
 
-        ResultSet resultSet = CrudUtil.execute(sql);
+        ResultSet resultSet = SQLUtil.execute(sql);
 
         ArrayList<Employee> employees = new ArrayList<>();
 
@@ -39,7 +39,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 
     public boolean save(Employee employeeDto) throws ClassNotFoundException, SQLException {
         String sql = "INSERT INTO employees (employeeID, name, position, phone, email, hireDate) VALUES (?, ?, ?, ?, ?, ?)";
-        Boolean result = CrudUtil.execute(sql,
+        Boolean result = SQLUtil.execute(sql,
                 employeeDto.getEmployeeID(),
                 employeeDto.getName(),
                 employeeDto.getPosition(),
@@ -53,14 +53,14 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 
     public boolean delete(String employeeId) throws ClassNotFoundException, SQLException {
         String sql = "DELETE FROM employees WHERE employeeID = ?";
-        Boolean result = CrudUtil.execute(sql, employeeId);
+        Boolean result = SQLUtil.execute(sql, employeeId);
         return result;
     }
 
 
     public boolean update(Employee employeeDto) throws ClassNotFoundException, SQLException {
         String sql = "UPDATE employees SET name = ?, position = ?, phone = ?, email = ?, hireDate = ? WHERE employeeID = ?";
-        Boolean result = CrudUtil.execute(sql,
+        Boolean result = SQLUtil.execute(sql,
                 employeeDto.getName(),
                 employeeDto.getPosition(),
                 employeeDto.getPhone(),
@@ -74,7 +74,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 
     public Employee searchById(String employeeId) throws ClassNotFoundException, SQLException {
         String sql = "SELECT * FROM employees WHERE employeeID = ?";
-        ResultSet resultSet = CrudUtil.execute(sql, employeeId);
+        ResultSet resultSet = SQLUtil.execute(sql, employeeId);
 
         if (resultSet.next()) {
             Employee employee = new Employee(
@@ -96,7 +96,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 
     public ArrayList<Employee> searchByName(String name) throws ClassNotFoundException, SQLException {
         String sql = "SELECT * FROM employees WHERE name LIKE ?";
-        ResultSet resultSet = CrudUtil.execute(sql, "%" + name.toLowerCase() + "%");
+        ResultSet resultSet = SQLUtil.execute(sql, "%" + name.toLowerCase() + "%");
 
         ArrayList<Employee> employeeDtos = new ArrayList<>();
 
@@ -117,7 +117,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
     }
 
     public String suggestNextID() throws ClassNotFoundException, SQLException {
-        ResultSet rst = CrudUtil.execute("SELECT employeeID FROM employees ORDER BY employeeID DESC LIMIT 1");
+        ResultSet rst = SQLUtil.execute("SELECT employeeID FROM employees ORDER BY employeeID DESC LIMIT 1");
 
         if (rst.next()) {
             String lastId = rst.getString(1);
@@ -132,7 +132,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 
     public String getEmployeeName(String EmployeeID) throws ClassNotFoundException, SQLException {
         String sql = "SELECT name FROM employees WHERE employeeID LIKE ?";
-        ResultSet resultSet = CrudUtil.execute(sql, "%" + EmployeeID + "%");
+        ResultSet resultSet = SQLUtil.execute(sql, "%" + EmployeeID + "%");
 
         String Name = null;
 

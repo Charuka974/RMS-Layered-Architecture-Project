@@ -7,7 +7,7 @@ import javafx.scene.chart.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
-import org.gourmetDelight.util.CrudUtil;
+import org.gourmetDelight.dao.SQLUtil;
 
 import java.io.IOException;
 import java.net.URL;
@@ -71,7 +71,7 @@ public class DashboardController implements Initializable {
                     "FROM OrderItems o " +
                     "JOIN MenuItems m ON o.MenuItemID = m.MenuItemID " +
                     "GROUP BY m.Name";
-            ResultSet resultSet = CrudUtil.execute(query);
+            ResultSet resultSet = SQLUtil.execute(query);
 
             while (resultSet.next()) {
                 String name = resultSet.getString("Name");
@@ -97,7 +97,7 @@ public class DashboardController implements Initializable {
                     "FROM OrderItems o " +
                     "JOIN MenuItems m ON o.MenuItemID = m.MenuItemID " +
                     "GROUP BY m.Category";
-            ResultSet resultSet = CrudUtil.execute(query);
+            ResultSet resultSet = SQLUtil.execute(query);
 
             XYChart.Series<String, Number> series = new XYChart.Series<>();
             series.setName("Revenue");
@@ -128,7 +128,7 @@ public class DashboardController implements Initializable {
                     "FROM Orders " +
                     "GROUP BY OrderDate " +
                     "ORDER BY OrderDate";
-            ResultSet resultSet = CrudUtil.execute(query);
+            ResultSet resultSet = SQLUtil.execute(query);
 
             XYChart.Series<String, Number> series = new XYChart.Series<>();
             series.setName("Orders Over Time");
@@ -153,7 +153,7 @@ public class DashboardController implements Initializable {
             String query = "SELECT OrderType, COUNT(OrderID) AS TotalOrders " +
                     "FROM Orders " +
                     "GROUP BY OrderType";
-            ResultSet resultSet = CrudUtil.execute(query);
+            ResultSet resultSet = SQLUtil.execute(query);
 
             while (resultSet.next()) {
                 String type = resultSet.getString("OrderType");
@@ -177,7 +177,7 @@ public class DashboardController implements Initializable {
 
         try {
             String query = "SELECT Name, Quantity FROM InventoryItems";
-            ResultSet resultSet = CrudUtil.execute(query);
+            ResultSet resultSet = SQLUtil.execute(query);
 
             XYChart.Series<String, Number> series = new XYChart.Series<>();
             series.setName("Current Stock");

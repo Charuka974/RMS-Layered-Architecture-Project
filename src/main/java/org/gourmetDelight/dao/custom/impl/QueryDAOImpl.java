@@ -5,7 +5,7 @@ import org.gourmetDelight.db.DBConnection;
 
 import org.gourmetDelight.entity.custom.ReservationCustom;
 import org.gourmetDelight.entity.custom.StockPurchaseCustom;
-import org.gourmetDelight.util.CrudUtil;
+import org.gourmetDelight.dao.SQLUtil;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -111,7 +111,7 @@ public class QueryDAOImpl implements QueryDAO {
                 "JOIN InventoryItems ii ON pi.InventoryItemID = ii.InventoryItemID " +
                 "JOIN Suppliers s ON p.SupplierID = s.SupplierID";
 
-        ResultSet resultSet = CrudUtil.execute(sql);
+        ResultSet resultSet = SQLUtil.execute(sql);
         ArrayList<StockPurchaseCustom> purchaseList = new ArrayList<>();
 
         while (resultSet.next()) {
@@ -153,7 +153,7 @@ public class QueryDAOImpl implements QueryDAO {
                 "LEFT JOIN TableAssignments ta ON r.ReservationID = ta.ReservationID " +
                 "WHERE r.ReservationID = ?";
 
-        ResultSet resultSet = CrudUtil.execute(sql, reservationID);
+        ResultSet resultSet = SQLUtil.execute(sql, reservationID);
 
         if (resultSet.next()) {
             ReservationCustom reservation = new ReservationCustom(
@@ -179,7 +179,7 @@ public class QueryDAOImpl implements QueryDAO {
                 "LEFT JOIN TableAssignments ta ON r.ReservationID = ta.ReservationID " +
                 "WHERE r.ReservationID = ?";
 
-        try (ResultSet resultSet = CrudUtil.execute(sql, reservationID)) {
+        try (ResultSet resultSet = SQLUtil.execute(sql, reservationID)) {
             if (resultSet.next()) {
                 // Assuming the column "AssignmentTime" is of type TIMESTAMP in the database
                 Timestamp timestamp = resultSet.getTimestamp("AssignmentTime");
@@ -205,7 +205,7 @@ public class QueryDAOImpl implements QueryDAO {
                 "WHERE r.CustomerID = ?";
 
         // Execute the query with the provided customer ID
-        ResultSet resultSet = CrudUtil.execute(sql, customerID);
+        ResultSet resultSet = SQLUtil.execute(sql, customerID);
 
         // List to store reservations for the customer
         ArrayList<ReservationCustom> reservationList = new ArrayList<>();
@@ -240,7 +240,7 @@ public class QueryDAOImpl implements QueryDAO {
                 "WHERE r.ReservationID = ?";
 
         // Execute the query with the provided reservation ID
-        ResultSet resultSet = CrudUtil.execute(sql, resId);
+        ResultSet resultSet = SQLUtil.execute(sql, resId);
 
         // Move the cursor to the first row
         if (resultSet.next()) {  // Ensure there's a record before accessing data
@@ -268,7 +268,7 @@ public class QueryDAOImpl implements QueryDAO {
                 "FROM Reservations r " +
                 "LEFT JOIN TableAssignments ta ON r.ReservationID = ta.ReservationID";
 
-        ResultSet resultSet = CrudUtil.execute(sql);
+        ResultSet resultSet = SQLUtil.execute(sql);
         ArrayList<ReservationCustom> reservations = new ArrayList<>();
 
         while (resultSet.next()) {

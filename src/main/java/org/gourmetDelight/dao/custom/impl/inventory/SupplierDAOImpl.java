@@ -1,10 +1,8 @@
 package org.gourmetDelight.dao.custom.impl.inventory;
 
 import org.gourmetDelight.dao.custom.SupplierDAO;
-import org.gourmetDelight.dto.inventory.SupplierDto;
-import org.gourmetDelight.entity.InventoryItem;
 import org.gourmetDelight.entity.Supplier;
-import org.gourmetDelight.util.CrudUtil;
+import org.gourmetDelight.dao.SQLUtil;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,7 +13,7 @@ public class SupplierDAOImpl implements SupplierDAO {
     // Method to get all suppliers
     public ArrayList<Supplier> getAll() throws ClassNotFoundException, SQLException {
         String sql = "SELECT SupplierID, Name, ContactPerson, Phone, Email, Address, UserID FROM Suppliers";
-        ResultSet resultSet = CrudUtil.execute(sql);
+        ResultSet resultSet = SQLUtil.execute(sql);
 
         ArrayList<Supplier> suppliers = new ArrayList<>();
 
@@ -39,7 +37,7 @@ public class SupplierDAOImpl implements SupplierDAO {
     // Method to save a supplier
     public boolean save(Supplier supplierDto) throws ClassNotFoundException, SQLException {
         String sql = "INSERT INTO Suppliers (SupplierID, Name, ContactPerson, Phone, Email, Address, UserID) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        Boolean result = CrudUtil.execute(sql,
+        Boolean result = SQLUtil.execute(sql,
                 supplierDto.getSupplierID(),
                 supplierDto.getName(),
                 supplierDto.getContactPerson(),
@@ -54,14 +52,14 @@ public class SupplierDAOImpl implements SupplierDAO {
     // Method to delete a supplier by ID
     public boolean delete(String supplierID) throws ClassNotFoundException, SQLException {
         String sql = "DELETE FROM Suppliers WHERE SupplierID = ?";
-        Boolean result = CrudUtil.execute(sql, supplierID);
+        Boolean result = SQLUtil.execute(sql, supplierID);
         return result;
     }
 
     // Method to update supplier details
     public boolean update(Supplier supplierDto) throws ClassNotFoundException, SQLException {
         String sql = "UPDATE Suppliers SET Name = ?, ContactPerson = ?, Phone = ?, Email = ?, Address = ? WHERE SupplierID = ?";
-        Boolean result = CrudUtil.execute(sql,
+        Boolean result = SQLUtil.execute(sql,
                 supplierDto.getName(),
                 supplierDto.getContactPerson(),
                 supplierDto.getPhone(),
@@ -75,7 +73,7 @@ public class SupplierDAOImpl implements SupplierDAO {
     // Method to search for a supplier by ID
     public Supplier searchById(String supplierID) throws ClassNotFoundException, SQLException {
         String sql = "SELECT * FROM Suppliers WHERE SupplierID = ?";
-        ResultSet resultSet = CrudUtil.execute(sql, supplierID);
+        ResultSet resultSet = SQLUtil.execute(sql, supplierID);
 
         if (resultSet.next()) {
             Supplier supplier = new Supplier(
@@ -98,7 +96,7 @@ public class SupplierDAOImpl implements SupplierDAO {
     // Method to search suppliers by name
     public ArrayList<Supplier> searchByName(String name) throws ClassNotFoundException, SQLException {
         String sql = "SELECT * FROM Suppliers WHERE Name LIKE ?";
-        ResultSet resultSet = CrudUtil.execute(sql, "%" + name.toLowerCase() + "%");
+        ResultSet resultSet = SQLUtil.execute(sql, "%" + name.toLowerCase() + "%");
 
         ArrayList<Supplier> supplierDtos = new ArrayList<>();
 
@@ -121,7 +119,7 @@ public class SupplierDAOImpl implements SupplierDAO {
 
     // Method to suggest the next SupplierID
     public String suggestNextID() throws ClassNotFoundException, SQLException {
-        ResultSet rst = CrudUtil.execute("SELECT SupplierID FROM Suppliers ORDER BY SupplierID DESC LIMIT 1");
+        ResultSet rst = SQLUtil.execute("SELECT SupplierID FROM Suppliers ORDER BY SupplierID DESC LIMIT 1");
 
         if (rst.next()) {
             String lastId = rst.getString(1);

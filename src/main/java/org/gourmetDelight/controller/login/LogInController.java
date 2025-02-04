@@ -14,10 +14,10 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import org.gourmetDelight.bo.BOFactory;
 import org.gourmetDelight.bo.custom.EmployeeBO;
 import org.gourmetDelight.bo.custom.UserBO;
-import org.gourmetDelight.bo.custom.impl.EmployeeBOImpl;
-import org.gourmetDelight.bo.custom.impl.UserBOImpl;
+
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -65,8 +65,8 @@ public class LogInController {
     @FXML
     private Pane loginBodyPane;
 
-    private final UserBO userBO = new UserBOImpl();
-    EmployeeBO employeeBO = new EmployeeBOImpl();
+    UserBO userBO = (UserBO) BOFactory.getInstance().getBO(BOFactory.BOType.USERS);
+    EmployeeBO employeeBO = (EmployeeBO) BOFactory.getInstance().getBO(BOFactory.BOType.EMPLOYEE);
 
     public LogInController() {
 

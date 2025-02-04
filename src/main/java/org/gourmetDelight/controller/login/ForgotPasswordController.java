@@ -8,10 +8,9 @@ import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import org.gourmetDelight.bo.BOFactory;
 import org.gourmetDelight.bo.custom.EmployeeBO;
 import org.gourmetDelight.bo.custom.UserBO;
-import org.gourmetDelight.bo.custom.impl.EmployeeBOImpl;
-import org.gourmetDelight.bo.custom.impl.UserBOImpl;
 
 
 import org.gourmetDelight.util.EmailUtil;
@@ -84,8 +83,8 @@ public class ForgotPasswordController {
 
     ValidateUtil validateUtil = new ValidateUtil();
 
-    private final UserBO userBO = new UserBOImpl();
-    EmployeeBO employeeBO = new EmployeeBOImpl();
+    private final UserBO userBO = (UserBO) BOFactory.getInstance().getBO(BOFactory.BOType.USERS);
+    EmployeeBO employeeBO = (EmployeeBO) BOFactory.getInstance().getBO(BOFactory.BOType.EMPLOYEE);
 
     public ForgotPasswordController() {
 

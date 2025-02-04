@@ -4,11 +4,9 @@ import javafx.scene.control.Alert;
 import org.gourmetDelight.dao.custom.EmployeeDAO;
 import org.gourmetDelight.dao.custom.ReminderDAO;
 import org.gourmetDelight.dao.custom.impl.employee.EmployeeDAOImpl;
-import org.gourmetDelight.db.DBConnection;
-import org.gourmetDelight.util.CrudUtil;
+import org.gourmetDelight.dao.SQLUtil;
 import org.gourmetDelight.util.DateAndTime;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -27,7 +25,7 @@ public class ReminderDAOImpl implements ReminderDAO {
         String sql = "SELECT StartingDate, Duration FROM Reminder WHERE ReminderID = ?";
 
         try {
-            ResultSet resultSet = CrudUtil.execute(sql, reminderID);
+            ResultSet resultSet = SQLUtil.execute(sql, reminderID);
 
             if (resultSet != null && resultSet.next()) {
                 String startingDateString = resultSet.getString("StartingDate");
@@ -72,7 +70,7 @@ public class ReminderDAOImpl implements ReminderDAO {
             // Format the new StartingDate as a string
             String formattedDate = newStartingDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
-            boolean isUpdated = CrudUtil.execute(updateSql, formattedDate, reminderID);
+            boolean isUpdated = SQLUtil.execute(updateSql, formattedDate, reminderID);
 
             if (isUpdated) {
                 System.out.println("\nStarting date updated to: " + formattedDate);

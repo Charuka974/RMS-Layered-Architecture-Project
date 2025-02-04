@@ -13,10 +13,10 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import org.gourmetDelight.bo.BOFactory;
+import org.gourmetDelight.bo.custom.CustomerBO;
 import org.gourmetDelight.bo.custom.EmployeeBO;
-import org.gourmetDelight.bo.custom.impl.EmployeeBOImpl;
 import org.gourmetDelight.dto.employee.EmployeeDto;
-import org.gourmetDelight.dao.custom.impl.employee.EmployeeDAOImpl;
 import org.gourmetDelight.util.DateAndTime;
 import org.gourmetDelight.util.Navigations;
 import org.gourmetDelight.util.ValidateUtil;
@@ -106,7 +106,7 @@ public class EmployeeController implements Initializable {
 
 
     ValidateUtil validateUtil = new ValidateUtil();
-    EmployeeBO employeeBO = new EmployeeBOImpl();
+    EmployeeBO employeeBO = (EmployeeBO) BOFactory.getInstance().getBO(BOFactory.BOType.EMPLOYEE);
 
     public EmployeeController() {
 

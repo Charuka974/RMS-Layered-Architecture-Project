@@ -15,8 +15,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 
 
+import org.gourmetDelight.bo.BOFactory;
+import org.gourmetDelight.bo.custom.CustomerBO;
 import org.gourmetDelight.bo.custom.InventoryItemsBO;
-import org.gourmetDelight.bo.custom.impl.InventoryItemsBOImpl;
 import org.gourmetDelight.dto.inventory.InventoryItemDto;
 import org.gourmetDelight.util.Navigations;
 import org.gourmetDelight.util.ValidateUtil;
@@ -32,7 +33,7 @@ import java.util.ResourceBundle;
 
 public class InventoryController implements Initializable {
 
-    InventoryItemsBO inventoryItemsBO = new InventoryItemsBOImpl();
+    InventoryItemsBO inventoryItemsBO = (InventoryItemsBO) BOFactory.getInstance().getBO(BOFactory.BOType.INVENTORY);
 
     @FXML
     private JFXButton ItemIdSearchBtn;

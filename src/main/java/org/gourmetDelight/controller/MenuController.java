@@ -13,12 +13,10 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import org.gourmetDelight.bo.BOFactory;
 import org.gourmetDelight.bo.custom.InventoryItemsBO;
 import org.gourmetDelight.bo.custom.MenuItemBO;
 import org.gourmetDelight.bo.custom.MenuItemIngredientsBO;
-import org.gourmetDelight.bo.custom.impl.InventoryItemsBOImpl;
-import org.gourmetDelight.bo.custom.impl.MenuItemBOImpl;
-import org.gourmetDelight.bo.custom.impl.MenuItemIngredientsBOImpl;
 import org.gourmetDelight.dto.menuItems.MenuItemDto;
 import org.gourmetDelight.dto.menuItems.MenuItemIngredientsDto;
 import org.gourmetDelight.util.ValidateUtil;
@@ -33,8 +31,8 @@ import java.util.ResourceBundle;
 
 public class MenuController implements Initializable {
 
-    MenuItemIngredientsBO menuItemIngredientsBO = new MenuItemIngredientsBOImpl();
-    InventoryItemsBO inventoryItemsBO = new InventoryItemsBOImpl();
+    MenuItemIngredientsBO menuItemIngredientsBO = (MenuItemIngredientsBO) BOFactory.getInstance().getBO(BOFactory.BOType.MENU_ITEM_INGREDIENTS);
+    InventoryItemsBO inventoryItemsBO = (InventoryItemsBO) BOFactory.getInstance().getBO(BOFactory.BOType.INVENTORY);
 
     @FXML
     private TableColumn<MenuItemDto, String> menuItemIdCol;
@@ -72,7 +70,7 @@ public class MenuController implements Initializable {
     @FXML
     private AnchorPane menuAnchorPane;
 
-    MenuItemBO menuItemBO = new MenuItemBOImpl();
+    MenuItemBO menuItemBO = (MenuItemBO) BOFactory.getInstance().getBO(BOFactory.BOType.MENU_ITEM);
     private final ValidateUtil validateUtil = new ValidateUtil();
 
     public MenuController() {

@@ -2,7 +2,7 @@ package org.gourmetDelight.dao.custom.impl.menuItems;
 
 import org.gourmetDelight.dao.custom.MenuItemDAO;
 import org.gourmetDelight.entity.MenuItem;
-import org.gourmetDelight.util.CrudUtil;
+import org.gourmetDelight.dao.SQLUtil;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,7 +12,7 @@ public class MenuItemDAOImpl implements MenuItemDAO {
 
     public ArrayList<MenuItem> getAll() throws ClassNotFoundException, SQLException {
         String sql = "SELECT MenuItemID, Name, Description, Price, Category, KitchenSection FROM MenuItems";
-        ResultSet resultSet = CrudUtil.execute(sql);
+        ResultSet resultSet = SQLUtil.execute(sql);
 
         ArrayList<MenuItem> menuItems = new ArrayList<>();
 
@@ -34,7 +34,7 @@ public class MenuItemDAOImpl implements MenuItemDAO {
 
     public boolean save(MenuItem menuItemDto) throws ClassNotFoundException, SQLException {
         String sql = "INSERT INTO MenuItems (MenuItemID, Name, Description, Price, Category, KitchenSection) VALUES (?, ?, ?, ?, ?, ?)";
-        Boolean result = CrudUtil.execute(sql,
+        Boolean result = SQLUtil.execute(sql,
                 menuItemDto.getMenuItemID(),
                 menuItemDto.getName(),
                 menuItemDto.getDescription(),
@@ -47,13 +47,13 @@ public class MenuItemDAOImpl implements MenuItemDAO {
 
     public boolean delete(String menuItemId) throws ClassNotFoundException, SQLException {
         String sql = "DELETE FROM MenuItems WHERE MenuItemID = ?";
-        Boolean result = CrudUtil.execute(sql, menuItemId);
+        Boolean result = SQLUtil.execute(sql, menuItemId);
         return result;
     }
 
     public boolean update(MenuItem menuItemDto) throws ClassNotFoundException, SQLException {
         String sql = "UPDATE MenuItems SET Name = ?, Description = ?, Price = ?, Category = ?, KitchenSection = ? WHERE MenuItemID = ?";
-        Boolean result = CrudUtil.execute(sql,
+        Boolean result = SQLUtil.execute(sql,
                 menuItemDto.getName(),
                 menuItemDto.getDescription(),
                 menuItemDto.getPrice(),
@@ -66,7 +66,7 @@ public class MenuItemDAOImpl implements MenuItemDAO {
 
     public MenuItem searchById(String menuItemId) throws ClassNotFoundException, SQLException {
         String sql = "SELECT * FROM MenuItems WHERE MenuItemID = ?";
-        ResultSet resultSet = CrudUtil.execute(sql, menuItemId);
+        ResultSet resultSet = SQLUtil.execute(sql, menuItemId);
 
         if (resultSet.next()) {
             MenuItem menuItem = new MenuItem(
@@ -87,7 +87,7 @@ public class MenuItemDAOImpl implements MenuItemDAO {
 
     public ArrayList<MenuItem> searchByName(String name) throws ClassNotFoundException, SQLException {
         String sql = "SELECT * FROM MenuItems WHERE Name LIKE ?";
-        ResultSet resultSet = CrudUtil.execute(sql, "%" + name.toLowerCase() + "%");
+        ResultSet resultSet = SQLUtil.execute(sql, "%" + name.toLowerCase() + "%");
 
         ArrayList<MenuItem> menuItems = new ArrayList<>();
 
@@ -109,7 +109,7 @@ public class MenuItemDAOImpl implements MenuItemDAO {
     
 
     public String suggestNextID() throws ClassNotFoundException, SQLException {
-        ResultSet rst = CrudUtil.execute("SELECT MenuItemID FROM MenuItems ORDER BY MenuItemID DESC LIMIT 1");
+        ResultSet rst = SQLUtil.execute("SELECT MenuItemID FROM MenuItems ORDER BY MenuItemID DESC LIMIT 1");
 
         if (rst.next()) {
             String lastId = rst.getString(1);

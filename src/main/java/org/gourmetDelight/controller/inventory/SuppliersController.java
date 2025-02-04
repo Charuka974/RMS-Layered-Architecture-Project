@@ -12,8 +12,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import org.gourmetDelight.bo.BOFactory;
+import org.gourmetDelight.bo.custom.CustomerBO;
 import org.gourmetDelight.bo.custom.SupplierBO;
-import org.gourmetDelight.bo.custom.impl.SupplierBOImpl;
 import org.gourmetDelight.dto.inventory.SupplierDto;
 import org.gourmetDelight.util.KeepUser;
 import org.gourmetDelight.util.ValidateUtil;
@@ -52,7 +53,7 @@ public class SuppliersController implements Initializable {
     @FXML
     private AnchorPane suppliersAnchorPane;
 
-    SupplierBO supplierBO = new SupplierBOImpl();
+    SupplierBO supplierBO = (SupplierBO) BOFactory.getInstance().getBO(BOFactory.BOType.SUPPLIER);
     private final ValidateUtil validateUtil = new ValidateUtil();
 
     public SuppliersController() {

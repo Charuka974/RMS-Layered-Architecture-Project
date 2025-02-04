@@ -2,7 +2,7 @@ package org.gourmetDelight.dao.custom.impl.menuItems;
 
 import org.gourmetDelight.dao.custom.MenuItemIngredientsDAO;
 import org.gourmetDelight.entity.MenuItemIngredients;
-import org.gourmetDelight.util.CrudUtil;
+import org.gourmetDelight.dao.SQLUtil;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,7 +13,7 @@ public class MenuItemIngredientsDAOImpl implements MenuItemIngredientsDAO {
     // Retrieve all ingredient items for a specific menu item
     public ArrayList<MenuItemIngredients> getAll(String menuItemID) throws ClassNotFoundException, SQLException {
         String sql = "SELECT * FROM MenuItemIngredients WHERE MenuItemID = ?";
-        ResultSet resultSet = CrudUtil.execute(sql, menuItemID);
+        ResultSet resultSet = SQLUtil.execute(sql, menuItemID);
 
         ArrayList<MenuItemIngredients> ingredients = new ArrayList<>();
 
@@ -38,7 +38,7 @@ public class MenuItemIngredientsDAOImpl implements MenuItemIngredientsDAO {
     // Save a new ingredient item
     public boolean save(MenuItemIngredients menuItemIngredientsDto) throws ClassNotFoundException, SQLException {
         String sql = "INSERT INTO MenuItemIngredients (MenuItemID, InventoryItemID, QuantityNeeded) VALUES (?, ?, ?)";
-        boolean result = CrudUtil.execute(sql,
+        boolean result = SQLUtil.execute(sql,
                 menuItemIngredientsDto.getMenuItemID(),
                 menuItemIngredientsDto.getInventoryItemID(),
                 menuItemIngredientsDto.getQuantityNeeded()
@@ -54,14 +54,14 @@ public class MenuItemIngredientsDAOImpl implements MenuItemIngredientsDAO {
     // Delete an ingredient item by MenuItemID and InventoryItemID
     public String delete(String menuItemID, String inventoryItemID) throws ClassNotFoundException, SQLException {
         String sql = "DELETE FROM MenuItemIngredients WHERE MenuItemID = ? AND InventoryItemID = ?";
-        boolean result = CrudUtil.execute(sql, menuItemID, inventoryItemID);
+        boolean result = SQLUtil.execute(sql, menuItemID, inventoryItemID);
         return result ? "Successfully deleted" : "Failed to delete";
     }
 
     // Update an existing ingredient item
     public boolean update(MenuItemIngredients menuItemIngredientsDto) throws ClassNotFoundException, SQLException {
         String sql = "UPDATE MenuItemIngredients SET QuantityNeeded = ? WHERE MenuItemID = ? AND InventoryItemID = ?";
-        boolean result = CrudUtil.execute(sql,
+        boolean result = SQLUtil.execute(sql,
                 menuItemIngredientsDto.getQuantityNeeded(),
                 menuItemIngredientsDto.getMenuItemID(),
                 menuItemIngredientsDto.getInventoryItemID()
@@ -87,7 +87,7 @@ public class MenuItemIngredientsDAOImpl implements MenuItemIngredientsDAO {
     // Search for an ingredient item by MenuItemID and InventoryItemID
     public MenuItemIngredients searchIngredientItem(String menuItemID, String inventoryItemID) throws ClassNotFoundException, SQLException {
         String sql = "SELECT * FROM MenuItemIngredients WHERE MenuItemID = ? AND InventoryItemID = ?";
-        ResultSet resultSet = CrudUtil.execute(sql, menuItemID, inventoryItemID);
+        ResultSet resultSet = SQLUtil.execute(sql, menuItemID, inventoryItemID);
 
         if (resultSet.next()) {
             String menuID = resultSet.getString("MenuItemID");
@@ -105,7 +105,7 @@ public class MenuItemIngredientsDAOImpl implements MenuItemIngredientsDAO {
     // Retrieve all ingredient items containing a specific inventory item ID
     public ArrayList<MenuItemIngredients> searchIngredientsByInventoryItemID(String inventoryItemID) throws ClassNotFoundException, SQLException {
         String sql = "SELECT * FROM MenuItemIngredients WHERE InventoryItemID = ?";
-        ResultSet resultSet = CrudUtil.execute(sql, inventoryItemID);
+        ResultSet resultSet = SQLUtil.execute(sql, inventoryItemID);
 
         ArrayList<MenuItemIngredients> ingredients = new ArrayList<>();
 

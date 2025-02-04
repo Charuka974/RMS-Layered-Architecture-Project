@@ -25,7 +25,7 @@ import java.util.ArrayList;
 
 public class PurchaseBOImpl implements PurchaseBO {
 
-    PurchaseDAO purchaseDAO = (PurchaseDAO) DAOFactory.getInstance().getDAO(DAOFactory.DAOType.CUSTOMER);
+    PurchaseDAO purchaseDAO = (PurchaseDAO) DAOFactory.getInstance().getDAO(DAOFactory.DAOType.STOCK_PURCHASE);
     PurchaseItemsDAO purchaseItemsDAO = (PurchaseItemsDAO) DAOFactory.getInstance().getDAO(DAOFactory.DAOType.PURCHASE_ITEMS);
     InventoryItemsDAO  inventoryItemsDAO = (InventoryItemsDAO) DAOFactory.getInstance().getDAO(DAOFactory.DAOType.INVENTORY);
     QueryDAO queryDAO = (QueryDAO) DAOFactory.getInstance().getDAO(DAOFactory.DAOType.QUERY);

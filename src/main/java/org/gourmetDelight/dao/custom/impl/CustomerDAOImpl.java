@@ -1,9 +1,8 @@
 package org.gourmetDelight.dao.custom.impl;
 
 import org.gourmetDelight.dao.custom.CustomerDAO;
-import org.gourmetDelight.dto.CustomerDto;
 import org.gourmetDelight.entity.Customer;
-import org.gourmetDelight.util.CrudUtil;
+import org.gourmetDelight.dao.SQLUtil;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,7 +13,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 
     public ArrayList<Customer> getAll() throws ClassNotFoundException, SQLException {
         String sql = "SELECT CustomerID, Name, Phone, Email, Address, UserID FROM Customers";
-        ResultSet resultSet = CrudUtil.execute(sql);
+        ResultSet resultSet = SQLUtil.execute(sql);
 
         ArrayList<Customer> customers = new ArrayList<>();
 
@@ -37,7 +36,7 @@ public class CustomerDAOImpl implements CustomerDAO {
     @Override
     public boolean save(Customer customerDto) throws ClassNotFoundException, SQLException {
         String sql = "INSERT INTO Customers (CustomerID, Name, Phone, Email, Address, UserID) VALUES (?, ?, ?, ?, ?, ?)";
-        Boolean result = CrudUtil.execute(sql,
+        Boolean result = SQLUtil.execute(sql,
                 customerDto.getCustomerID(),
                 customerDto.getCusName(),
                 customerDto.getCusPhone(),
@@ -51,14 +50,14 @@ public class CustomerDAOImpl implements CustomerDAO {
 
     public boolean delete(String customerId) throws ClassNotFoundException, SQLException {
         String sql = "DELETE FROM Customers WHERE CustomerID = ?";
-        Boolean result = CrudUtil.execute(sql, customerId);
+        Boolean result = SQLUtil.execute(sql, customerId);
         return result;
     }
 
     @Override
     public boolean update(Customer customerDto) throws ClassNotFoundException, SQLException {
         String sql = "UPDATE Customers SET Name = ?, Phone = ?, Email = ?, Address = ? WHERE CustomerID = ?";
-        Boolean result = CrudUtil.execute(sql,
+        Boolean result = SQLUtil.execute(sql,
                 customerDto.getCusName(),
                 customerDto.getCusPhone(),
                 customerDto.getCusEmail(),
@@ -71,7 +70,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 
     public Customer searchById(String customerId) throws ClassNotFoundException, SQLException {
         String sql = "SELECT * FROM Customers WHERE CustomerID = ?";
-        ResultSet resultSet = CrudUtil.execute(sql, customerId);
+        ResultSet resultSet = SQLUtil.execute(sql, customerId);
 
         if (resultSet.next()) {
             Customer customer = new Customer(
@@ -93,7 +92,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 
     public ArrayList<Customer> searchByName(String name) throws ClassNotFoundException, SQLException {
         String sql = "SELECT * FROM Customers WHERE Name LIKE ?";
-        ResultSet resultSet = CrudUtil.execute(sql, "%" + name.toLowerCase() + "%");
+        ResultSet resultSet = SQLUtil.execute(sql, "%" + name.toLowerCase() + "%");
 
         ArrayList<Customer> customerDtos = new ArrayList<>();
 
@@ -114,7 +113,7 @@ public class CustomerDAOImpl implements CustomerDAO {
     }
 
     public String suggestNextID() throws ClassNotFoundException, SQLException {
-        ResultSet rst = CrudUtil.execute("SELECT CustomerID FROM Customers ORDER BY CustomerID DESC LIMIT 1");
+        ResultSet rst = SQLUtil.execute("SELECT CustomerID FROM Customers ORDER BY CustomerID DESC LIMIT 1");
 
         if (rst.next()) {
             String lastId = rst.getString(1);

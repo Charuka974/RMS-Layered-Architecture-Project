@@ -3,16 +3,11 @@ package org.gourmetDelight.dao.custom.impl.orders;
 import javafx.scene.control.Alert;
 import net.sf.jasperreports.engine.JRException;
 import org.gourmetDelight.controller.orders.OrdersController;
-import org.gourmetDelight.dao.custom.InventoryItemsDAO;
-import org.gourmetDelight.dao.custom.OrderItemsDAO;
 import org.gourmetDelight.dao.custom.OrdersDAO;
-import org.gourmetDelight.dao.custom.PaymentDAO;
-import org.gourmetDelight.dao.custom.impl.inventory.InventoryItemsDAOImpl;
 import org.gourmetDelight.db.DBConnection;
 import org.gourmetDelight.entity.OrderItems;
 import org.gourmetDelight.entity.Orders;
-import org.gourmetDelight.entity.Payments;
-import org.gourmetDelight.util.CrudUtil;
+import org.gourmetDelight.dao.SQLUtil;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -27,7 +22,7 @@ public class OrdersDAOImpl implements OrdersDAO {
 
     @Override
     public String suggestNextID() throws ClassNotFoundException, SQLException {
-        ResultSet rst = CrudUtil.execute("SELECT OrderID FROM Orders ORDER BY OrderID DESC LIMIT 1");
+        ResultSet rst = SQLUtil.execute("SELECT OrderID FROM Orders ORDER BY OrderID DESC LIMIT 1");
 
         if (rst.next()) {
             String lastId = rst.getString(1);
@@ -72,7 +67,7 @@ public class OrdersDAOImpl implements OrdersDAO {
 
     public ResultSet findByIdAndReturnResult(String orderID) throws SQLException, ClassNotFoundException {
         String getPaymentIdSQL = "SELECT PaymentID FROM Orders WHERE OrderID = ?";
-        ResultSet paymentResult = CrudUtil.execute(getPaymentIdSQL, orderID);
+        ResultSet paymentResult = SQLUtil.execute(getPaymentIdSQL, orderID);
         return paymentResult;
     }
 
@@ -115,7 +110,7 @@ public class OrdersDAOImpl implements OrdersDAO {
             showAlert(Alert.AlertType.WARNING, "info", "Order ID is not found", "Failed to complete Order" );
         }else {
             String query = "UPDATE Orders SET Status = 'Completed' WHERE OrderID = ?";
-            if(CrudUtil.execute(query, orderID)){
+            if(SQLUtil.execute(query, orderID)){
                 showAlert(Alert.AlertType.INFORMATION, "info", "Order Completed", "Completed the order" );
                 OrdersController ordersController = new OrdersController();
                 ordersController.showTheBill(orderID);
@@ -136,7 +131,7 @@ public class OrdersDAOImpl implements OrdersDAO {
     @Override
     public boolean save(Orders orderDTO) throws ClassNotFoundException, SQLException {
         String insertOrderSQL = "INSERT INTO Orders (OrderID, CustomerID, UserID, OrderDate, TotalAmount, Status, OrderType, ReservationID, PaymentID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        boolean orderInserted = CrudUtil.execute(insertOrderSQL,
+        boolean orderInserted = SQLUtil.execute(insertOrderSQL,
                 orderDTO.getOrderID(),
                 orderDTO.getCustomerID(),
                 orderDTO.getUserID(),
@@ -152,7 +147,7 @@ public class OrdersDAOImpl implements OrdersDAO {
     @Override
     public boolean delete(String orderID) throws ClassNotFoundException, SQLException {
         String deleteOrderSQL = "DELETE FROM Orders WHERE OrderID = ?";
-        boolean orderDeleted = CrudUtil.execute(deleteOrderSQL, orderID);
+        boolean orderDeleted = SQLUtil.execute(deleteOrderSQL, orderID);
         return orderDeleted;
     }
 

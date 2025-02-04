@@ -2,14 +2,10 @@ package org.gourmetDelight.bo.custom.impl;
 
 import org.gourmetDelight.bo.custom.PurchaseItemsBO;
 import org.gourmetDelight.dao.DAOFactory;
-import org.gourmetDelight.dao.custom.CustomerDAO;
 import org.gourmetDelight.dao.custom.PurchaseItemsDAO;
-import org.gourmetDelight.dao.custom.impl.inventory.PurchaseItemsDAOImpl;
 import org.gourmetDelight.dto.inventory.StockPurchaseItemsDto;
 import org.gourmetDelight.entity.StockPurchaseItems;
-import org.gourmetDelight.util.CrudUtil;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 

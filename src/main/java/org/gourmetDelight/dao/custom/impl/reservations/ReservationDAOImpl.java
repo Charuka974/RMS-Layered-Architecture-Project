@@ -1,17 +1,14 @@
 package org.gourmetDelight.dao.custom.impl.reservations;
 
-import org.gourmetDelight.dao.custom.QueryDAO;
 import org.gourmetDelight.dao.custom.ReservationDAO;
 import org.gourmetDelight.dao.custom.TableAssignmentsDAO;
 import org.gourmetDelight.dao.custom.TableDAO;
-import org.gourmetDelight.dao.custom.impl.QueryDAOImpl;
 import org.gourmetDelight.entity.Reservation;
 import org.gourmetDelight.entity.TableAssignments;
-import org.gourmetDelight.util.CrudUtil;
+import org.gourmetDelight.dao.SQLUtil;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
@@ -35,7 +32,7 @@ public class ReservationDAOImpl implements ReservationDAO {
         // Step 1: Insert the reservation into the Reservations table
         String sql = "INSERT INTO Reservations (ReservationID, CustomerID, ReservationDate, NumberOfGuests, SpecialRequests, Status) " +
                 "VALUES (?, ?, ?, ?, ?, ?)";
-        boolean result = CrudUtil.execute(sql,
+        boolean result = SQLUtil.execute(sql,
                 reservationDto.getReservationID(),
                 reservationDto.getCustomerID(),
                 reservationDto.getReservationDate(),
@@ -79,7 +76,7 @@ public class ReservationDAOImpl implements ReservationDAO {
 
             // Step 5: Delete the reservation
             String deleteReservationSql = "DELETE FROM Reservations WHERE ReservationID = ?";
-            boolean reservationDeleted = CrudUtil.execute(deleteReservationSql, reservationID);
+            boolean reservationDeleted = SQLUtil.execute(deleteReservationSql, reservationID);
 
             return reservationDeleted;
         }
@@ -102,7 +99,7 @@ public class ReservationDAOImpl implements ReservationDAO {
     public boolean update(Reservation reservationDto, String newTableID, LocalDateTime assignDateTime) throws ClassNotFoundException, SQLException {
         String sql = "UPDATE Reservations SET CustomerID = ?, ReservationDate = ?, NumberOfGuests = ?, SpecialRequests = ?, Status = ? " +
                 "WHERE ReservationID = ?";
-        boolean result = CrudUtil.execute(sql,
+        boolean result = SQLUtil.execute(sql,
                 reservationDto.getCustomerID(),
                 reservationDto.getReservationDate(),
                 reservationDto.getNumberOfGuests(),
@@ -130,7 +127,7 @@ public class ReservationDAOImpl implements ReservationDAO {
     // 6. Suggest the next reservation ID
     public String suggestNextID() throws ClassNotFoundException, SQLException {
         String sql = "SELECT ReservationID FROM Reservations ORDER BY ReservationID DESC LIMIT 1";
-        ResultSet resultSet = CrudUtil.execute(sql);
+        ResultSet resultSet = SQLUtil.execute(sql);
 
         if (resultSet.next()) {
             String lastId = resultSet.getString("ReservationID");
@@ -157,7 +154,7 @@ public class ReservationDAOImpl implements ReservationDAO {
         String sql = "UPDATE Reservations SET Status = ? WHERE ReservationID = ?";
 
         try {
-            return CrudUtil.execute(sql, newStatus, reservationID);
+            return SQLUtil.execute(sql, newStatus, reservationID);
         } catch (SQLException | ClassNotFoundException e) {
             System.err.println("Error updating reservation status: " + e.getMessage());
             throw e;

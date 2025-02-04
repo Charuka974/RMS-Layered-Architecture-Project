@@ -14,11 +14,9 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import org.gourmetDelight.bo.BOFactory;
 import org.gourmetDelight.bo.custom.CustomerBO;
-import org.gourmetDelight.bo.custom.impl.CustomerBOImpl;
 import org.gourmetDelight.dto.CustomerDto;
-import org.gourmetDelight.dao.custom.impl.CustomerDAOImpl;
-import org.gourmetDelight.entity.Customer;
 import org.gourmetDelight.util.KeepUser;
 import org.gourmetDelight.util.ValidateUtil;
 
@@ -96,12 +94,11 @@ public class CustomerController implements Initializable {
     @FXML
     private TableView<CustomerDto> customerTable;
 
-    //private final CustomerDAOImpl CUSTOMER_MODEL;
+
     ValidateUtil validateUtil = new ValidateUtil();
-    CustomerBO customerBO = new CustomerBOImpl();
+    CustomerBO customerBO = (CustomerBO) BOFactory.getInstance().getBO(BOFactory.BOType.CUSTOMER);
 
     public CustomerController() {
-        //this.CUSTOMER_MODEL = new CustomerDAOImpl();
         this.validateUtil = new ValidateUtil();
     }
 

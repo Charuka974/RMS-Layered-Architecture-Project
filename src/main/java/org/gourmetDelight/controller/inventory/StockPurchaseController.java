@@ -9,12 +9,10 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
+import org.gourmetDelight.bo.BOFactory;
 import org.gourmetDelight.bo.custom.InventoryItemsBO;
 import org.gourmetDelight.bo.custom.PurchaseBO;
 import org.gourmetDelight.bo.custom.SupplierBO;
-import org.gourmetDelight.bo.custom.impl.InventoryItemsBOImpl;
-import org.gourmetDelight.bo.custom.impl.PurchaseBOImpl;
-import org.gourmetDelight.bo.custom.impl.SupplierBOImpl;
 import org.gourmetDelight.dto.inventory.InventoryItemDto;
 import org.gourmetDelight.dto.inventory.SupplierDto;
 import org.gourmetDelight.entity.StockPurchase;
@@ -130,9 +128,10 @@ public class StockPurchaseController implements Initializable {
     @FXML
     private JFXButton updateBtn;
 
-    InventoryItemsBO inventoryItemsBO = new InventoryItemsBOImpl();
-    SupplierBO supplierBO = new SupplierBOImpl();
-    PurchaseBO purchaseBO = new PurchaseBOImpl();
+    InventoryItemsBO inventoryItemsBO = (InventoryItemsBO) BOFactory.getInstance().getBO(BOFactory.BOType.INVENTORY);
+    SupplierBO supplierBO = (SupplierBO) BOFactory.getInstance().getBO(BOFactory.BOType.SUPPLIER);
+    PurchaseBO purchaseBO = (PurchaseBO) BOFactory.getInstance().getBO(BOFactory.BOType.PURCHASE);
+
     DateAndTime dateAndTime = new DateAndTime();
 
     @Override

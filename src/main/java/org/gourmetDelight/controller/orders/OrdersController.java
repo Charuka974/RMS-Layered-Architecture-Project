@@ -16,10 +16,11 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.view.JasperViewer;
+import org.gourmetDelight.bo.BOFactory;
 import org.gourmetDelight.bo.custom.*;
-import org.gourmetDelight.bo.custom.impl.*;
 
 
+import org.gourmetDelight.bo.custom.impl.OrderBOImpl;
 import org.gourmetDelight.db.DBConnection;
 import org.gourmetDelight.dto.CustomerDto;
 import org.gourmetDelight.dto.menuItems.MenuItemDto;
@@ -180,21 +181,23 @@ public class OrdersController implements Initializable {
     private TableColumn<OrdersTM, Double> unitPriceCol;
 
 
-    CustomerBO customerBO = new CustomerBOImpl();
-    MenuItemBO menuItemDAOImpl = new MenuItemBOImpl();
+    CustomerBO customerBO = (CustomerBO) BOFactory.getInstance().getBO(BOFactory.BOType.CUSTOMER);
+    MenuItemBO menuItemBOImpl = (MenuItemBO) BOFactory.getInstance().getBO(BOFactory.BOType.MENU_ITEM);
+
     DateAndTime dateAndTime = new DateAndTime();
 
-    TableBO tableBO = new TableBOImpl();
-    ReservationBO reservationDAOImpl = new ReservationBOImpl();
-    MenuItemBOImpl MENU_ITEM_MODEL;
-    OrderBO ordersBO = new OrderBOImpl();
+    TableBO tableBO = (TableBO) BOFactory.getInstance().getBO(BOFactory.BOType.TABLE);
+
+    OrderBO ordersBO = (OrderBO) BOFactory.getInstance().getBO(BOFactory.BOType.ORDERS);
+
     private final ValidateUtil validateUtil = new ValidateUtil();
     private final ObservableList<OrdersTM> ordersTMS = FXCollections.observableArrayList();
-    ReservationBO  reservationBO = new ReservationBOImpl();
+
+    ReservationBO  reservationBO = (ReservationBO) BOFactory.getInstance().getBO(BOFactory.BOType.RESERVATIONS);
 
 
     public OrdersController() {
-        this.MENU_ITEM_MODEL = new MenuItemBOImpl();
+
     }
 
     public void initialize(URL url, ResourceBundle rb){
@@ -430,7 +433,7 @@ public class OrdersController implements Initializable {
                 } else {
 
                     tableBO.updateTableStatus(tableIdLbl.getText(), "Available");
-                    reservationDAOImpl.updateReservationStatus(reservationIdTxt.getText(), "Canceled");
+                    reservationBO.updateReservationStatus(reservationIdTxt.getText(), "Canceled");
                 }
             }
         }
@@ -823,7 +826,7 @@ public class OrdersController implements Initializable {
         }
 
         try {
-            ArrayList<MenuItemDto> foundMenuItems = MENU_ITEM_MODEL.searchByName(searchName);
+            ArrayList<MenuItemDto> foundMenuItems = menuItemBOImpl.searchByName(searchName);
 
             if (!foundMenuItems.isEmpty()) {
 
@@ -920,7 +923,7 @@ public class OrdersController implements Initializable {
     public String getMenuItemName(String menuItemId) {
         String name = null;
         try {
-            MenuItemDto menuItem = menuItemDAOImpl.searchById(menuItemId);
+            MenuItemDto menuItem = menuItemBOImpl.searchById(menuItemId);
 
             if (menuItem != null) {
                 name = menuItem.getName();
@@ -940,7 +943,7 @@ public class OrdersController implements Initializable {
 
         double price = 0.0;
         try {
-            MenuItemDto menuItem = menuItemDAOImpl.searchById(menuItemId);
+            MenuItemDto menuItem = menuItemBOImpl.searchById(menuItemId);
 
             if (menuItem != null) {
                 price = menuItem.getPrice();
