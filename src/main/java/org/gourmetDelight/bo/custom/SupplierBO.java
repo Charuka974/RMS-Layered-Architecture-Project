@@ -1,10 +1,11 @@
 package org.gourmetDelight.bo.custom;
 
+import org.gourmetDelight.bo.SuperBO;
 import org.gourmetDelight.dto.inventory.SupplierDto;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public interface SupplierBO {
+public interface SupplierBO extends SuperBO {
 
     public ArrayList<SupplierDto> getAll() throws ClassNotFoundException, SQLException;
 

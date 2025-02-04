@@ -2,6 +2,7 @@ package org.gourmetDelight.bo.custom;
 
 import javafx.scene.control.Alert;
 import net.sf.jasperreports.engine.JRException;
+import org.gourmetDelight.bo.SuperBO;
 import org.gourmetDelight.controller.orders.OrdersController;
 import org.gourmetDelight.dao.custom.InventoryItemsDAO;
 import org.gourmetDelight.dao.custom.OrderItemsDAO;
@@ -21,7 +22,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public interface OrderBO {
+public interface OrderBO extends SuperBO {
 
     public boolean placeOrder(Orders orderDTO, ArrayList<OrderItems> orderItemsDtos, ArrayList<Payments> paymentsDtos) throws SQLException, ClassNotFoundException;
     public String suggestNextID() throws ClassNotFoundException, SQLException;

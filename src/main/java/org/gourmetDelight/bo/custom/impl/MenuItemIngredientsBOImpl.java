@@ -1,6 +1,8 @@
 package org.gourmetDelight.bo.custom.impl;
 
 import org.gourmetDelight.bo.custom.MenuItemIngredientsBO;
+import org.gourmetDelight.dao.DAOFactory;
+import org.gourmetDelight.dao.custom.CustomerDAO;
 import org.gourmetDelight.dao.custom.MenuItemIngredientsDAO;
 import org.gourmetDelight.dao.custom.impl.menuItems.MenuItemIngredientsDAOImpl;
 import org.gourmetDelight.dto.menuItems.MenuItemIngredientsDto;
@@ -12,7 +14,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class MenuItemIngredientsBOImpl implements MenuItemIngredientsBO {
-    MenuItemIngredientsDAO  menuItemIngredientsDAO = new MenuItemIngredientsDAOImpl();
+    MenuItemIngredientsDAO  menuItemIngredientsDAO = (MenuItemIngredientsDAO) DAOFactory.getInstance().getDAO(DAOFactory.DAOType.MENU_ITEM_INGREDIENTS);
 
     public ArrayList<MenuItemIngredientsDto> getAll(String menuItemID) throws ClassNotFoundException, SQLException {
         ArrayList<MenuItemIngredients> menuItemIngredients = menuItemIngredientsDAO.getAll(menuItemID);

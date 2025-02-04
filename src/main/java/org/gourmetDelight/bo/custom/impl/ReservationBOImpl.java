@@ -1,6 +1,8 @@
 package org.gourmetDelight.bo.custom.impl;
 
 import org.gourmetDelight.bo.custom.ReservationBO;
+import org.gourmetDelight.dao.DAOFactory;
+import org.gourmetDelight.dao.custom.CustomerDAO;
 import org.gourmetDelight.dao.custom.QueryDAO;
 import org.gourmetDelight.dao.custom.ReservationDAO;
 import org.gourmetDelight.dao.custom.impl.QueryDAOImpl;
@@ -19,8 +21,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class ReservationBOImpl implements ReservationBO {
-    ReservationDAO reservationDAO = new ReservationDAOImpl();
-    QueryDAO queryDAO = new QueryDAOImpl();
+    ReservationDAO reservationDAO = (ReservationDAO) DAOFactory.getInstance().getDAO(DAOFactory.DAOType.RESERVATIONS);
+    QueryDAO queryDAO = (QueryDAO) DAOFactory.getInstance().getDAO(DAOFactory.DAOType.QUERY);
 
     @Override
     public ArrayList getAll() throws ClassNotFoundException, SQLException {

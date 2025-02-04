@@ -3,10 +3,8 @@ package org.gourmetDelight.bo.custom.impl;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.gourmetDelight.bo.custom.PurchaseBO;
-import org.gourmetDelight.dao.custom.InventoryItemsDAO;
-import org.gourmetDelight.dao.custom.PurchaseDAO;
-import org.gourmetDelight.dao.custom.PurchaseItemsDAO;
-import org.gourmetDelight.dao.custom.QueryDAO;
+import org.gourmetDelight.dao.DAOFactory;
+import org.gourmetDelight.dao.custom.*;
 import org.gourmetDelight.dao.custom.impl.QueryDAOImpl;
 import org.gourmetDelight.dao.custom.impl.inventory.InventoryItemsDAOImpl;
 import org.gourmetDelight.dao.custom.impl.inventory.PurchaseDAOImpl;
@@ -27,10 +25,10 @@ import java.util.ArrayList;
 
 public class PurchaseBOImpl implements PurchaseBO {
 
-    PurchaseDAO purchaseDAO = new PurchaseDAOImpl();
-    PurchaseItemsDAO purchaseItemsDAO = new PurchaseItemsDAOImpl();
-    InventoryItemsDAO  inventoryItemsDAO = new InventoryItemsDAOImpl();
-    QueryDAO queryDAO = new QueryDAOImpl();
+    PurchaseDAO purchaseDAO = (PurchaseDAO) DAOFactory.getInstance().getDAO(DAOFactory.DAOType.CUSTOMER);
+    PurchaseItemsDAO purchaseItemsDAO = (PurchaseItemsDAO) DAOFactory.getInstance().getDAO(DAOFactory.DAOType.PURCHASE_ITEMS);
+    InventoryItemsDAO  inventoryItemsDAO = (InventoryItemsDAO) DAOFactory.getInstance().getDAO(DAOFactory.DAOType.INVENTORY);
+    QueryDAO queryDAO = (QueryDAO) DAOFactory.getInstance().getDAO(DAOFactory.DAOType.QUERY);
 
 
     @Override

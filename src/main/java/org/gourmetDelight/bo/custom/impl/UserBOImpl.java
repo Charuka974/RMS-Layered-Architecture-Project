@@ -1,6 +1,8 @@
 package org.gourmetDelight.bo.custom.impl;
 
 import org.gourmetDelight.bo.custom.UserBO;
+import org.gourmetDelight.dao.DAOFactory;
+import org.gourmetDelight.dao.custom.CustomerDAO;
 import org.gourmetDelight.dao.custom.UsersDAO;
 import org.gourmetDelight.dao.custom.impl.employee.UsersDAOImpl;
 
@@ -17,7 +19,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class UserBOImpl implements UserBO {
-    UsersDAO userDAO = new UsersDAOImpl();
+    UsersDAO userDAO = (UsersDAO) DAOFactory.getInstance().getDAO(DAOFactory.DAOType.USERS);
+
     public ArrayList<UserDto> getAll() throws ClassNotFoundException, SQLException {
         ArrayList<User> users = userDAO.getAll();
         ArrayList<UserDto> userDTOs = new ArrayList<>();

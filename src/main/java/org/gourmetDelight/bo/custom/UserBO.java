@@ -1,5 +1,6 @@
 package org.gourmetDelight.bo.custom;
 
+import org.gourmetDelight.bo.SuperBO;
 import org.gourmetDelight.db.DBConnection;
 import org.gourmetDelight.dto.employee.UserDto;
 import org.gourmetDelight.entity.User;
@@ -12,7 +13,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-public interface UserBO {
+public interface UserBO extends SuperBO {
     public ArrayList<UserDto> getAll() throws ClassNotFoundException, SQLException;
 
     public boolean save(UserDto userDto) throws ClassNotFoundException, SQLException;

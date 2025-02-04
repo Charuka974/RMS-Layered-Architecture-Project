@@ -1,5 +1,6 @@
 package org.gourmetDelight.bo.custom;
 
+import org.gourmetDelight.bo.SuperBO;
 import org.gourmetDelight.dto.reservations.TablesDto;
 import org.gourmetDelight.entity.Tables;
 import org.gourmetDelight.util.CrudUtil;
@@ -8,7 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public interface TableBO {
+public interface TableBO extends SuperBO {
 
     public ArrayList<TablesDto> getAll() throws ClassNotFoundException, SQLException;
 

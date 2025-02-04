@@ -1,6 +1,7 @@
 package org.gourmetDelight.bo.custom;
 
 import javafx.collections.ObservableList;
+import org.gourmetDelight.bo.SuperBO;
 import org.gourmetDelight.dto.custom.StockPurchaseDTOCustom;
 import org.gourmetDelight.entity.StockPurchase;
 import org.gourmetDelight.entity.StockPurchaseItems;
@@ -8,7 +9,7 @@ import org.gourmetDelight.entity.StockPurchaseItems;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public interface PurchaseBO {
+public interface PurchaseBO extends SuperBO {
 
 
     public ArrayList<StockPurchase> getAll() throws ClassNotFoundException, SQLException;

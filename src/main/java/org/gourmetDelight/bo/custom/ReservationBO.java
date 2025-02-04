@@ -1,5 +1,6 @@
 package org.gourmetDelight.bo.custom;
 
+import org.gourmetDelight.bo.SuperBO;
 import org.gourmetDelight.dao.custom.TableAssignmentsDAO;
 import org.gourmetDelight.dao.custom.TableDAO;
 import org.gourmetDelight.dao.custom.impl.reservations.TableAssignmentsDAOImpl;
@@ -16,10 +17,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-public interface ReservationBO {
-    TableAssignmentsDAO tableAssignmentsDAOImpl = new TableAssignmentsDAOImpl();
-    TableDAO tableDAOImpl = new TableDAOImpl();
-
+public interface ReservationBO extends SuperBO {
 
     public ArrayList getAll() throws ClassNotFoundException, SQLException;
 

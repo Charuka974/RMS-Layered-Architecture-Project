@@ -4,10 +4,8 @@ import javafx.scene.control.Alert;
 import net.sf.jasperreports.engine.JRException;
 import org.gourmetDelight.bo.custom.OrderBO;
 import org.gourmetDelight.controller.orders.OrdersController;
-import org.gourmetDelight.dao.custom.InventoryItemsDAO;
-import org.gourmetDelight.dao.custom.OrderItemsDAO;
-import org.gourmetDelight.dao.custom.OrdersDAO;
-import org.gourmetDelight.dao.custom.PaymentDAO;
+import org.gourmetDelight.dao.DAOFactory;
+import org.gourmetDelight.dao.custom.*;
 import org.gourmetDelight.dao.custom.impl.inventory.InventoryItemsDAOImpl;
 import org.gourmetDelight.dao.custom.impl.orders.OrderItemsDAOImpl;
 import org.gourmetDelight.dao.custom.impl.orders.OrdersDAOImpl;
@@ -26,10 +24,10 @@ import java.util.ArrayList;
 
 public class OrderBOImpl implements OrderBO {
 
-    PaymentDAO paymentDAO = new PaymentDAOImpl();
-    OrderItemsDAO orderItemsDAO = new OrderItemsDAOImpl();
-    InventoryItemsDAO inventoryDAO = new InventoryItemsDAOImpl();
-    OrdersDAO ordersDAO = new OrdersDAOImpl();
+    PaymentDAO paymentDAO = (PaymentDAO) DAOFactory.getInstance().getDAO(DAOFactory.DAOType.PAYMENTS);
+    OrderItemsDAO orderItemsDAO = (OrderItemsDAO) DAOFactory.getInstance().getDAO(DAOFactory.DAOType.ORDER_ITEMS);
+    InventoryItemsDAO inventoryDAO = (InventoryItemsDAO) DAOFactory.getInstance().getDAO(DAOFactory.DAOType.INVENTORY);
+    OrdersDAO ordersDAO = (OrdersDAO) DAOFactory.getInstance().getDAO(DAOFactory.DAOType.ORDERS);
 
 
     public boolean placeOrder(Orders orderDTO, ArrayList<OrderItems> orderItemsDtos, ArrayList<Payments> paymentsDtos) throws SQLException, ClassNotFoundException {

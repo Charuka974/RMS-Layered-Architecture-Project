@@ -1,6 +1,8 @@
 package org.gourmetDelight.bo.custom.impl;
 
 import org.gourmetDelight.bo.custom.ReminderBO;
+import org.gourmetDelight.dao.DAOFactory;
+import org.gourmetDelight.dao.custom.CustomerDAO;
 import org.gourmetDelight.dao.custom.ReminderDAO;
 import org.gourmetDelight.dao.custom.impl.home.ReminderDAOImpl;
 
@@ -9,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class ReminderBOImpl implements ReminderBO {
-    ReminderDAO reminderDAO = new ReminderDAOImpl();
+    ReminderDAO reminderDAO = (ReminderDAO) DAOFactory.getInstance().getDAO(DAOFactory.DAOType.REMINDER);
 
     public void checkAndPrintReminder() {
         reminderDAO.checkAndPrintReminder();

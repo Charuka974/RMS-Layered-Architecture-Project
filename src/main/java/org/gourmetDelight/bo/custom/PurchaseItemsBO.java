@@ -1,5 +1,6 @@
 package org.gourmetDelight.bo.custom;
 
+import org.gourmetDelight.bo.SuperBO;
 import org.gourmetDelight.dto.inventory.StockPurchaseItemsDto;
 import org.gourmetDelight.util.CrudUtil;
 
@@ -7,7 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public interface PurchaseItemsBO {
+public interface PurchaseItemsBO extends SuperBO {
 
     public ArrayList<StockPurchaseItemsDto> getAll() throws ClassNotFoundException, SQLException;
     public boolean save(StockPurchaseItemsDto purchaseItemsDto) throws SQLException, ClassNotFoundException;

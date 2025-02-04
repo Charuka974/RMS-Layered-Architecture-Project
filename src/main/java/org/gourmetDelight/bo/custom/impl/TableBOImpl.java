@@ -1,6 +1,8 @@
 package org.gourmetDelight.bo.custom.impl;
 
 import org.gourmetDelight.bo.custom.TableBO;
+import org.gourmetDelight.dao.DAOFactory;
+import org.gourmetDelight.dao.custom.CustomerDAO;
 import org.gourmetDelight.dao.custom.TableDAO;
 import org.gourmetDelight.dao.custom.impl.reservations.TableDAOImpl;
 import org.gourmetDelight.dto.employee.EmployeeDto;
@@ -14,7 +16,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class TableBOImpl implements TableBO {
-    TableDAO tableDAO = new TableDAOImpl();
+    TableDAO tableDAO = (TableDAO) DAOFactory.getInstance().getDAO(DAOFactory.DAOType.TABLE);
+
     public ArrayList<TablesDto> getAll() throws ClassNotFoundException, SQLException {
         ArrayList<Tables> tables = tableDAO.getAll();
         ArrayList<TablesDto> tableDTOs = new ArrayList<>();

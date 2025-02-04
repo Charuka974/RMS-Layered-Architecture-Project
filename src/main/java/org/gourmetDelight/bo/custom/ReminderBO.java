@@ -1,13 +1,14 @@
 package org.gourmetDelight.bo.custom;
 
 import javafx.scene.control.Alert;
+import org.gourmetDelight.bo.SuperBO;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-public interface ReminderBO {
+public interface ReminderBO extends SuperBO {
 
     public void checkAndPrintReminder();
 

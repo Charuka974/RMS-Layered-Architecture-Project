@@ -1,6 +1,8 @@
 package org.gourmetDelight.bo.custom.impl;
 
 import org.gourmetDelight.bo.custom.PurchaseItemsBO;
+import org.gourmetDelight.dao.DAOFactory;
+import org.gourmetDelight.dao.custom.CustomerDAO;
 import org.gourmetDelight.dao.custom.PurchaseItemsDAO;
 import org.gourmetDelight.dao.custom.impl.inventory.PurchaseItemsDAOImpl;
 import org.gourmetDelight.dto.inventory.StockPurchaseItemsDto;
@@ -13,7 +15,7 @@ import java.util.ArrayList;
 
 public class PurchaseItemsBOImpl implements PurchaseItemsBO {
 
-    PurchaseItemsDAO purchaseItemsDAO = new PurchaseItemsDAOImpl();
+    PurchaseItemsDAO purchaseItemsDAO = (PurchaseItemsDAO) DAOFactory.getInstance().getDAO(DAOFactory.DAOType.PURCHASE_ITEMS);
 
     @Override
     public ArrayList<StockPurchaseItemsDto> getAll() throws ClassNotFoundException, SQLException {

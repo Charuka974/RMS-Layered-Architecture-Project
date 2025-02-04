@@ -1,6 +1,8 @@
 package org.gourmetDelight.bo.custom.impl;
 
 import org.gourmetDelight.bo.custom.SupplierBO;
+import org.gourmetDelight.dao.DAOFactory;
+import org.gourmetDelight.dao.custom.CustomerDAO;
 import org.gourmetDelight.dao.custom.SupplierDAO;
 import org.gourmetDelight.dao.custom.impl.inventory.SupplierDAOImpl;
 import org.gourmetDelight.dto.inventory.SupplierDto;
@@ -10,7 +12,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class SupplierBOImpl implements SupplierBO {
-    SupplierDAO  supplierDAO = new SupplierDAOImpl();
+    SupplierDAO  supplierDAO = (SupplierDAO) DAOFactory.getInstance().getDAO(DAOFactory.DAOType.SUPPLIER);
 
     public ArrayList<SupplierDto> getAll() throws ClassNotFoundException, SQLException {
         ArrayList<Supplier> suppliers = supplierDAO.getAll();

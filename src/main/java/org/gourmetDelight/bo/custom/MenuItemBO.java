@@ -1,12 +1,13 @@
 package org.gourmetDelight.bo.custom;
 
+import org.gourmetDelight.bo.SuperBO;
 import org.gourmetDelight.dto.menuItems.MenuItemDto;
 import org.gourmetDelight.entity.MenuItem;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public interface MenuItemBO {
+public interface MenuItemBO extends SuperBO {
 
     public ArrayList<MenuItemDto> getAll() throws ClassNotFoundException, SQLException;
 

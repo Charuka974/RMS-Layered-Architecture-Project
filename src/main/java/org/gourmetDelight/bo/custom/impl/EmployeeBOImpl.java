@@ -1,6 +1,8 @@
 package org.gourmetDelight.bo.custom.impl;
 
 import org.gourmetDelight.bo.custom.EmployeeBO;
+import org.gourmetDelight.dao.DAOFactory;
+import org.gourmetDelight.dao.custom.CustomerDAO;
 import org.gourmetDelight.dao.custom.EmployeeDAO;
 import org.gourmetDelight.dao.custom.QueryDAO;
 import org.gourmetDelight.dao.custom.impl.QueryDAOImpl;
@@ -17,8 +19,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class EmployeeBOImpl implements EmployeeBO {
-    EmployeeDAO employeeDAO = new EmployeeDAOImpl();
-    QueryDAO queryDAO = new QueryDAOImpl();
+    EmployeeDAO employeeDAO = (EmployeeDAO) DAOFactory.getInstance().getDAO(DAOFactory.DAOType.EMPLOYEE);
+    QueryDAO queryDAO = (QueryDAO) DAOFactory.getInstance().getDAO(DAOFactory.DAOType.QUERY);
+
     public ArrayList<EmployeeDto> getAll() throws ClassNotFoundException, SQLException {
         ArrayList<Employee> employees = employeeDAO.getAll();
         ArrayList<EmployeeDto> employeeDTOs = new ArrayList<>();
