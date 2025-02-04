@@ -27,5 +27,10 @@ public interface EmployeeBO extends SuperBO {
 
     public String getEmployeeName(String id) throws ClassNotFoundException, SQLException;
 
+    public String selectEmail(String username) throws SQLException, ClassNotFoundException;
+
+    public String selectPhone(String username) throws SQLException, ClassNotFoundException;
+
+    public String getRole(String username, String password) throws ClassNotFoundException, SQLException;
 
 }

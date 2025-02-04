@@ -19,8 +19,6 @@ import org.gourmetDelight.bo.custom.MenuItemIngredientsBO;
 import org.gourmetDelight.bo.custom.impl.InventoryItemsBOImpl;
 import org.gourmetDelight.bo.custom.impl.MenuItemBOImpl;
 import org.gourmetDelight.bo.custom.impl.MenuItemIngredientsBOImpl;
-import org.gourmetDelight.dao.custom.impl.QueryDAOImpl;
-
 import org.gourmetDelight.dto.menuItems.MenuItemDto;
 import org.gourmetDelight.dto.menuItems.MenuItemIngredientsDto;
 import org.gourmetDelight.util.ValidateUtil;
@@ -75,11 +73,9 @@ public class MenuController implements Initializable {
     private AnchorPane menuAnchorPane;
 
     MenuItemBO menuItemBO = new MenuItemBOImpl();
-    private final QueryDAOImpl queryDAOImpl;
     private final ValidateUtil validateUtil = new ValidateUtil();
 
     public MenuController() {
-        this.queryDAOImpl = new QueryDAOImpl();
     }
 
     @Override

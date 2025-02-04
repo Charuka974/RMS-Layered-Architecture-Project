@@ -1,19 +1,13 @@
 package org.gourmetDelight.dao.custom.impl;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import org.gourmetDelight.dao.SuperDAO;
 import org.gourmetDelight.dao.custom.QueryDAO;
 import org.gourmetDelight.db.DBConnection;
-import org.gourmetDelight.dto.tm.StockPurchaseTM;
-import org.gourmetDelight.entity.Reservation;
+import org.gourmetDelight.dto.custom.StockPurchaseDTOCustom;
 import org.gourmetDelight.entity.custom.ReservationCustom;
+import org.gourmetDelight.entity.custom.StockPurchaseCustom;
 import org.gourmetDelight.util.CrudUtil;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -99,7 +93,7 @@ public class QueryDAOImpl implements QueryDAO {
     // Retrieve all the data
     //-----------------------------------------------------------------------------------------------------
 
-    public ObservableList<StockPurchaseTM> getAll() throws ClassNotFoundException, SQLException {
+    public ArrayList<StockPurchaseCustom> getAllStockPurchases() throws ClassNotFoundException, SQLException {
         String sql = "SELECT p.PurchaseID, " +
                 "pi.InventoryItemID, " +
                 "ii.Name AS ItemName, " +
@@ -118,7 +112,7 @@ public class QueryDAOImpl implements QueryDAO {
                 "JOIN Suppliers s ON p.SupplierID = s.SupplierID";
 
         ResultSet resultSet = CrudUtil.execute(sql);
-        ArrayList<StockPurchaseTM> purchaseList = new ArrayList<>();
+        ArrayList<StockPurchaseCustom> purchaseList = new ArrayList<>();
 
         while (resultSet.next()) {
             String purchaseID = resultSet.getString("PurchaseID");
@@ -136,7 +130,7 @@ public class QueryDAOImpl implements QueryDAO {
             String unitsMeasured = resultSet.getString("UnitsMeasured");
 
 
-            StockPurchaseTM purchase = new StockPurchaseTM(
+            StockPurchaseCustom purchase = new StockPurchaseCustom(
                     purchaseID, itemID, itemName, unitPrice, quantity, totalAmount, purchaseDate, supplierID, status, supplierName, unit, unitsMeasured
             );
 
@@ -145,7 +139,7 @@ public class QueryDAOImpl implements QueryDAO {
 
         resultSet.close();
 
-        return FXCollections.observableArrayList(purchaseList);
+        return purchaseList;
     }
 
 
@@ -292,6 +286,51 @@ public class QueryDAOImpl implements QueryDAO {
 
         resultSet.close();
         return reservations;
+    }
+
+
+
+
+    // Stock Purchase
+    public StockPurchaseDTOCustom searchStochPurchaseByID(String purchaseID) throws SQLException, ClassNotFoundException {
+        Connection connection = DBConnection.getInstance().getConnection();
+
+        // SQL query with JOINs to fetch necessary data
+        String query = "SELECT pi.PurchaseID, pi.InventoryItemID, ii.Name AS ItemName, pi.UnitPrice, pi.UnitsBought, " +
+                "(pi.UnitPrice * pi.UnitsBought) AS TotalAmount, p.PurchaseDate, p.SupplierID, pi.Status, " +
+                "ii.UnitsMeasured, s.Name AS SupplierName, pi.Unit " +
+                "FROM PurchaseItems pi " +
+                "JOIN InventoryItems ii ON pi.InventoryItemID = ii.InventoryItemID " +
+                "JOIN Purchases p ON pi.PurchaseID = p.PurchaseID " +
+                "JOIN Suppliers s ON p.SupplierID = s.SupplierID " +
+                "WHERE pi.PurchaseID = ?";
+
+        try (PreparedStatement pst = connection.prepareStatement(query)) {
+            pst.setString(1, purchaseID);
+            ResultSet rs = pst.executeQuery();
+
+            // Check if a result is found
+            if (rs.next()) {
+                // Return the populated StockPurchaseTM object
+                return new StockPurchaseDTOCustom(
+                        rs.getString("PurchaseID"),
+                        rs.getString("InventoryItemID"),
+                        rs.getString("ItemName"),
+                        rs.getDouble("UnitPrice"),
+                        rs.getDouble("UnitsBought"),
+                        rs.getDouble("TotalAmount"),
+                        rs.getDate("PurchaseDate").toLocalDate(),
+                        rs.getString("SupplierID"),
+                        rs.getString("Status"),
+                        rs.getString("SupplierName"),
+                        rs.getDouble("Unit"),
+                        rs.getString("UnitsMeasured")
+                );
+            }
+        }
+
+        // Return null if no matching record is found
+        return null;
     }
 
 

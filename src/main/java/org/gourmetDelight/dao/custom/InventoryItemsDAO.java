@@ -16,6 +16,10 @@ public interface InventoryItemsDAO extends CrudDAO<InventoryItem> {
 
     public String getItemUnitsByName(String itemName) throws ClassNotFoundException, SQLException;
 
+    public boolean updateInventory(String inventoryItemID, double unitsReceived) throws SQLException, ClassNotFoundException;
+
+    public boolean updateInventoryQuantityForPurchase(String itemID, double unitsBought) throws SQLException, ClassNotFoundException;
+
 }
 
 

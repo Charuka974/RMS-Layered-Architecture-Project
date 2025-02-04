@@ -14,10 +14,10 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import org.gourmetDelight.bo.custom.EmployeeBO;
 import org.gourmetDelight.bo.custom.UserBO;
+import org.gourmetDelight.bo.custom.impl.EmployeeBOImpl;
 import org.gourmetDelight.bo.custom.impl.UserBOImpl;
-import org.gourmetDelight.dao.custom.impl.QueryDAOImpl;
-import org.gourmetDelight.dao.custom.impl.employee.UsersDAOImpl;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -65,11 +65,11 @@ public class LogInController {
     @FXML
     private Pane loginBodyPane;
 
-    private final QueryDAOImpl queryDAOImpl;
     private final UserBO userBO = new UserBOImpl();
+    EmployeeBO employeeBO = new EmployeeBOImpl();
 
     public LogInController() {
-        this.queryDAOImpl = new QueryDAOImpl();
+
     }
 
     @FXML
@@ -233,7 +233,7 @@ public class LogInController {
     }
 
     public String selectPosition(String username, String password) throws ClassNotFoundException, SQLException {
-        return queryDAOImpl.getRole(username, password);
+        return employeeBO.getRole(username, password);
     }
 
     public boolean validateUser(String username, String password) throws ClassNotFoundException, SQLException {

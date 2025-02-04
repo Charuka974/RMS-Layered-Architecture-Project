@@ -68,12 +68,12 @@ public class InventoryItemsDAOImpl implements InventoryItemsDAO {
     }
 
 
+
     public boolean delete(String itemId) throws SQLException, ClassNotFoundException {
 
         String query = "DELETE FROM InventoryItems WHERE InventoryItemID = ?";
 
-        Boolean result = CrudUtil.execute(query, itemId);
-        return result;
+        return CrudUtil.execute(query, itemId);
     }
 
     public InventoryItem searchById(String itemId) throws ClassNotFoundException, SQLException {
@@ -176,6 +176,42 @@ public class InventoryItemsDAOImpl implements InventoryItemsDAO {
 
         resultSet.close();
         return unit;
+    }
+
+    public boolean updateInventory(String inventoryItemID, double unitsReceived) throws SQLException, ClassNotFoundException {
+        try {
+            // Check current inventory quantity
+            String checkInventorySQL = "SELECT Quantity FROM InventoryItems WHERE InventoryItemID = ?";
+            ResultSet inventoryResult = CrudUtil.execute(checkInventorySQL, inventoryItemID);
+
+            if (inventoryResult.next()) {
+                double currentQuantity = inventoryResult.getDouble("Quantity");
+                double newQuantity = currentQuantity + unitsReceived;
+
+                // Update inventory with the new quantity
+                String updateInventorySQL = "UPDATE InventoryItems SET Quantity = ? WHERE InventoryItemID = ?";
+                boolean isUpdated = CrudUtil.execute(updateInventorySQL, newQuantity, inventoryItemID);
+
+                if (!isUpdated) {
+                    throw new SQLException("Failed to update inventory for item: " + inventoryItemID);
+                }
+            } else {
+                throw new SQLException("Inventory item not found: " + inventoryItemID);
+            }
+
+            return true;
+
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error during inventory update: " + e.getMessage());
+            throw e;
+        }
+    }
+
+
+    // Update inventory quantity for the given item in Purchase
+    public boolean updateInventoryQuantityForPurchase(String itemID, double unitsBought) throws SQLException, ClassNotFoundException {
+        String updateInventorySql = "UPDATE InventoryItems SET Quantity = Quantity - ? WHERE InventoryItemID = ?";
+        return CrudUtil.execute(updateInventorySql, unitsBought, itemID);
     }
 
 

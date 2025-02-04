@@ -10,16 +10,16 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import org.gourmetDelight.bo.custom.InventoryItemsBO;
+import org.gourmetDelight.bo.custom.PurchaseBO;
 import org.gourmetDelight.bo.custom.SupplierBO;
 import org.gourmetDelight.bo.custom.impl.InventoryItemsBOImpl;
+import org.gourmetDelight.bo.custom.impl.PurchaseBOImpl;
 import org.gourmetDelight.bo.custom.impl.SupplierBOImpl;
-import org.gourmetDelight.dao.custom.impl.QueryDAOImpl;
 import org.gourmetDelight.dto.inventory.InventoryItemDto;
 import org.gourmetDelight.dto.inventory.SupplierDto;
 import org.gourmetDelight.entity.StockPurchase;
 import org.gourmetDelight.entity.StockPurchaseItems;
-import org.gourmetDelight.dto.tm.StockPurchaseTM;
-import org.gourmetDelight.dao.custom.impl.inventory.PurchaseDAOImpl;
+import org.gourmetDelight.dto.custom.StockPurchaseDTOCustom;
 import org.gourmetDelight.util.DateAndTime;
 
 import java.io.IOException;
@@ -44,22 +44,22 @@ public class StockPurchaseController implements Initializable {
     private JFXButton clearTXTBtn;
 
     @FXML
-    private TableColumn<StockPurchaseTM, LocalDate> dateCol;
+    private TableColumn<StockPurchaseDTOCustom, LocalDate> dateCol;
 
     @FXML
     private JFXButton deleteBtn;
 
     @FXML
-    private TableColumn<StockPurchaseTM, String> itemIdCol;
+    private TableColumn<StockPurchaseDTOCustom, String> itemIdCol;
 
     @FXML
-    private TableColumn<StockPurchaseTM, String> statusCol;
+    private TableColumn<StockPurchaseDTOCustom, String> statusCol;
 
     @FXML
     private JFXTextField itemIdTxt;
 
     @FXML
-    private TableColumn<StockPurchaseTM, String> itemNameCol;
+    private TableColumn<StockPurchaseDTOCustom, String> itemNameCol;
 
     @FXML
     private JFXTextField itemNameTxt;
@@ -74,7 +74,7 @@ public class StockPurchaseController implements Initializable {
     private JFXTextField purchaseDateTxt;
 
     @FXML
-    private TableColumn<StockPurchaseTM, String> purchaseIdCol;
+    private TableColumn<StockPurchaseDTOCustom, String> purchaseIdCol;
 
     @FXML
     private JFXButton purchaseIdSearchBtn;
@@ -86,7 +86,7 @@ public class StockPurchaseController implements Initializable {
     private ChoiceBox<String> purchaseStatusChoiceBox;
 
     @FXML
-    private TableColumn<StockPurchaseTM, Double> quantityCol;
+    private TableColumn<StockPurchaseDTOCustom, Double> quantityCol;
 
     @FXML
     private JFXTextField quantityTxt;
@@ -95,10 +95,10 @@ public class StockPurchaseController implements Initializable {
     private JFXButton saveBtn;
 
     @FXML
-    private TableView<StockPurchaseTM> stockPurchaseTable;
+    private TableView<StockPurchaseDTOCustom> stockPurchaseTable;
 
     @FXML
-    private TableColumn<StockPurchaseTM, String> supplierIdCol;
+    private TableColumn<StockPurchaseDTOCustom, String> supplierIdCol;
 
     @FXML
     private JFXTextField supplierIdTxt;
@@ -110,7 +110,7 @@ public class StockPurchaseController implements Initializable {
     private JFXButton supplierSearchBtn;
 
     @FXML
-    private TableColumn<StockPurchaseTM, Double> totalAmountCol;
+    private TableColumn<StockPurchaseDTOCustom, Double> totalAmountCol;
 
     @FXML
     private JFXTextField totalAmountTxt;
@@ -119,7 +119,7 @@ public class StockPurchaseController implements Initializable {
     private JFXTextField unitPerPriceTxt;
 
     @FXML
-    private TableColumn<StockPurchaseTM, Double> unitPriceCol;
+    private TableColumn<StockPurchaseDTOCustom, Double> unitPriceCol;
 
     @FXML
     private JFXTextField unitPriceTxt;
@@ -132,9 +132,8 @@ public class StockPurchaseController implements Initializable {
 
     InventoryItemsBO inventoryItemsBO = new InventoryItemsBOImpl();
     SupplierBO supplierBO = new SupplierBOImpl();
-    PurchaseDAOImpl purchaseDAOImpl = new PurchaseDAOImpl();
+    PurchaseBO purchaseBO = new PurchaseBOImpl();
     DateAndTime dateAndTime = new DateAndTime();
-    QueryDAOImpl queryDAOImpl = new QueryDAOImpl();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -149,14 +148,14 @@ public class StockPurchaseController implements Initializable {
     }
 
     private void loadStockPurchaseTable() throws SQLException, ClassNotFoundException {
-        ObservableList<StockPurchaseTM> purchaseList = queryDAOImpl.getAll();
+        ObservableList<StockPurchaseDTOCustom> purchaseList = purchaseBO.getAllStockPurchases();
         stockPurchaseTable.setItems(purchaseList);
         setNextPurchaseID();
     }
 
     private void setNextPurchaseID() {
         try {
-            String nextID = purchaseDAOImpl.suggestNextID();
+            String nextID = purchaseBO.suggestNextID();
             purchaseIdTxt.setText(nextID);
         } catch (ClassNotFoundException | SQLException e) {
             showAlert(Alert.AlertType.ERROR, "Error", "Failed to generate next Purchase ID.", e.getMessage());
@@ -177,13 +176,13 @@ public class StockPurchaseController implements Initializable {
 
     @FXML
     void selectFromTable(MouseEvent event) {
-        StockPurchaseTM selectedItem = stockPurchaseTable.getSelectionModel().getSelectedItem();
+        StockPurchaseDTOCustom selectedItem = stockPurchaseTable.getSelectionModel().getSelectedItem();
         if (selectedItem != null) {
             populateFields(selectedItem);
         }
     }
 
-    private void populateFields(StockPurchaseTM selectedItem) {
+    private void populateFields(StockPurchaseDTOCustom selectedItem) {
         purchaseIdTxt.setText(selectedItem.getPurchaseID());
         itemIdTxt.setText(selectedItem.getItemID());
         itemNameTxt.setText(selectedItem.getItemName());
@@ -230,7 +229,7 @@ public class StockPurchaseController implements Initializable {
     void deletePurchase(ActionEvent event) {
         String purchaseID = purchaseIdTxt.getText();
         try {
-            String result = purchaseDAOImpl.deletePurchase(purchaseID);
+            String result = purchaseBO.deletePurchase(purchaseID);
             showAlert(Alert.AlertType.INFORMATION, "Delete Result", null, result);
             loadStockPurchaseTable();
         } catch (SQLException | ClassNotFoundException e) {
@@ -263,13 +262,13 @@ public class StockPurchaseController implements Initializable {
         String status = purchaseStatusChoiceBox.getValue();
         double unitPerPrice = Double.parseDouble(unitPerPriceTxt.getText());
 
-        StockPurchaseTM purchase = new StockPurchaseTM(purchaseID, itemID, itemName, unitPrice, quantity, totalAmount, purchaseDate, supplierID, status, "", 0, "");
+        StockPurchaseDTOCustom purchase = new StockPurchaseDTOCustom(purchaseID, itemID, itemName, unitPrice, quantity, totalAmount, purchaseDate, supplierID, status, "", 0, "");
 
         StockPurchaseItems stockPurchaseItemsDto = new StockPurchaseItems(itemID, purchaseID, unitPerPrice, unitPrice, quantity, status);
         StockPurchase stockPurchaseDto = new StockPurchase(purchaseID, supplierID, totalAmount, purchaseDate);
 
         try {
-            if(purchaseDAOImpl.save(stockPurchaseDto, stockPurchaseItemsDto)) {
+            if(purchaseBO.save(stockPurchaseDto, stockPurchaseItemsDto)) {
                 showAlert(Alert.AlertType.INFORMATION, "Save Result", "Successful", "Successfully saved stock purchase.");
                 loadStockPurchaseTable();
             }
@@ -302,7 +301,7 @@ public class StockPurchaseController implements Initializable {
             return;
         }
 
-        StockPurchaseTM purchase = purchaseDAOImpl.searchByID(purchaseID);
+        StockPurchaseDTOCustom purchase = purchaseBO.searchByIdReturnTM(purchaseID);
 
         if (purchase == null) {
             showAlert(Alert.AlertType.ERROR, "Error", "Purchase not found", "Purchase not found with the given ID.");
@@ -339,13 +338,13 @@ public class StockPurchaseController implements Initializable {
         String status = purchaseStatusChoiceBox.getValue();
         double unitPerPrice = Double.parseDouble(unitPerPriceTxt.getText());
 
-        StockPurchaseTM purchase = new StockPurchaseTM(purchaseID, itemID, itemName, unitPrice, quantity, totalAmount, purchaseDate, supplierID, status, "", 0, "");
+        StockPurchaseDTOCustom purchase = new StockPurchaseDTOCustom(purchaseID, itemID, itemName, unitPrice, quantity, totalAmount, purchaseDate, supplierID, status, "", 0, "");
 
         StockPurchaseItems stockPurchaseItemsDto = new StockPurchaseItems(itemID, purchaseID, unitPerPrice, unitPrice, quantity, status);
         StockPurchase stockPurchaseDto = new StockPurchase(purchaseID, supplierID, totalAmount, purchaseDate);
 
         try {
-            if(purchaseDAOImpl.updateStockPurchase(stockPurchaseDto, stockPurchaseItemsDto)) {
+            if(purchaseBO.updateStockPurchase(stockPurchaseDto, stockPurchaseItemsDto)) {
                 showAlert(Alert.AlertType.INFORMATION, "Update Result", "Successful", "Successfully updated stock purchase.");
                 loadStockPurchaseTable();
             }

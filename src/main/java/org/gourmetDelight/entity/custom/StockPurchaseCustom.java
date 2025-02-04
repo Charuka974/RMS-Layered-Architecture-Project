@@ -1,4 +1,4 @@
-package org.gourmetDelight.dto.custom;
+package org.gourmetDelight.entity.custom;
 
 import lombok.*;
 
@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @ToString
 
-public class StockPurchaseDTOCustom {
+public class StockPurchaseCustom {
     private String purchaseID;
     private String itemID;
     private String itemName;
@@ -24,5 +24,4 @@ public class StockPurchaseDTOCustom {
     private String supplierName;
     private double unit;
     private String unitsMeasured;
-
 }

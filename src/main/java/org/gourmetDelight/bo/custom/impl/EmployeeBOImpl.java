@@ -2,11 +2,15 @@ package org.gourmetDelight.bo.custom.impl;
 
 import org.gourmetDelight.bo.custom.EmployeeBO;
 import org.gourmetDelight.dao.custom.EmployeeDAO;
+import org.gourmetDelight.dao.custom.QueryDAO;
+import org.gourmetDelight.dao.custom.impl.QueryDAOImpl;
 import org.gourmetDelight.dao.custom.impl.employee.EmployeeDAOImpl;
+import org.gourmetDelight.db.DBConnection;
 import org.gourmetDelight.dto.employee.EmployeeDto;
 import org.gourmetDelight.entity.Employee;
 import org.gourmetDelight.util.CrudUtil;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -14,6 +18,7 @@ import java.util.ArrayList;
 
 public class EmployeeBOImpl implements EmployeeBO {
     EmployeeDAO employeeDAO = new EmployeeDAOImpl();
+    QueryDAO queryDAO = new QueryDAOImpl();
     public ArrayList<EmployeeDto> getAll() throws ClassNotFoundException, SQLException {
         ArrayList<Employee> employees = employeeDAO.getAll();
         ArrayList<EmployeeDto> employeeDTOs = new ArrayList<>();
@@ -87,5 +92,16 @@ public class EmployeeBOImpl implements EmployeeBO {
         return employeeDAO.getEmployeeName(id);
     }
 
+    public String selectEmail(String username) throws SQLException, ClassNotFoundException  {
+        return queryDAO.selectEmail(username);
+    }
+
+    public String selectPhone(String username) throws SQLException, ClassNotFoundException {
+        return queryDAO.selectPhone(username);
+    }
+
+    public String getRole(String username, String password) throws ClassNotFoundException, SQLException{
+        return queryDAO.getRole(username, password);
+    }
 
 }

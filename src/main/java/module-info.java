@@ -43,7 +43,7 @@ module RMS.Project {
     opens org.gourmetDelight.dto.reservations to javafx.base;
     exports org.gourmetDelight.controller.reservations;
     opens org.gourmetDelight.controller.reservations to javafx.fxml;
-
+    opens org.gourmetDelight.dto.custom to javafx.base;
 
 
 }

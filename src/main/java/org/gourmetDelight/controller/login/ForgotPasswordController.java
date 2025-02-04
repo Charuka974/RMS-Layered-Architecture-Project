@@ -8,10 +8,11 @@ import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import org.gourmetDelight.bo.custom.EmployeeBO;
 import org.gourmetDelight.bo.custom.UserBO;
+import org.gourmetDelight.bo.custom.impl.EmployeeBOImpl;
 import org.gourmetDelight.bo.custom.impl.UserBOImpl;
-import org.gourmetDelight.dao.custom.impl.QueryDAOImpl;
-import org.gourmetDelight.dao.custom.impl.employee.UsersDAOImpl;
+
 
 import org.gourmetDelight.util.EmailUtil;
 import org.gourmetDelight.util.SmsSend;
@@ -83,12 +84,11 @@ public class ForgotPasswordController {
 
     ValidateUtil validateUtil = new ValidateUtil();
 
-    private final QueryDAOImpl queryDAOImpl;
     private final UserBO userBO = new UserBOImpl();
+    EmployeeBO employeeBO = new EmployeeBOImpl();
 
     public ForgotPasswordController() {
 
-        this.queryDAOImpl = new QueryDAOImpl();
     }
 
     @FXML
@@ -97,8 +97,8 @@ public class ForgotPasswordController {
         boolean userExists = userBO.validateUserForgetPassword(username);
 
         if (userExists) {
-            recieverEmail = queryDAOImpl.selectEmail(username);
-            phoneNumber = queryDAOImpl.selectPhone(username);
+            recieverEmail = employeeBO.selectEmail(username);
+            phoneNumber = employeeBO.selectPhone(username);
 
             recieverEmailLbl.setText(recieverEmail);
             recieverPhoneNumberLbl.setText(phoneNumber);
