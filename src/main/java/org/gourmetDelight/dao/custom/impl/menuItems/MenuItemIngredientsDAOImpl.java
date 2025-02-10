@@ -1,6 +1,7 @@
 package org.gourmetDelight.dao.custom.impl.menuItems;
 
 import org.gourmetDelight.dao.custom.MenuItemIngredientsDAO;
+import org.gourmetDelight.dto.menuItems.MenuItemIngredientsDto;
 import org.gourmetDelight.entity.MenuItemIngredients;
 import org.gourmetDelight.dao.SQLUtil;
 
@@ -115,6 +116,25 @@ public class MenuItemIngredientsDAOImpl implements MenuItemIngredientsDAO {
             double quantityNeeded = resultSet.getDouble("QuantityNeeded");
 
             MenuItemIngredients ingredient = new MenuItemIngredients(menuID, inventoryID, quantityNeeded);
+            ingredients.add(ingredient);
+        }
+
+        resultSet.close();
+        return ingredients;
+    }
+
+    public ArrayList<MenuItemIngredientsDto> searchIngredientsByInventoryItemID2(String inventoryItemID) throws ClassNotFoundException, SQLException {
+        String sql = "SELECT * FROM MenuItemIngredients WHERE InventoryItemID = ?";
+        ResultSet resultSet = SQLUtil.execute(sql, inventoryItemID);
+
+        ArrayList<MenuItemIngredientsDto> ingredients = new ArrayList<>();
+
+        while (resultSet.next()) {
+            String menuID = resultSet.getString("MenuItemID");
+            String inventoryID = resultSet.getString("InventoryItemID");
+            double quantityNeeded = resultSet.getDouble("QuantityNeeded");
+
+            MenuItemIngredientsDto ingredient = new MenuItemIngredientsDto(menuID, inventoryID, quantityNeeded);
             ingredients.add(ingredient);
         }
 

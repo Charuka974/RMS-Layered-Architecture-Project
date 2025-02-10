@@ -17,6 +17,8 @@ import org.gourmetDelight.bo.BOFactory;
 import org.gourmetDelight.bo.custom.InventoryItemsBO;
 import org.gourmetDelight.bo.custom.MenuItemBO;
 import org.gourmetDelight.bo.custom.MenuItemIngredientsBO;
+import org.gourmetDelight.dao.custom.MenuItemIngredientsDAO;
+import org.gourmetDelight.dao.custom.impl.menuItems.MenuItemIngredientsDAOImpl;
 import org.gourmetDelight.dto.menuItems.MenuItemDto;
 import org.gourmetDelight.dto.menuItems.MenuItemIngredientsDto;
 import org.gourmetDelight.util.ValidateUtil;
@@ -569,13 +571,15 @@ public class MenuController implements Initializable {
 
     // Select an item from the table and populate the text fields
     @FXML
-    void selectFromTheReciepeTable(MouseEvent event) {
+    void selectFromTheReciepeTable(MouseEvent event) throws SQLException, ClassNotFoundException {
         MenuItemIngredientsDto selectedItem = ingredientsTable.getSelectionModel().getSelectedItem();
 
         if (selectedItem != null) {
             //menuItemIdTxt.setText(selectedItem.getMenuItemID());
             inventoryItemIdTxt.setText(selectedItem.getInventoryItemID());
             inventoryItemQtyTxt.setText(String.valueOf(selectedItem.getQuantityNeeded()));
+            itemUnitsLbl.setText(inventoryItemsBO.searchById(selectedItem.getInventoryItemID()).getUnit());
+            inventoryItemNameTxt.setText(inventoryItemsBO.searchById(selectedItem.getInventoryItemID()).getName());
 
             itemUpdateBtnReciepe.setDisable(false);
             itemDeleteBtnReciepe.setDisable(false);
@@ -585,11 +589,14 @@ public class MenuController implements Initializable {
 
     @FXML
     void searchInventoryItemId(ActionEvent event) throws SQLException, ClassNotFoundException {
-        itemUnitsLbl.setText(inventoryItemsBO.getItemUnits(inventoryItemIdTxt.getText()));
+        itemUnitsLbl.setText(inventoryItemsBO.searchById(inventoryItemIdTxt.getText()).getUnit());
+        inventoryItemNameTxt.setText(inventoryItemsBO.searchById(inventoryItemIdTxt.getText()).getName());
+
         try {
             String inventoryItemID = inventoryItemIdTxt.getText();
             ObservableList<MenuItemIngredientsDto> result = FXCollections.observableArrayList(
                     menuItemIngredientsBO.searchIngredientsByInventoryItemID(inventoryItemID)
+
             );
             ingredientsTable.setItems(result);
         } catch (Exception e) {

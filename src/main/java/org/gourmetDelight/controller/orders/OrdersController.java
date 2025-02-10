@@ -24,6 +24,9 @@ import org.gourmetDelight.bo.custom.impl.OrderBOImpl;
 import org.gourmetDelight.db.DBConnection;
 import org.gourmetDelight.dto.CustomerDto;
 import org.gourmetDelight.dto.menuItems.MenuItemDto;
+import org.gourmetDelight.dto.orders.OrderItemsDto;
+import org.gourmetDelight.dto.orders.OrdersDto;
+import org.gourmetDelight.dto.orders.PaymentsDto;
 import org.gourmetDelight.dto.reservations.TablesDto;
 import org.gourmetDelight.dto.tm.OrdersTM;
 
@@ -620,12 +623,12 @@ public class OrdersController implements Initializable {
             return;
         }
 
-        ArrayList<OrderItems> orderItemsDtos = new ArrayList<>();
-        ArrayList<Payments> paymentsDtos = new ArrayList<>();
+        ArrayList<OrderItemsDto> orderItemsDtos = new ArrayList<>();
+        ArrayList<PaymentsDto> paymentsDtos = new ArrayList<>();
 
         // Collect order items
         for (OrdersTM ordersTM : ordersTMS) {
-            OrderItems orderItemsDto = new OrderItems(
+            OrderItemsDto orderItemsDto = new OrderItemsDto(
                     orderId,
                     ordersTM.getMenuItemID(),
                     ordersTM.getQuantity(),
@@ -634,7 +637,7 @@ public class OrdersController implements Initializable {
             orderItemsDtos.add(orderItemsDto);
         }
 
-        Payments paymentsDto = new Payments(
+        PaymentsDto paymentsDto = new PaymentsDto(
                 paymentId,
                 paymentMethodChoiceBox.getValue(),
                 total,
@@ -642,7 +645,7 @@ public class OrdersController implements Initializable {
         );
         paymentsDtos.add(paymentsDto);
 
-        Orders ordersDto = new Orders(
+        OrdersDto ordersDto = new OrdersDto(
                 orderId,
                 customerId,
                 user,

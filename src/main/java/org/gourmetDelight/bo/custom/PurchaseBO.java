@@ -24,7 +24,7 @@ public interface PurchaseBO extends SuperBO {
     public boolean update(StockPurchase dto) throws ClassNotFoundException, SQLException;
 
 
-    public StockPurchase searchById(String Id) throws ClassNotFoundException, SQLException;
+    public StockPurchaseDTOCustom searchById(String Id) throws ClassNotFoundException, SQLException;
 
 
     public ArrayList<StockPurchase> searchByName(String name) throws ClassNotFoundException, SQLException;

@@ -6,6 +6,9 @@ import org.gourmetDelight.bo.custom.OrderBO;
 import org.gourmetDelight.dao.DAOFactory;
 import org.gourmetDelight.dao.custom.*;
 import org.gourmetDelight.db.DBConnection;
+import org.gourmetDelight.dto.orders.OrderItemsDto;
+import org.gourmetDelight.dto.orders.OrdersDto;
+import org.gourmetDelight.dto.orders.PaymentsDto;
 import org.gourmetDelight.entity.OrderItems;
 import org.gourmetDelight.entity.Orders;
 import org.gourmetDelight.entity.Payments;
@@ -14,6 +17,7 @@ import org.gourmetDelight.dao.SQLUtil;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class OrderBOImpl implements OrderBO {
@@ -24,7 +28,7 @@ public class OrderBOImpl implements OrderBO {
     OrdersDAO ordersDAO = (OrdersDAO) DAOFactory.getInstance().getDAO(DAOFactory.DAOType.ORDERS);
 
 
-    public boolean placeOrder(Orders orderDTO, ArrayList<OrderItems> orderItemsDtos, ArrayList<Payments> paymentsDtos) throws SQLException, ClassNotFoundException {
+    public boolean placeOrder(OrdersDto orderDTO, ArrayList<OrderItemsDto> orderItemsDtos, ArrayList<PaymentsDto> paymentsDtos) throws SQLException, ClassNotFoundException {
         // Obtain the database connection from DBConnection
         Connection connection = DBConnection.getInstance().getConnection();
         try {
@@ -32,9 +36,14 @@ public class OrderBOImpl implements OrderBO {
             connection.setAutoCommit(false);
 
             // Step 1: Process payments first (payments have the primary key)
-            for (Payments payment : paymentsDtos) {
+            for (PaymentsDto payment : paymentsDtos) {
 
-                if (!paymentDAO.save(payment)) {
+                if (!paymentDAO.save(new Payments(
+                        payment.getPaymentID(),
+                        payment.getPaymentMethod(),
+                        payment.getAmount(),
+                        payment.getPaymentDate()
+                ))) {
                     connection.rollback();
                     return false; // Rollback if payment insertion fails
                 }
@@ -42,18 +51,34 @@ public class OrderBOImpl implements OrderBO {
 
             // Step 2: Insert the order details into the Orders table
 
-            if (!ordersDAO.save(orderDTO)) {
+            if (!ordersDAO.save(new Orders(
+                    orderDTO.getOrderID(),
+                    orderDTO.getCustomerID(),
+                    orderDTO.getUserID(),
+                    orderDTO.getOrderDate(),
+                    orderDTO.getTotalAmount(),
+                    orderDTO.getStatus(),
+                    orderDTO.getOrderType(),
+                    orderDTO.getReservationID(),
+                    orderDTO.getPaymentID()
+            ))) {
                 connection.rollback();
                 return false; // Rollback if order insertion fails
             }
 
             // Step 3: Insert each order item into the OrderItems table
-            for (OrderItems item : orderItemsDtos) {
+            for (OrderItemsDto item : orderItemsDtos) {
 
-                if (!orderItemsDAO.save(item)) {
+                if (!orderItemsDAO.save(new OrderItems(
+                        item.getOrderID(),
+                        item.getMenuItemID(),
+                        item.getQuantity(),
+                        item.getPrice()
+                ))) {
                     connection.rollback();
                     return false; // Rollback if any order item insertion fails
                 }
+
 
                 // Step 4: Decrease inventory for each order item
                 if (!inventoryDAO.decreaseFromInventoryForOrder(item.getMenuItemID(), String.valueOf(item.getQuantity()))) {

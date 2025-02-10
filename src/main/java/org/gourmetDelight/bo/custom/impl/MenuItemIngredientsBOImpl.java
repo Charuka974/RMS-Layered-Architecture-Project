@@ -76,16 +76,20 @@ public class MenuItemIngredientsBOImpl implements MenuItemIngredientsBO {
     }
 
     public ArrayList<MenuItemIngredientsDto> searchIngredientsByInventoryItemID(String inventoryItemID) throws ClassNotFoundException, SQLException {
-        ArrayList<MenuItemIngredients> menuItemIngredients = menuItemIngredientsDAO.getAll(inventoryItemID);
-        ArrayList<MenuItemIngredientsDto> menuItemIngredientDTOs = new ArrayList<>();
-        for (MenuItemIngredients menuItemIngredient : menuItemIngredients) {
-            MenuItemIngredientsDto dto = new MenuItemIngredientsDto();
-            dto.setMenuItemID(menuItemIngredient.getMenuItemID());
-            dto.setInventoryItemID(menuItemIngredient.getInventoryItemID());
-            dto.setQuantityNeeded(menuItemIngredient.getQuantityNeeded());
-            menuItemIngredientDTOs.add(dto);
+        ArrayList<MenuItemIngredients> menuItemIngredientsList = menuItemIngredientsDAO.searchIngredientsByInventoryItemID(inventoryItemID);
+        ArrayList<MenuItemIngredientsDto> menuItemIngredientsDtoList = new ArrayList<>();
+
+        for (MenuItemIngredients menuItemIngredient : menuItemIngredientsList) {
+            MenuItemIngredientsDto dto = new MenuItemIngredientsDto(
+                    menuItemIngredient.getMenuItemID(),
+                    menuItemIngredient.getInventoryItemID(),
+                    menuItemIngredient.getQuantityNeeded()
+            );
+            menuItemIngredientsDtoList.add(dto);
         }
-        return menuItemIngredientDTOs;
+
+        return menuItemIngredientsDtoList;
     }
+
 
 }

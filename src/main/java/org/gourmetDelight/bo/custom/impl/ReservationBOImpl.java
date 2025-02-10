@@ -76,7 +76,11 @@ public class ReservationBOImpl implements ReservationBO {
 
 
     public ReservationDto searchById(String id) throws ClassNotFoundException, SQLException {
+
         ReservationCustom reservation = queryDAO.searchById(id);
+        if (reservation == null) {
+            return null;
+        }
         ReservationDto dto = new ReservationDto();
         dto.setReservationID(reservation.getReservationID());
         dto.setCustomerID(reservation.getCustomerID());

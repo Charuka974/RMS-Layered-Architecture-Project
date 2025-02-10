@@ -14,10 +14,10 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import org.gourmetDelight.bo.BOFactory;
 import org.gourmetDelight.bo.custom.CustomerBO;
-import org.gourmetDelight.dao.custom.EmployeeDAO;
-import org.gourmetDelight.dao.custom.UsersDAO;
-import org.gourmetDelight.entity.Employee;
-import org.gourmetDelight.entity.User;
+import org.gourmetDelight.bo.custom.EmployeeBO;
+import org.gourmetDelight.bo.custom.UserBO;
+import org.gourmetDelight.dto.employee.EmployeeDto;
+import org.gourmetDelight.dto.employee.UserDto;
 import org.gourmetDelight.util.DateAndTime;
 import org.gourmetDelight.util.ValidateUtil;
 
@@ -80,8 +80,8 @@ public class SignUpController extends Component implements Initializable {
     @FXML
     private JFXTextField signUsernameTxt;
 
-    EmployeeDAO employeeDAOImpl = (EmployeeDAO) BOFactory.getInstance().getBO(BOFactory.BOType.EMPLOYEE);
-    UsersDAO usersDAOImpl = (UsersDAO) BOFactory.getInstance().getBO(BOFactory.BOType.USERS);
+    EmployeeBO employeeDAOImpl = (EmployeeBO) BOFactory.getInstance().getBO(BOFactory.BOType.EMPLOYEE);
+    UserBO usersDAOImpl = (UserBO) BOFactory.getInstance().getBO(BOFactory.BOType.USERS);
     DateAndTime dateAndTime = new DateAndTime();
     ValidateUtil validateUtil = new ValidateUtil();
 
@@ -146,7 +146,7 @@ public class SignUpController extends Component implements Initializable {
                     showAlert(Alert.AlertType.INFORMATION, "Success", "Signed Up Successfully", "You can now Log in to the System");
 
                 }
-                showAlert(Alert.AlertType.ERROR, "Error", "SignUp Failed", "Failed to sign up");
+                //showAlert(Alert.AlertType.ERROR, "Error", "SignUp Failed", "Failed to sign up");
             } else {
                 showAlert(Alert.AlertType.ERROR, "Error", "SignUp Failed", "Failed to sign up");
             }
@@ -167,7 +167,7 @@ public class SignUpController extends Component implements Initializable {
 
                 LocalDate hireDate = parseDate(signDateTxt.getText().trim());
 
-                Employee newEmployee = new Employee(
+                EmployeeDto newEmployee = new EmployeeDto(
                         signEmpIdTxt.getText().trim(),
                         signEmpNameTxt.getText().trim(),
                         signEmpPositionTxt.getText().trim(),
@@ -191,7 +191,7 @@ public class SignUpController extends Component implements Initializable {
     private boolean saveUserData(){
         boolean success = false;
         try {
-            User newUser = createUserFromFields();
+            UserDto newUser = createUserFromFields();
             boolean result = usersDAOImpl.save(newUser);
             success = true;
 
@@ -258,14 +258,14 @@ public class SignUpController extends Component implements Initializable {
         validateUtil.isValidUsername(signUsernameTxt.getText(), signUsernameTxt);
     }
 
-    private User createUserFromFields() {
+    private UserDto createUserFromFields() {
         String password = null;
         if(signPasswordTxt.getText().equals(signPasswordTxt1.getText())){
             password = signPasswordTxt.getText();
         }else{
             new Alert(Alert.AlertType.ERROR, "Check Confirm Password").show();
         }
-        return new User(
+        return new UserDto(
                 signUserIdTxt.getText().trim(),
                 signUsernameTxt.getText().trim(),
                 password,

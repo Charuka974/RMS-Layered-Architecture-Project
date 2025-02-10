@@ -300,7 +300,7 @@ public class StockPurchaseController implements Initializable {
             return;
         }
 
-        StockPurchaseDTOCustom purchase = purchaseBO.searchByIdReturnTM(purchaseID);
+        StockPurchaseDTOCustom purchase = purchaseBO.searchById(purchaseID);
 
         if (purchase == null) {
             showAlert(Alert.AlertType.ERROR, "Error", "Purchase not found", "Purchase not found with the given ID.");

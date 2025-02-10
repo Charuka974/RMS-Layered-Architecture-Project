@@ -12,6 +12,7 @@ import org.gourmetDelight.dao.custom.impl.inventory.PurchaseItemsDAOImpl;
 import org.gourmetDelight.db.DBConnection;
 import org.gourmetDelight.dto.CustomerDto;
 import org.gourmetDelight.dto.custom.StockPurchaseDTOCustom;
+import org.gourmetDelight.dto.inventory.StockPurchaseDto;
 import org.gourmetDelight.entity.Customer;
 import org.gourmetDelight.entity.StockPurchase;
 import org.gourmetDelight.entity.StockPurchaseItems;
@@ -52,8 +53,24 @@ public class PurchaseBOImpl implements PurchaseBO {
     }
 
     @Override
-    public StockPurchase searchById(String Id) throws ClassNotFoundException, SQLException {
-        return null;
+    public StockPurchaseDTOCustom searchById(String id) throws ClassNotFoundException, SQLException {
+        StockPurchaseCustom purchase = queryDAO.searchStochPurchaseByID(id);
+
+        StockPurchaseDTOCustom dto = new StockPurchaseDTOCustom();
+        dto.setPurchaseID(purchase.getPurchaseID());
+        dto.setItemID(purchase.getItemID());
+        dto.setItemName(purchase.getItemName());
+        dto.setUnitPrice(purchase.getUnitPrice());
+        dto.setQuantity(purchase.getQuantity());
+        dto.setTotalAmount(purchase.getTotalAmount());
+        dto.setPurchaseDate(purchase.getPurchaseDate());
+        dto.setSupplierID(purchase.getSupplierID());
+        dto.setStatus(purchase.getStatus());
+        dto.setSupplierName(purchase.getSupplierName());
+        dto.setUnit(purchase.getUnit());
+        dto.setUnitsMeasured(purchase.getUnitsMeasured());
+
+        return dto;
     }
 
     public StockPurchaseDTOCustom searchByIdReturnTM(String Id) throws ClassNotFoundException, SQLException {
